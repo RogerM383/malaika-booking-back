@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\ClientListResource;
 use App\Services\ClientService;
 use Illuminate\Contracts\View\View;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
@@ -11,11 +13,50 @@ use Illuminate\Validation\ValidationException;
 
 class ClientController extends Controller
 {
-    private ClientService $clientService;
+    private ClientService $service;
 
     public function __construct(ClientService $clietnService)
     {
-        $this->clientService = $clietnService;
+        $this->service = $clietnService;
+    }
+
+    /**
+     * @OA\Get(
+     *      path="/api/clients",
+     *      tags={"Clients"},
+     *      summary="Lista de clientes",
+     *      security={{"bearer_token":{}}},
+     *      description="Lista los clientes",
+     *      operationId="clientList",
+     *      @OA\Response(
+     *          response="200",
+     *          description="Client list retrieves successfully",
+     *           @OA\JsonContent(
+     *              type="object",
+     *              @OA\Property(
+     *                  property="client",
+     *                  type="object",
+     *                  ref="#/components/schemas/ClientListResource"
+     *              )
+     *          )
+     *      )
+     *  )
+     *
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function get(Request $request): JsonResponse
+    {
+        //$validatedData = Validator::make($request->all(), [])->validate();
+        return $this->sendResponse(
+            ClientListResource::collection($this->service->all()),
+            'Client list retrieved successfully'
+        );
+    }
+
+    public function getById(Request $request, $id)
+    {
+
     }
 
     /**
