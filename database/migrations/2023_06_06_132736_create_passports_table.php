@@ -17,10 +17,10 @@ return new class extends Migration
             $table->foreignId('client_id')->constrained('clients')->cascadeOnDelete();
 
             $table->string('number_passport')->nullable(true);
-            $table->string('issue')->nullable(true);
-            $table->string('exp')->nullable(true);
-            $table->string('nac')->nullable(true);
-            $table->string('birth')->nullable(true);
+            $table->string('nationality', 50)->nullable(true);
+            $table->date('issue')->nullable(true);          // Esto que es?
+            $table->date('exp')->nullable(true);            // Expedition date?
+            $table->date('birth')->nullable(true);
 
             $table->timestamps();
             $table->softDeletes();
@@ -32,6 +32,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('clients');
+        Schema::dropIfExists('passports');
     }
 };

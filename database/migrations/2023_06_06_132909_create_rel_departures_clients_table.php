@@ -16,9 +16,12 @@ return new class extends Migration
             $table->foreignId('departure_id')->constrained('departures');
             $table->foreignId('client_id')->constrained('clients');
 
-            $table->integer('state')->default(0)->nullable(false);
-            $table->integer('number_room')->nullable(true);
-            $table->integer('type_room')->default(2)->nullable(false);
+            // Mirar cpomo manejar esto, hay que crear una Pivot model?
+            $table->foreignId('room_type_id')->constrained('room_types');
+
+            $table->tinyInteger('state')->default(0)->nullable(false);
+            $table->tinyInteger('number_room')->nullable(true);
+            //$table->integer('type_room')->default(2)->nullable(false);
             $table->text('observations')->nullable(true);
 
             $table->timestamps();

@@ -16,12 +16,12 @@ return new class extends Migration
 
             $table->foreignId('trip_id')->constrained('trips')->cascadeOnDelete();
 
-            $table->string('start')->nullable(true);
-            $table->string('final')->nullable(true);
-            $table->string('price')->nullable(true);
-            $table->string('individual_supplement')->nullable(true);
+            $table->date('start')->nullable(true);
+            $table->date('final')->nullable(true);
+            $table->float('price', 8, 2)->nullable(true);
+            $table->float('individual_supplement', 8, 2)->nullable(true);
             $table->string('pax_available')->nullable(true);
-            $table->string('state')->default('1')->nullable(false);
+            $table->tinyInteger('state')->default('1')->nullable(false);
             $table->text('commentary')->nullable(true);
             $table->integer('expedient')->nullable(true);
 
