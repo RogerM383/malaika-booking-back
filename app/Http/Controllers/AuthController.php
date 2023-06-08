@@ -2,14 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\User;
 use App\Services\UserService;
 use Exception;
-use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Routing\Redirector;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
@@ -58,14 +54,21 @@ class AuthController extends Controller
             $validator = Validator::make($data, [
                 'name'          => 'required|string|max:255',
                 'email'         => 'required|email|max:255|unique:users',
-                'password'      => 'required|string|min:6|confirmed',
+                'password'      => 'required|string|min:6',
             ]);
+
+            Log::debug('TU VIEHE');
 
             if ($validator->fails()) {
                 return $this->sendError('Validation Error.', $validator->errors(), 409);
             }
 
+            Log::debug('FILES');
+
             $user = $this->userService->create($data);
+
+
+
 
             $success['token'] = $user->createToken(config('app.name'))->accessToken;
             $success['name'] = $user->name;
@@ -93,8 +96,8 @@ class AuthController extends Controller
      *          description="login user",
      *          required=true,
      *          @OA\JsonContent(
-     *              required={"username", "password"},
-     *              @OA\Property(property="username", type="string", format="text", example="selene"),
+     *              required={"email", "password"},
+     *              @OA\Property(property="email", type="string", format="email", example="selene@gmail.com"),
      *              @OA\Property(property="password", type="string", format="text", example="1234567")
      *          )
      *     )
@@ -103,13 +106,12 @@ class AuthController extends Controller
     public function login(Request $request)
     {
         $request->validate([
-            //'email'    => 'required|string|email',
-            'username'  => 'required|string',
+            'email'    => 'required|string|email',
             'password'  => 'required|string',
             //'remember_me' => 'boolean'
         ]);
 
-        $credentials = request(['username', 'password']);
+        $credentials = request(['email', 'password']);
 
         if (Auth::attempt($credentials)) {
             if ($request->is("api/*")) {
