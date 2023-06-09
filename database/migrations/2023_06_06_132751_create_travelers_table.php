@@ -15,11 +15,11 @@ return new class extends Migration
             $table->id();
 
             $table->foreignId('client_id')->constrained('clients')->cascadeOnDelete();
+            $table->foreignId('client_type_id')->constrained('client_types')->cascadeOnDelete();
 
             $table->string('seat')->nullable(true);
             $table->text('observations')->nullable(true);
             $table->string('intolerances')->nullable(true);
-            $table->string('client_type')->nullable(true);
             $table->string('frequency_fly')->nullable(true);
             $table->string('type_room')->default(2)->nullable(true);
             $table->text('notes')->nullable(true);

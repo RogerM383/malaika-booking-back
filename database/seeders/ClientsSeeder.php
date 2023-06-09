@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Traveler;
 use Illuminate\Database\Seeder;
 use App\Models\Client;
 
@@ -14,7 +15,10 @@ class ClientsSeeder extends Seeder
     {
         Client::factory()
             ->count(50)
-            ->create();
+            ->create()
+            ->each(function ($client) {
+                $client->traveler()->save(Traveler::factory()->make());
+            });
     }
 }
 

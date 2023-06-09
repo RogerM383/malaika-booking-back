@@ -36,7 +36,6 @@ class ClientFactory extends Factory
      */
     public function definition()
     {
-        $date = $this->faker->dateTimeBetween('-1 day' );
         return [
             'name'              => fake()->firstName(),
             'surname'           => fake()->lastName(),
