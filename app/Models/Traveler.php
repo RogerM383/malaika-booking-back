@@ -34,4 +34,12 @@ class Traveler extends Model
     {
         return $this->belongsTo(Client::class);
     }
+
+    /**
+     * @return BelongsTo
+     */
+    public function clientType(): BelongsTo
+    {
+        return $this->belongsTo(ClientType::class);
+    }
 }
