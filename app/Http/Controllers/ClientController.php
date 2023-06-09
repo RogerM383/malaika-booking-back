@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\ClientListResource;
+use App\Http\Resources\ClientResource;
 use App\Services\ClientService;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\JsonResponse;
@@ -34,9 +35,9 @@ class ClientController extends Controller
      *           @OA\JsonContent(
      *              type="object",
      *              @OA\Property(
-     *                  property="client",
-     *                  type="object",
-     *                  ref="#/components/schemas/ClientListResource"
+     *                  property="data",
+     *                  type="array",
+     *                  @OA\Items(ref="#/components/schemas/ClientListResource")
      *              )
      *          )
      *      )
@@ -54,9 +55,45 @@ class ClientController extends Controller
         );
     }
 
+    /**
+     *  @OA\Get(
+     *      path="/api/clients/{id}",
+     *      tags={"Clients"},
+     *      summary="Retorna un cliente por ID",
+     *      security={{"bearer_token":{}}},
+     *      description="Retorna un cliente",
+     *      operationId="getClientById",
+     *      @OA\Parameter(
+     *          name="id",
+     *          in="path",
+     *          description="Id de cliente",
+     *          required=true,
+     *          @OA\Schema(type="integer")
+     *      ),
+     *      @OA\Response(
+     *          response="200",
+     *          description="Client retrived successfully",
+     *           @OA\JsonContent(
+     *              type="object",
+     *              @OA\Property(
+     *                  property="data",
+     *                  type="object",
+     *                  ref="#/components/schemas/ClientResource"
+     *              )
+     *          )
+     *      )
+     *  )
+     */
     public function getById(Request $request, $id)
     {
+        $validatedData = Validator::make(['id' => $id], [
+            'id' => 'required|integer',
+        ])->validate();
 
+        return $this->sendResponse(
+            new ClientResource($this->service->getById($validatedData['id'])),
+            'Client retrieved successfully'
+        );
     }
 
     /**

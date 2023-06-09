@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Exceptions\ClientNotFoundException;
 use App\Models\Client;
 
 class ClientService
@@ -28,10 +29,11 @@ class ClientService
     /**
      * @param $id
      * @return mixed
+     * @throws ClientNotFoundException
      */
     public function getById($id): mixed
     {
-        return $this->model->find($id)->first();
+        return $this->model->find($id) ?? throw new ClientNotFoundException($id);
     }
 
     public function find($dni, $email)

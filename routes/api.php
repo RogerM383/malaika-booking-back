@@ -27,4 +27,5 @@ Route::prefix('auth')->group(function () {
 
 Route::prefix('clients')->group(function () {
     Route::get('/', [ClientController::class, 'get'])->middleware('auth:api');
+    Route::get('/{id}', [ClientController::class, 'getById'])->middleware('auth:api');
 });

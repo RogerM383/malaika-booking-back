@@ -8,11 +8,14 @@ use Database\Seeders\DatabaseSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Testing\TestResponse;
 use Tests\TestCase;
 
 uses(TestCase::class, RefreshDatabase::class, WithoutMiddleware::class);
 
-it('must retrieve all products', function () {
+it('must retrieve all clients', function () {
 
     $this->seed(DatabaseSeeder::class);
 
@@ -39,4 +42,18 @@ it('must retrieve all products', function () {
     $expectedResponse = response()->json($responseMoked, 200);
 
     $this->assertEquals($expectedResponse, $response);
+
+    /*$expectedStructure = [
+        'success',
+        'data' => [
+            '*' => [
+                'id',
+                'surname',
+                'name'   ,
+                'phone',
+                'email',
+            ]
+        ],
+        'message'
+    ];*/
 });
