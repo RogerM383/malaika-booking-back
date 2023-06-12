@@ -8,6 +8,7 @@ use App\Traits\HasPagination;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Log;
+use JetBrains\PhpStorm\Pure;
 
 class ClientService
 {
@@ -21,6 +22,14 @@ class ClientService
     public function __construct(Client $model)
     {
         $this->model = $model;
+    }
+
+    /**
+     * @return string[]
+     */
+    #[Pure] public function getFillable(): array
+    {
+        return $this->model->getFillable();
     }
 
     /**
@@ -112,10 +121,13 @@ class ClientService
      * @param int $id
      * @param array $data
      * @return mixed
+     * @throws ClientNotFoundException
      */
     public function update(int $id, array $data): mixed
     {
-        return $this->model->find($id)->update($data);
+        $client = $this->model->find($id) ?? throw new ClientNotFoundException($id);
+        $client->update($data);
+        return $client;
     }
 
     /**

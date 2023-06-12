@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exceptions\ClientNotFoundException;
 use App\Http\Resources\ClientListCollection;
 use App\Http\Resources\ClientListResource;
 use App\Http\Resources\ClientResource;
@@ -166,7 +167,7 @@ class ClientController extends Controller
      *          )
      *      )
      *  )
-     * @throws \App\Exceptions\ClientNotFoundException
+     * @throws ClientNotFoundException
      */
     public function getById(Request $request, $id): JsonResponse
     {
@@ -181,165 +182,111 @@ class ClientController extends Controller
     }
 
     /**
-     * Display a listing of the resource.
-     */
-    public function index(Request $request)
-    {
-/*
-
-        if ($request->type) {
-
-            $clients = Client::whereHas('traveler', function ($q) use ($request) {
-                $q->where('client_type', $request->input('type'));
-            });
-        } else {
-            $clients = Client::query();
-        }
-
-        if ($request->filter) {
-
-            if ($request->param == "default") {
-
-                $clients = $clients->where('name', 'LIKE', "%" . $request->input('filter') . "%")
-                    ->orWhere('surname', 'LIKE', "%" . $request->input('filter') . "%")
-                    ->orWhere('phone', 'LIKE', "%" . $request->input('filter') . "%")
-                    ->orWhere('email', 'LIKE', "%" . $request->input('filter') . "%")
-                    ->orWhere('dni', 'LIKE', "%" . $request->input('filter') . "%");
-
-                // return view('client.index', compact('clients'));
-            } elseif ($request->input('param') == "passport") {
-
-                $filterjobs = function ($q) use ($request) {
-                    $q->where('number_passport', 'LIKE', "%" . $request->input('filter') . "%");
-                };
-
-                $clients = $clients->with(array('passport' => $filterjobs))
-                    ->whereHas('passport', $filterjobs);
-
-                // return view('client.index', compact('clients'));
-            } else {
-                $clients = $clients->where($request->input('param'), 'LIKE', "%" . $request->input('filter') . "%");
-                //  return view('client.index', compact('clients'));
-            }
-        }
-
-
-        $clients = $clients->paginate(12);
-
-
-        return view('client.index', compact('clients'));*/
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create(): View
-    {
-        $clients = $this->clientService->all();
-        return view('client.newclient', compact('clients'));
-    }
-
-    /**
-     * Store a newly created resource in storage.
+     * @OA\Post(
+     *      path="/api/clients",
+     *      tags={"Clients"},
+     *      summary="Crea un nuevo cliente",
+     *      security={{"bearer_token":{}}},
+     *      description="Crea un nuevo cliente",
+     *      operationId="createClient",
+     *      @OA\Response(
+     *          response="200",
+     *          description="Client created successfully",
+     *      ),
+     *     @OA\RequestBody(
+     *          description="Create user",
+     *          required=true,
+     *          @OA\JsonContent(
+     *              required={"warehouse_id", "stock"},
+     *              @OA\Property(property="name", type="string", example="Selene"),
+     *              @OA\Property(property="surname", type="string", example="Selenita"),
+     *              @OA\Property(property="phone", type="string", example="6945798"),
+     *              @OA\Property(property="email", type="string", example="selene@gmail.com"),
+     *              @OA\Property(property="dni", type="string", example="47854123X"),
+     *              @OA\Property(property="address", type="string", example="Caella falsa 123, 08194, Barcelona"),
+     *              @OA\Property(property="dni_expiration", type="string", example="2025/12/01"),
+     *              @OA\Property(property="place_birth", type="string", example="Barcelona"),
+     *          )
+     *      )
+     *  )
      * @throws ValidationException
      */
-    public function store(Request $request)
+    public function create(Request $request)
     {
-        // TODO: Cambiar all() por only con la lista de params que se le pasen a esta llamda
-        try {
-            $validatedData = Validator::make($request->all(), [
-                'name' => 'required|string',
-                'surname' => 'string',
-                'phone' => 'string',
-                'email' => 'string|email',
-                'dni' => 'string',
-                'address' => 'string',
-                'dni_expiration' => 'string',
-                'place_birth' => 'string'
-            ])->validate();
+        $validatedData = Validator::make($request->only($this->service->getFillable()), [
+            'name'              => 'required|string',
+            'surname'           => 'string',
+            'phone'             => 'string',
+            'email'             => 'string|email',
+            'dni'               => 'string',
+            'address'           => 'string',
+            'dni_expiration'    => 'string',
+            'place_birth'       => 'string'
+        ])->validate();
 
-            $client = $this->clientService->create($validatedData);
-
-            return redirect('client')->with('message', __('Saved client'));
-
-        } catch (ValidationException $e) {
-            return redirect('client')->with('message', _('There has been a problem, try again'));
-        } catch (\Exception $e) {
-            Log::debug($e->getMessage());
-        }
-
-
-
-        //
-        //$searchdni = $request->dni ?  Client::where('dni','=',$request->dni)->exists() : false ;
-
-        //$searchemail = $request->email ?  Client::where('email','=',$request->email)->exists() : false  ;
-
-
-        /*if( $searchdni == true || $searchemail == true )
-        {
-
-            return redirect('client')->with('warning', __('Ya existe un usuario con ese dni o email'));
-
-        }
-        else{
-
-            try {
-                $client = new Client();
-                $client->fill($request->except('_token'));
-
-
-
-                $client->save();
-
-                $client->traveler()->create($request->all());
-
-
-                $client->passport()->create($request->all());
-                //dd($request->all());
-
-
-            } catch (\Illuminate\Database\QueryException $e) {
-                echo 'Caught exception: ',  $e->getMessage(), "\n";
-                return redirect('client')->with('message', _('There has been a problem, try again'));
-            }
-        }*/
-
-
-
-
-        //return redirect('client')->with('message', __('Saved client'));
+        return $this->sendResponse(
+            new ClientResource($this->service->create($validatedData)),
+            'Client created successfully'
+        );
     }
 
     /**
-     * Display the specified resource.
+     * @OA\Post(
+     *      path="/api/clients/{id}",
+     *      tags={"Clients"},
+     *      summary="Actualiza los datos del cliente",
+     *      security={{"bearer_token":{}}},
+     *      description="Actualiza los datos del cliente",
+     *      operationId="updateClient",
+     *      @OA\Parameter(
+     *          name="id",
+     *          in="path",
+     *          description="Id de cliente",
+     *          required=true,
+     *          @OA\Schema(type="integer")
+     *      ),
+     *     @OA\RequestBody(
+     *          description="Update client",
+     *          required=true,
+     *          @OA\JsonContent(
+     *              required={"warehouse_id", "stock"},
+     *              @OA\Property(property="name", type="string", example="Selene"),
+     *              @OA\Property(property="surname", type="string", example="Selenita"),
+     *              @OA\Property(property="phone", type="string", example="6945798"),
+     *              @OA\Property(property="email", type="string", example="selene@gmail.com"),
+     *              @OA\Property(property="dni", type="string", example="47854123X"),
+     *              @OA\Property(property="address", type="string", example="Caella falsa 123, 08194, Barcelona"),
+     *              @OA\Property(property="dni_expiration", type="string", example="2025/12/01"),
+     *              @OA\Property(property="place_birth", type="string", example="Barcelona"),
+     *          )
+     *      ),
+     *      @OA\Response(
+     *          response="200",
+     *          description="Client updated successfully",
+     *      ),
+     *  )
+     * @throws ValidationException
+     * @throws ClientNotFoundException
      */
-    public function show(string $id)
+    public function update(Request $request, $id): JsonResponse
     {
-        //
-    }
+        $params = array_merge($request->only($this->service->getFillable()), ['id' => $id]);
+        Log::debug(json_encode($params));
+        $validatedData = Validator::make($params, [
+            'id'                => 'required',
+            'name'              => 'required|string',
+            'surname'           => 'string',
+            'phone'             => 'string',
+            'email'             => 'string|email',
+            'dni'               => 'string',
+            'address'           => 'string',
+            'dni_expiration'    => 'string',
+            'place_birth'       => 'string'
+        ])->validate();
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
+        return $this->sendResponse(
+            new ClientResource($this->service->update($id, $validatedData)),
+            'Client updated successfully'
+        );
     }
 }

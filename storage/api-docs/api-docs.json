@@ -237,6 +237,73 @@
                         "bearer_token": []
                     }
                 ]
+            },
+            "post": {
+                "tags": [
+                    "Clients"
+                ],
+                "summary": "Crea un nuevo cliente",
+                "description": "Crea un nuevo cliente",
+                "operationId": "createClient",
+                "requestBody": {
+                    "description": "Create user",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "warehouse_id",
+                                    "stock"
+                                ],
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "Selene"
+                                    },
+                                    "surname": {
+                                        "type": "string",
+                                        "example": "Selenita"
+                                    },
+                                    "phone": {
+                                        "type": "string",
+                                        "example": "6945798"
+                                    },
+                                    "email": {
+                                        "type": "string",
+                                        "example": "selene@gmail.com"
+                                    },
+                                    "dni": {
+                                        "type": "string",
+                                        "example": "47854123X"
+                                    },
+                                    "address": {
+                                        "type": "string",
+                                        "example": "Caella falsa 123, 08194, Barcelona"
+                                    },
+                                    "dni_expiration": {
+                                        "type": "string",
+                                        "example": "2025/12/01"
+                                    },
+                                    "place_birth": {
+                                        "type": "string",
+                                        "example": "Barcelona"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Client created successfully"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
             }
         },
         "/api/clients/{id}": {
@@ -273,6 +340,84 @@
                                 }
                             }
                         }
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Clients"
+                ],
+                "summary": "Actualiza los datos del cliente",
+                "description": "Actualiza los datos del cliente",
+                "operationId": "updateClient",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Id de cliente",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "Update client",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "warehouse_id",
+                                    "stock"
+                                ],
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "Selene"
+                                    },
+                                    "surname": {
+                                        "type": "string",
+                                        "example": "Selenita"
+                                    },
+                                    "phone": {
+                                        "type": "string",
+                                        "example": "6945798"
+                                    },
+                                    "email": {
+                                        "type": "string",
+                                        "example": "selene@gmail.com"
+                                    },
+                                    "dni": {
+                                        "type": "string",
+                                        "example": "47854123X"
+                                    },
+                                    "address": {
+                                        "type": "string",
+                                        "example": "Caella falsa 123, 08194, Barcelona"
+                                    },
+                                    "dni_expiration": {
+                                        "type": "string",
+                                        "example": "2025/12/01"
+                                    },
+                                    "place_birth": {
+                                        "type": "string",
+                                        "example": "Barcelona"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Client updated successfully"
                     }
                 },
                 "security": [
