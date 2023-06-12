@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\ClientListCollection;
 use App\Http\Resources\ClientListResource;
 use App\Http\Resources\ClientResource;
+use App\Models\Client;
 use App\Services\ClientService;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\JsonResponse;
@@ -29,6 +31,69 @@ class ClientController extends Controller
      *      security={{"bearer_token":{}}},
      *      description="Lista los clientes",
      *      operationId="clientList",
+     *      @OA\Parameter(
+     *          name="client_type",
+     *          in="query",
+     *          description="Id de tipo de cliente",
+     *          required=false,
+     *          @OA\Schema(type="integer")
+     *      ),
+     *      @OA\Parameter(
+     *          name="name",
+     *          in="query",
+     *          description="Nombre del cliente",
+     *          required=false,
+     *          @OA\Schema(type="string")
+     *      ),
+     *      @OA\Parameter(
+     *          name="surname",
+     *          in="query",
+     *          description="Apellido del cliente",
+     *          required=false,
+     *          @OA\Schema(type="string")
+     *      ),
+     *      @OA\Parameter(
+     *          name="phone",
+     *          in="query",
+     *          description="Teléfono del cliente",
+     *          required=false,
+     *          @OA\Schema(type="string")
+     *      ),
+     *      @OA\Parameter(
+     *          name="email",
+     *          in="query",
+     *          description="Email del cliente",
+     *          required=false,
+     *          @OA\Schema(type="string")
+     *      ),
+     *      @OA\Parameter(
+     *          name="dni",
+     *          in="query",
+     *          description="DNI del cliente",
+     *          required=false,
+     *          @OA\Schema(type="string")
+     *      ),
+     *      @OA\Parameter(
+     *          name="passport",
+     *          in="query",
+     *          description="Número de pasaporte del cliente",
+     *          required=false,
+     *          @OA\Schema(type="string")
+     *      ),
+     *      @OA\Parameter(
+     *          name="per_page",
+     *          in="query",
+     *          description="Número de elementos por página",
+     *          required=false,
+     *          @OA\Schema(type="integer")
+     *      ),
+     *      @OA\Parameter(
+     *          name="page",
+     *          in="query",
+     *          description="Número de página",
+     *          required=false,
+     *          @OA\Schema(type="integer")
+     *      ),
      *      @OA\Response(
      *          response="200",
      *          description="Client list retrieves successfully",
@@ -45,14 +110,29 @@ class ClientController extends Controller
      *
      * @param Request $request
      * @return JsonResponse
+     * @throws ValidationException
      */
     public function get(Request $request): JsonResponse
     {
-        //$validatedData = Validator::make($request->all(), [])->validate();
-        return $this->sendResponse(
-            ClientListResource::collection($this->service->all()),
-            'Client list retrieved successfully'
-        );
+        $validatedData = Validator::make($request->all(), [
+            'client_type'   => 'integer',
+            'name'          => 'string',
+            'surname'       => 'string',
+            'phone'         => 'string',
+            'email'         => 'string',
+            'dni'           => 'string',
+            'passport'      => 'string',
+            'per_page'      => 'integer|min:1',
+            'page'          => 'integer|min:1'
+        ])->validate();
+
+        if (isset($validatedData['per_page']) || isset($validatedData['page'])) {
+            $data = new ClientListCollection($this->service->all(...$validatedData));
+        } else {
+            $data = ClientListResource::collection($this->service->all(...$validatedData));
+        }
+
+        return $this->sendResponse($data,'Client list retrieved successfully');
     }
 
     /**
