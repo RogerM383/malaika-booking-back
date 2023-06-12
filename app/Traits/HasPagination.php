@@ -4,6 +4,9 @@ namespace App\Traits;
 
 trait HasPagination
 {
+    protected int $defaultPage = 1;
+    protected int $defaultPerPage = 10;
+
     /**
      * @param $per_page
      * @param $page

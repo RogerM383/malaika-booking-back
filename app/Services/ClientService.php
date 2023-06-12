@@ -42,11 +42,6 @@ class ClientService
         return $this->model->find($id) ?? throw new ClientNotFoundException($id);
     }
 
-    public function find($dni, $email)
-    {
-
-    }
-
     /**
      * @param null $client_type
      * @param null $name
@@ -102,7 +97,12 @@ class ClientService
         }
 
         if ($this->isPaginated($per_page, $page)) {
-            return $query->paginate($per_page | 10, ['*'], 'clients', $page | 1);
+            return $query->paginate(
+                $per_page ?? $this->defaultPerPage,
+                ['*'],
+                'clients',
+                $page ?? $this->defaultPage
+            );
         } else {
             return $query->get();
         }
