@@ -7,6 +7,7 @@ use App\Http\Resources\ClientListResource;
 use App\Http\Resources\ClientResource;
 use App\Models\Client;
 use App\Services\ClientService;
+use App\Traits\HasPagination;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -16,6 +17,8 @@ use Illuminate\Validation\ValidationException;
 
 class ClientController extends Controller
 {
+    use HasPagination;
+
     private ClientService $service;
 
     public function __construct(ClientService $clietnService)
@@ -126,7 +129,7 @@ class ClientController extends Controller
             'page'          => 'integer|min:1'
         ])->validate();
 
-        if (isset($validatedData['per_page']) || isset($validatedData['page'])) {
+        if ($this->isPaginated(...$validatedData)) {
             $data = new ClientListCollection($this->service->all(...$validatedData));
         } else {
             $data = ClientListResource::collection($this->service->all(...$validatedData));
@@ -136,7 +139,7 @@ class ClientController extends Controller
     }
 
     /**
-     *  @OA\Get(
+     * @OA\Get(
      *      path="/api/clients/{id}",
      *      tags={"Clients"},
      *      summary="Retorna un cliente por ID",
@@ -163,8 +166,9 @@ class ClientController extends Controller
      *          )
      *      )
      *  )
+     * @throws \App\Exceptions\ClientNotFoundException
      */
-    public function getById(Request $request, $id)
+    public function getById(Request $request, $id): JsonResponse
     {
         $validatedData = Validator::make(['id' => $id], [
             'id' => 'required|integer',

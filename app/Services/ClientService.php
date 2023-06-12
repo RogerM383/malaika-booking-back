@@ -4,12 +4,15 @@ namespace App\Services;
 
 use App\Exceptions\ClientNotFoundException;
 use App\Models\Client;
+use App\Traits\HasPagination;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Log;
 
 class ClientService
 {
+    use HasPagination;
+
     private Client $model;
 
     /**
@@ -45,7 +48,15 @@ class ClientService
     }
 
     /**
-     * @param $client_type
+     * @param null $client_type
+     * @param null $name
+     * @param null $surname
+     * @param null $phone
+     * @param null $email
+     * @param null $dni
+     * @param null $passport
+     * @param null $per_page
+     * @param null $page
      * @return array|Collection|LengthAwarePaginator
      */
     public function all(
@@ -90,7 +101,7 @@ class ClientService
             $this->addPassportFilter($query, $passport);
         }
 
-        if ($per_page || $page) {
+        if ($this->isPaginated($per_page, $page)) {
             return $query->paginate($per_page | 10, ['*'], 'clients', $page | 1);
         } else {
             return $query->get();
