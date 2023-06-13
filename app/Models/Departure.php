@@ -41,6 +41,14 @@ class Departure extends Model
     }
 
     /**
+     * @return HasOne
+     */
+    public function state(): HasOne
+    {
+        return $this->hasOne(DepartureState::class);
+    }
+
+    /**
      * @return BelongsTo
      */
     public function trip(): BelongsTo
@@ -66,7 +74,7 @@ class Departure extends Model
     /**
      * @return BelongsToMany
      */
-    public function clientsortRoom(): BelongsToMany
+    public function clientSortRoom(): BelongsToMany
     {
         return $this->belongsToMany(Client::class,'rel_departure_client')
             ->withPivot(

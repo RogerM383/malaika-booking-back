@@ -2,63 +2,30 @@
 
 namespace App\Http\Controllers;
 
+use App\Exceptions\ClientNotFoundException;
+use App\Http\Resources\TripResource;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\ValidationException;
 
 class TripController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
-    {
-        //
-    }
 
     /**
-     * Show the form for creating a new resource.
+     * @param Request $request
+     * @return JsonResponse
+     * @throws ValidationException
      */
-    public function create()
+    public function getTripsByClientId(Request $request): JsonResponse
     {
-        //
-    }
+        $validatedData = Validator::make($request->all(), [
+            'client_id' => 'required|integer',
+        ])->validate();
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
+        return $this->sendResponse(
+            new TripResource($this->service->getById($validatedData['id'])),
+            'Client retrieved successfully'
+        );
     }
 }

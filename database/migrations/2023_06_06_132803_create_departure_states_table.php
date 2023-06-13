@@ -11,14 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('trips', function (Blueprint $table) {
+        Schema::create('departure_states', function (Blueprint $table) {
             $table->id();
 
-            $table->string('title')->nullable(true);
-            $table->text('description')->nullable(true);
-            $table->string('category')->nullable(true);
-            $table->text('commentary')->nullable(true);
-            $table->unsignedTinyInteger('state')->default(1);
+            $table->string('name');
+            $table->string('description')->nullable(true);
 
             $table->timestamps();
             $table->softDeletes();
@@ -30,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('trips');
+        Schema::dropIfExists('departure_states');
     }
 };

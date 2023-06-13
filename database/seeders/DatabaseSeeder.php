@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\TripState;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -19,6 +20,9 @@ class DatabaseSeeder extends Seeder
         // ]);
 
         $this->call([
+            RoomTypesSeeder::class,
+            TripStatesSeeder::class,
+            // trips seeder
             ClientTypesSeeder::class,
             ClientsSeeder::class,
         ]);

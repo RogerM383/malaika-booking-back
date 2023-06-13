@@ -3,14 +3,10 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\HasOne;
 
-class Trip extends Model
+class DepartureState extends Model
 {
-    use HasFactory;
-
     /**
      * The attributes that are mass assignable.
      *
@@ -27,13 +23,5 @@ class Trip extends Model
     public function departures(): HasMany
     {
         return $this->hasMany(Departure::class);
-    }
-
-    /**
-     * @return HasOne
-     */
-    public function state(): HasOne
-    {
-        return $this->hasOne(TripState::class);
     }
 }

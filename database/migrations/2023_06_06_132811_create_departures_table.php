@@ -26,6 +26,7 @@ return new class extends Migration
             $table->integer('expedient')->nullable(true);
 
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

@@ -16,7 +16,7 @@ return new class extends Migration
             $table->foreignId('departure_id')->constrained('departures');
             $table->foreignId('client_id')->constrained('clients');
 
-            // Mirar cpomo manejar esto, hay que crear una Pivot model?
+            // TODO: Mirar cpomo manejar esto, hay que crear una Pivot model?
             $table->foreignId('room_type_id')->constrained('room_types');
 
             $table->tinyInteger('state')->default(0)->nullable(false);
