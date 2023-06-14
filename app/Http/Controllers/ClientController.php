@@ -198,6 +198,8 @@ class ClientController extends Controller implements ResourceControllerInterface
      *          required=true,
      *          @OA\JsonContent(
      *              required={"warehouse_id", "stock"},
+     *              @OA\Property(property="client_type_id", type="integer", example="1"),
+     *              @OA\Property(property="language_id", type="integer", example="1"),
      *              @OA\Property(property="name", type="string", example="Selene"),
      *              @OA\Property(property="surname", type="string", example="Selenita"),
      *              @OA\Property(property="phone", type="string", example="6945798"),
@@ -214,6 +216,8 @@ class ClientController extends Controller implements ResourceControllerInterface
     public function create(Request $request)
     {
         $validatedData = Validator::make($request->only($this->service->getFillable()), [
+            'client_type_id'    => 'required|integer|min:1',
+            'language_id'       => 'required|integer|min:1',
             'name'              => 'required|string',
             'surname'           => 'string',
             'phone'             => 'string',
@@ -221,7 +225,8 @@ class ClientController extends Controller implements ResourceControllerInterface
             'dni'               => 'string',
             'address'           => 'string',
             'dni_expiration'    => 'string',
-            'place_birth'       => 'string'
+            'place_birth'       => 'string',
+
         ])->validate();
 
         return $this->sendResponse(
