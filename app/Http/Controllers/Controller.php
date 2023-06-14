@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\App;
 /**
  * @OA\Info(
  *      version="1.0.0",
- *      title="Sherwoodmedia API",
+ *      title="Malaika-booking API",
  *      description="",
  *      @OA\Contact(
  *          email="kirian@fruntera.com"

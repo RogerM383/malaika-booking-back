@@ -1,7 +1,7 @@
 {
     "openapi": "3.0.0",
     "info": {
-        "title": "Sherwoodmedia API",
+        "title": "Malaika-booking API",
         "description": "",
         "contact": {
             "email": "kirian@fruntera.com"
@@ -256,6 +256,14 @@
                                     "stock"
                                 ],
                                 "properties": {
+                                    "client_type_id": {
+                                        "type": "integer",
+                                        "example": "1"
+                                    },
+                                    "language_id": {
+                                        "type": "integer",
+                                        "example": "1"
+                                    },
                                     "name": {
                                         "type": "string",
                                         "example": "Selene"
