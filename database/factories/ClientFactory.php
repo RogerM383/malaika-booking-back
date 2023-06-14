@@ -3,6 +3,8 @@
 namespace Database\Factories;
 
 use App\Models\Client;
+use App\Models\ClientType;
+use App\Models\Language;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -44,7 +46,9 @@ class ClientFactory extends Factory
             'dni'               => fake()->dni(),
             'address'           => fake()->address(),
             'dni_expiration'    => fake()->date(),
-            'place_birth'       => fake()->city()
+            'place_birth'       => fake()->city(),
+            'client_type_id'    => ClientType::all()->random()->id,
+            'language_id'       => Language::all()->random()->id
         ];
     }
 }

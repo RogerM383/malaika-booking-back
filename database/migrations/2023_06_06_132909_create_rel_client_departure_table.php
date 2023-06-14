@@ -20,7 +20,6 @@ return new class extends Migration
             $table->foreignId('room_type_id')->constrained('room_types');
 
             $table->string('seat')->nullable(true);
-            $table->text('observations')->nullable(true);
 
             $table->tinyInteger('state')->default(0)->nullable(false);
             $table->tinyInteger('number_room')->nullable(true);

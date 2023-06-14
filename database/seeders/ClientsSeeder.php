@@ -16,9 +16,10 @@ class ClientsSeeder extends Seeder
         Client::factory()
             ->count(50)
             ->create()
-            ->each(function ($client) {
+            // TODO meter passport
+            /*->each(function ($client) {
                 $client->traveler()->save(Traveler::factory()->make());
-            });
+            })*/;
     }
 }
 
