@@ -11,13 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('rel_client_type_traveler', function (Blueprint $table) {
+        Schema::create('languages', function (Blueprint $table) {
             $table->id();
-
-            $table->foreignId('client_type_id')->constrained('client_types');
-            $table->foreignId('traveler_id')->constrained('travelers');
-
+            $table->string('name', 100);
+            $table->char('code', 2);
+            $table->char('locale', 5);
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
@@ -26,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('rel_client_type_traveler');
+        Schema::dropIfExists('languages');
     }
 };

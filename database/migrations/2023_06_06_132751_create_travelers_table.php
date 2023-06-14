@@ -14,17 +14,19 @@ return new class extends Migration
         Schema::create('travelers', function (Blueprint $table) {
             $table->id();
 
-            $table->foreignId('client_id')->constrained('clients')->cascadeOnDelete();
-            $table->foreignId('client_type_id')->constrained('client_types')->cascadeOnDelete();
+            /*$table->foreignId('client_id')->constrained('clients')->cascadeOnDelete();
+            $table->foreignId('client_type_id')->constrained('client_types')->cascadeOnDelete();*/
 
             $table->string('seat')->nullable(true);
             $table->text('observations')->nullable(true);
-            $table->string('intolerances')->nullable(true);
-            $table->string('frequency_fly')->nullable(true);
+            /*$table->string('intolerances')->nullable(true);
+            $table->string('frequency_fly')->nullable(true);*/
+
             $table->string('type_room')->default(2)->nullable(true);
-            $table->text('notes')->nullable(true);
-            $table->string('member_number')->nullable(true);
-            $table->string('lang')->nullable(true);
+            //$table->text('notes')->nullable(true);
+
+            /*$table->string('member_number')->nullable(true);
+            $table->string('lang')->nullable(true);*/
 
             $table->timestamps();
             $table->softDeletes();

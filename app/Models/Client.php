@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
@@ -17,6 +18,12 @@ class Client extends Model
      * @var array<int, string>
      */
     protected $fillable = [
+        'notes',
+        'intolerances',
+        'frequent_flyer',
+        'member_number',
+        'client_type_id',
+        'language_id',
         'name',
         'surname',
         'phone',
@@ -38,9 +45,17 @@ class Client extends Model
     /**
      * @return HasOne
      */
-    public function traveler(): HasOne
+    public function language(): HasOne
     {
-        return $this->hasOne(Traveler::class);
+        return $this->hasOne(Language::class);
+    }
+
+    /**
+     * @return BelongsTo
+     */
+    public function clientTypes(): BelongsTo
+    {
+        return $this->belongsTo(ClientType::class);
     }
 
     /**
@@ -48,12 +63,15 @@ class Client extends Model
      */
     public function departures(): BelongsToMany
     {
+        // TODO: mirar como meter las relaciones intermedias, room_type_id, state_id
         return $this->belongsToMany(Departure::class,'rel_client_departure')
             ->withPivot(
                 'state',
-                    'number_room',
-                    'type_room',
-                    'observations')
+                'number_room',
+                'type_room',
+                'seat',
+                'observations',
+                'room_observations')
             ->orderBy('rel_client_departure.number_room')
             ->withTimestamps();
     }

@@ -19,10 +19,15 @@ return new class extends Migration
             // TODO: Mirar cpomo manejar esto, hay que crear una Pivot model?
             $table->foreignId('room_type_id')->constrained('room_types');
 
+            $table->string('seat')->nullable(true);
+            $table->text('observations')->nullable(true);
+
             $table->tinyInteger('state')->default(0)->nullable(false);
             $table->tinyInteger('number_room')->nullable(true);
-            //$table->integer('type_room')->default(2)->nullable(false);
+
             $table->text('observations')->nullable(true);
+
+            $table->text('room_observations')->nullable(true);
 
             $table->timestamps();
         });

@@ -2,11 +2,14 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
-class ClientType extends Model
+class Language extends Model
 {
+    use HasFactory, SoftDeletes;
+
     /**
      * The attributes that are mass assignable.
      *
@@ -14,13 +17,14 @@ class ClientType extends Model
      */
     protected $fillable = [
         'name',
-        'description',
+        'code',
+        'locale',
     ];
 
     /**
-     * @return HasMany
+     * The language users.
      */
-    public function clients(): HasMany
+    public function clients()
     {
         return $this->hasMany(Client::class);
     }
