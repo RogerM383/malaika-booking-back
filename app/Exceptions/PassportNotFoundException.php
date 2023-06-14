@@ -14,7 +14,7 @@ class PassportNotFoundException extends Exception implements HttpExceptionInterf
 {
     #[Pure] public function __construct($id, $msg = null)
     {
-        $message = $msg ?? 'Client with id '.$id.' doesen\'t exists';
+        $message = $msg ?? 'Passport with id '.$id.' doesen\'t exists';
         parent::__construct($message);
     }
 

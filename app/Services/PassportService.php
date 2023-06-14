@@ -32,8 +32,13 @@ class PassportService extends ResourceService
      */
     public function create($data): mixed
     {
-        $client = $this->clientService->getById($data['client_id']);
-        return $client->passport()->create($data);
+        $clientId = $data['client_id'];
+        $client = $this->clientService->getById($clientId);
+        return $client->passport()->firstOrCreate(
+            ['client_id' => $clientId],
+            $data,
+        );
+        //return $client->passport()->create($data);
     }
 
     /**
