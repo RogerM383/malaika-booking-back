@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Language extends Model
@@ -24,7 +25,7 @@ class Language extends Model
     /**
      * The language users.
      */
-    public function clients()
+    public function clients(): HasMany
     {
         return $this->hasMany(Client::class);
     }

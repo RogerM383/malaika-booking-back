@@ -48,7 +48,12 @@ class ClientFactory extends Factory
             'dni_expiration'    => fake()->date(),
             'place_birth'       => fake()->city(),
             'client_type_id'    => ClientType::all()->random()->id,
-            'language_id'       => Language::all()->random()->id
+            'language_id'       => Language::all()->random()->id,
+
+            'notes'             => rand(0, 10) >= 5 ? fake()->paragraph() : null,
+            'intolerances'      => rand(0, 10) >= 7 ? join(' ,', fake()->words()) : null,
+            'frequent_flyer'    => rand(0, 10) >= 8 ? fake()->randomNumber(5) : null,
+            'member_number'     => rand(0, 10) >= 8 ? fake()->randomNumber(5) : null,
         ];
     }
 }

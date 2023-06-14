@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Exceptions\ClientNotFoundException;
 use App\Http\Controllers\Interfaces\ResourceControllerInterface;
+use App\Http\Resources\ClientDetailResource;
 use App\Http\Resources\ClientListCollection;
 use App\Http\Resources\ClientListResource;
 use App\Http\Resources\ClientResource;
@@ -175,7 +176,7 @@ class ClientController extends Controller implements ResourceControllerInterface
         ])->validate();
 
         return $this->sendResponse(
-            new ClientResource($this->service->getById($validatedData['id'])),
+            new ClientDetailResource($this->service->getById($validatedData['id'])),
             'Client retrieved successfully'
         );
     }

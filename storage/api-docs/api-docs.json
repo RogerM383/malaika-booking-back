@@ -495,6 +495,47 @@
             }
         },
         "/api/passports/{id}": {
+            "get": {
+                "tags": [
+                    "Passports"
+                ],
+                "summary": "Retorna un pasaporte por ID",
+                "description": "Retorna un pasaporte",
+                "operationId": "getPassportById",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Id de pasaporte",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Passport retrived successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/PassportDetailResource"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            },
             "post": {
                 "tags": [
                     "Passports"
@@ -664,6 +705,57 @@
                 "type": "object",
                 "xml": {
                     "name": "ClientListResource"
+                }
+            },
+            "PassportDetailResource": {
+                "required": [
+                    "id"
+                ],
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "readOnly": "true",
+                        "example": "1"
+                    },
+                    "name": {
+                        "description": "Passport owner name",
+                        "type": "string",
+                        "example": "Selene"
+                    },
+                    "surname": {
+                        "description": "Passport owner surname",
+                        "type": "string",
+                        "example": "Selenita"
+                    },
+                    "number_passport": {
+                        "description": "Passport number",
+                        "type": "string",
+                        "example": "4567845454WW"
+                    },
+                    "birth": {
+                        "description": "Passport owner bith date",
+                        "type": "string",
+                        "example": "1975/12/01"
+                    },
+                    "issue": {
+                        "description": "Passport issue",
+                        "type": "string",
+                        "example": "2021/12/01"
+                    },
+                    "exp": {
+                        "description": "Passport expiration date",
+                        "type": "string",
+                        "example": "2026/12/01"
+                    },
+                    "nac": {
+                        "description": "Passport owner nacinality",
+                        "type": "string",
+                        "example": "Spanish"
+                    }
+                },
+                "type": "object",
+                "xml": {
+                    "name": "PassportResource"
                 }
             },
             "PassportResource": {

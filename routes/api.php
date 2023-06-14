@@ -35,7 +35,7 @@ Route::prefix('clients')->group(function () {
 
 Route::prefix('passports')->group(function () {
     //Route::get('/', [PassportController::class, 'get'])->middleware('auth:api');
-    //Route::get('/{id}', [PassportController::class, 'getById'])->middleware('auth:api');
+    Route::get('/{id}', [PassportController::class, 'getById'])->middleware('auth:api');
     Route::post('/', [PassportController::class, 'create'])->middleware('auth:api');
     Route::post('/{id}', [PassportController::class, 'update'])->middleware(['must.json', 'auth:api']);
 });

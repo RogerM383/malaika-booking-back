@@ -16,14 +16,6 @@ return new class extends Migration
 
             $table->foreignId('client_type_id')->constrained('client_types')->cascadeOnDelete();
 
-            $table->string('intolerances')->nullable(true);
-            $table->string('frequent_flyer')->nullable(true);
-
-            $table->string('member_number')->nullable(true);
-            $table->text('notes')->nullable(true);
-
-            $table->foreignId('language_id')->constrained('languages');
-
             $table->string('dni')->unique();
             $table->date('dni_expiration')->nullable();
             $table->string('place_birth')->nullable();
@@ -32,6 +24,14 @@ return new class extends Migration
             $table->string('email')->nullable(true);
             $table->string('phone')->nullable(true);
             $table->string('address')->nullable(true);
+
+            $table->string('intolerances')->nullable(true);
+            $table->string('frequent_flyer')->nullable(true);
+
+            $table->string('member_number')->nullable(true);
+            $table->text('notes')->nullable(true);
+
+            $table->foreignId('language_id')->constrained('languages');
 
             $table->timestamps();
             $table->softDeletes();

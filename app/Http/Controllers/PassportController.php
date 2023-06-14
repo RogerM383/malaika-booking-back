@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Exceptions\AppModelNotFoundException;
 use App\Exceptions\ClientNotFoundException;
 use App\Exceptions\ModelNotFoundException;
 use App\Exceptions\PassportNotFoundException;
 use App\Http\Controllers\Interfaces\ResourceControllerInterface;
 use App\Http\Resources\ClientResource;
+use App\Http\Resources\PassportDetailResource;
 use App\Http\Resources\PassportResource;
 use App\Services\PassportService;
 use App\Traits\HasPagination;
@@ -125,13 +127,50 @@ class PassportController extends Controller implements ResourceControllerInterfa
         );
     }
 
+    /**
+     * @OA\Get(
+     *      path="/api/passports/{id}",
+     *      tags={"Passports"},
+     *      summary="Retorna un pasaporte por ID",
+     *      security={{"bearer_token":{}}},
+     *      description="Retorna un pasaporte",
+     *      operationId="getPassportById",
+     *      @OA\Parameter(
+     *          name="id",
+     *          in="path",
+     *          description="Id de pasaporte",
+     *          required=true,
+     *          @OA\Schema(type="integer")
+     *      ),
+     *      @OA\Response(
+     *          response="200",
+     *          description="Passport retrived successfully",
+     *           @OA\JsonContent(
+     *              type="object",
+     *              @OA\Property(
+     *                  property="data",
+     *                  type="object",
+     *                  ref="#/components/schemas/PassportDetailResource"
+     *              )
+     *          )
+     *      )
+     *  )
+     * @throws ValidationException|AppModelNotFoundException
+     */
+    public function getById(Request $request, $id): JsonResponse
+    {
+        $validatedData = Validator::make(['id' => $id], [
+            'id' => 'required|integer',
+        ])->validate();
+
+        return $this->sendResponse(
+            new PassportDetailResource($this->service->getById($validatedData['id'])),
+            'Passport retrieved successfully'
+        );
+    }
+
     public function get(Request $request)
     {
         // TODO: Implement get() method.
-    }
-
-    public function getById(Request $request, $id)
-    {
-        // TODO: Implement getById() method.
     }
 }

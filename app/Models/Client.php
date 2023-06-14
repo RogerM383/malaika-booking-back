@@ -43,11 +43,11 @@ class Client extends Model
     }
 
     /**
-     * @return HasOne
+     * @return BelongsTo
      */
-    public function language(): HasOne
+    public function language(): BelongsTo
     {
-        return $this->hasOne(Language::class);
+        return $this->belongsTo(Language::class);
     }
 
     /**
