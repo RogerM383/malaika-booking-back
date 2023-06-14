@@ -2,24 +2,28 @@
 
 namespace App\Services;
 
+use App\Exceptions\ClientNotFoundException;
 use App\Exceptions\ModelNotFoundException;
 use App\Exceptions\PassportNotFoundException;
 use App\Models\Passport;
 use App\Traits\HasPagination;
 use JetBrains\PhpStorm\Pure;
 
-class PassportService
+class PassportService extends ResourceService
 {
     use HasPagination;
 
     private Passport $model;
+    private ClientService $clientService;
 
     /**
      * @param Passport $model
+     * @param ClientService $clientService
      */
-    public function __construct(Passport $model)
+    #[Pure] public function __construct(Passport $model, ClientService $clientService)
     {
-        $this->model = $model;
+        parent::__construct($model);
+        $this->clientService = $clientService;
     }
 
     /**
@@ -33,10 +37,12 @@ class PassportService
     /**
      * @param $data
      * @return mixed
+     * @throws ClientNotFoundException
      */
     public function create($data): mixed
     {
-        return $this->model->create($data);
+        $client = $this->clientService->getById($data['client_id']);
+        return $client->passport()->create($data);
     }
 
     /**

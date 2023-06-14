@@ -20,7 +20,7 @@ class Passport extends Model
         'birth',
         'issue',
         'exp',
-        'nac'
+        'nationality'
     ];
 
     /**

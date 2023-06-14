@@ -1,7 +1,7 @@
 {
     "openapi": "3.0.0",
     "info": {
-        "title": "Malaika-Booking API",
+        "title": "Sherwoodmedia API",
         "description": "",
         "contact": {
             "email": "kirian@fruntera.com"
@@ -426,6 +426,73 @@
                     }
                 ]
             }
+        },
+        "/api/passports": {
+            "post": {
+                "tags": [
+                    "Passports"
+                ],
+                "summary": "Crea un nuevo pasaporte",
+                "description": "Crea un nuevo pasaporte",
+                "operationId": "createPassport",
+                "requestBody": {
+                    "description": "Create passport",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "number_passport",
+                                    "client_id"
+                                ],
+                                "properties": {
+                                    "client_id": {
+                                        "description": "Client ID",
+                                        "type": "integer",
+                                        "example": "1"
+                                    },
+                                    "number_passport": {
+                                        "description": "Passport number",
+                                        "type": "string",
+                                        "example": "4567845454WW"
+                                    },
+                                    "birth": {
+                                        "description": "Passport owner bith date",
+                                        "type": "string",
+                                        "example": "1975/12/01"
+                                    },
+                                    "issue": {
+                                        "description": "Passport issue",
+                                        "type": "string",
+                                        "example": "2021/12/01"
+                                    },
+                                    "exp": {
+                                        "description": "Passport expiration date",
+                                        "type": "string",
+                                        "example": "2026/12/01"
+                                    },
+                                    "nationality": {
+                                        "description": "Passport owner nacinality",
+                                        "type": "string",
+                                        "example": "Spanish"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Passport created successfully"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
         }
     },
     "components": {
@@ -525,6 +592,47 @@
                 "type": "object",
                 "xml": {
                     "name": "ClientListResource"
+                }
+            },
+            "PassportResource": {
+                "required": [
+                    "id"
+                ],
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "readOnly": "true",
+                        "example": "1"
+                    },
+                    "number_passport": {
+                        "description": "Passport number",
+                        "type": "string",
+                        "example": "4567845454WW"
+                    },
+                    "birth": {
+                        "description": "Passport owner bith date",
+                        "type": "string",
+                        "example": "1975/12/01"
+                    },
+                    "issue": {
+                        "description": "Passport issue",
+                        "type": "string",
+                        "example": "2021/12/01"
+                    },
+                    "exp": {
+                        "description": "Passport expiration date",
+                        "type": "string",
+                        "example": "2026/12/01"
+                    },
+                    "nac": {
+                        "description": "Passport owner nacinality",
+                        "type": "string",
+                        "example": "Spanish"
+                    }
+                },
+                "type": "object",
+                "xml": {
+                    "name": "PassportResource"
                 }
             },
             "TripResource": {

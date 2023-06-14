@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ClientController;
+use App\Http\Controllers\PassportController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -30,4 +31,11 @@ Route::prefix('clients')->group(function () {
     Route::get('/{id}', [ClientController::class, 'getById'])->middleware('auth:api');
     Route::post('/', [ClientController::class, 'create'])->middleware('auth:api');
     Route::post('/{id}', [ClientController::class, 'update'])->middleware(['must.json', 'auth:api']);
+});
+
+Route::prefix('passports')->group(function () {
+    //Route::get('/', [PassportController::class, 'get'])->middleware('auth:api');
+    //Route::get('/{id}', [PassportController::class, 'getById'])->middleware('auth:api');
+    Route::post('/', [PassportController::class, 'create'])->middleware('auth:api');
+    //Route::post('/{id}', [PassportController::class, 'update'])->middleware(['must.json', 'auth:api']);
 });
