@@ -4,6 +4,7 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\Log;
 
 /**
  *
@@ -35,8 +36,8 @@ class ClientDetailResource extends JsonResource
     public function toArray($request): array
     {
         // TODO repasar esto, el tipo pueden ser varios? o un cliente solo sera de un tipo? si es de varios que hacemos en el listado?
-        $types = $this->clientTypes ?? null;
-        $type = !empty($types) && count($types) >= 0 ? $types[0]->name : null;
+       /* $types = $this->clientTypes ?? null;
+        $type = !empty($types) && count($types) >= 0 ? $types[0]->name : null;*/
         return [
             'id'                => $this->id,
             'surname'           => $this->surname,
@@ -52,14 +53,14 @@ class ClientDetailResource extends JsonResource
             'intolerances'      => $this->intolerances,
             'frequent_flyer'    => $this->frequent_flyer,
             'member_number'     => $this->member_number,
-            'client_type'       => $this->whenNotNull($type),
+            'client_type'       => $this->whenNotNull($this->clientTypes->name),
             'language'          => $this->language->name,
 
-            'number_passport'   => $this->number_passport,
-            'birth'             => $this->birth,
-            'issue'             => $this->issue,
-            'exp'               => $this->exp,
-            'nationality'       => $this->nationality,
+            'number_passport'   => $this->passport->number_passport,
+            'birth'             => $this->passport->birth,
+            'issue'             => $this->passport->issue,
+            'exp'               => $this->passport->exp,
+            'nationality'       => $this->passport->nationality,
 
 
         ];

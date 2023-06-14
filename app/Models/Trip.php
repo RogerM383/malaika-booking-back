@@ -4,8 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Trip extends Model
 {
@@ -17,8 +17,11 @@ class Trip extends Model
      * @var array<int, string>
      */
     protected $fillable = [
-        'name',
+        'title',
         'description',
+        //'category',
+        'commentary',
+        'trip_state_id',
     ];
 
     /**
@@ -30,10 +33,10 @@ class Trip extends Model
     }
 
     /**
-     * @return HasOne
+     * @return BelongsTo
      */
-    public function state(): HasOne
+    public function state(): BelongsTo
     {
-        return $this->hasOne(TripState::class);
+        return $this->belongsTo(TripState::class, 'trip_state_id');
     }
 }

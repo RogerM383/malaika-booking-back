@@ -14,14 +14,13 @@ use Illuminate\Http\Resources\Json\JsonResource;
  *      @OA\Property(property="id", type="integer", readOnly="true", example="1"),
  *      @OA\Property(property="title", type="string", description="Trip title", example="Antartida desde el mar"),
  *      @OA\Property(property="description", type="string", description="Trip description", example="Es un viaje muy chulo"),
- *      @OA\Property(property="commentary", type="string", description="Trip commentary", example="Especial para ciegos"),
- *      @OA\Property(property="state", type="string", description="Trip state", example="OPEN"),
+ *      @OA\Property(property="commentary", type="string", description="Trip commentary", example="Especial para ciegos")
  * )
  *
- * Class TripResource
+ * Class TripListResource
  *
  */
-class TripResource extends JsonResource
+class TripListResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -36,7 +35,6 @@ class TripResource extends JsonResource
             'title'         => $this->title,
             'description'   => $this->description,
             'commentary'    => $this->commentary,
-            'state'         => $this->whenNotNull($this->state->name),
         ];
     }
 }

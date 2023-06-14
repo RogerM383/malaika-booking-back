@@ -55,7 +55,7 @@ class Client extends Model
      */
     public function clientTypes(): BelongsTo
     {
-        return $this->belongsTo(ClientType::class);
+        return $this->belongsTo(ClientType::class, 'client_type_id');
     }
 
     /**

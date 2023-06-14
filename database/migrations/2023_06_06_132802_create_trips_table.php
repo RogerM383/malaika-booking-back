@@ -14,11 +14,12 @@ return new class extends Migration
         Schema::create('trips', function (Blueprint $table) {
             $table->id();
 
-            $table->string('title')->nullable(true);
+            $table->string('title');
             $table->text('description')->nullable(true);
-            $table->string('category')->nullable(true);
+            //$table->string('category')->nullable(true);
             $table->text('commentary')->nullable(true);
-            $table->unsignedTinyInteger('state')->default(1);
+
+            $table->foreignId('trip_state_id')->default(1)->constrained('trip_states');
 
             $table->timestamps();
             $table->softDeletes();

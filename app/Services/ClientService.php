@@ -123,7 +123,7 @@ class ClientService extends ResourceService
      */
     public function update(int $id, array $data): mixed
     {
-        $client = $this->model->find($id) ?? throw new ClientNotFoundException($id);
+        $client = $this->getById($id);
         $client->update($data);
         return $client;
     }

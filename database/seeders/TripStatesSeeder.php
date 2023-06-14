@@ -15,7 +15,7 @@ class TripStatesSeeder extends Seeder
      */
     public function run()
     {
-        TripState::create(['name' => 'ARCHIVED']);
         TripState::create(['name' => 'OPEN']);
+        TripState::create(['name' => 'ARCHIVED']);
     }
 }

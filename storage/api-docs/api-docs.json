@@ -606,10 +606,244 @@
                     }
                 ]
             }
+        },
+        "/api/trips": {
+            "get": {
+                "tags": [
+                    "Trips"
+                ],
+                "summary": "Lista de viajes",
+                "description": "Lista los viajes",
+                "operationId": "tripList",
+                "parameters": [
+                    {
+                        "name": "trip_state",
+                        "in": "query",
+                        "description": "Id del estado del viaje",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "client",
+                        "in": "query",
+                        "description": "Id de cliente",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "description": "Número de elementos por página",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Número de página",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Trip list retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/TripListResource"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
+        },
+        "/api/trips/{id}": {
+            "get": {
+                "tags": [
+                    "Trips"
+                ],
+                "summary": "Retorna un viaje por ID",
+                "description": "Retorna un viaje",
+                "operationId": "getTripById",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Id de viaje",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Trip retrived successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/TripResource"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Trips"
+                ],
+                "summary": "Actualiza los datos del viaje",
+                "description": "Actualiza los datos del viaje",
+                "operationId": "updateTrip",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Id de viaje",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "Update trip",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "warehouse_id",
+                                    "stock"
+                                ],
+                                "properties": {
+                                    "title": {
+                                        "type": "string",
+                                        "example": "Tour por Italia"
+                                    },
+                                    "description": {
+                                        "type": "string",
+                                        "example": "Tour por Italia"
+                                    },
+                                    "commentary": {
+                                        "type": "string",
+                                        "example": "Es un viaje muy chulo, comes pasta y pizza"
+                                    },
+                                    "trip_state_id": {
+                                        "type": "integer",
+                                        "example": "1"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Trip updated successfully"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
         }
     },
     "components": {
         "schemas": {
+            "ClientDetailResource": {
+                "required": [
+                    "id"
+                ],
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "readOnly": "true",
+                        "example": "1"
+                    },
+                    "surname": {
+                        "description": "Client surname",
+                        "type": "string",
+                        "example": "Birgulilla"
+                    },
+                    "name": {
+                        "description": "Client name",
+                        "type": "string",
+                        "example": "Maria"
+                    },
+                    "phone": {
+                        "description": "Client phone",
+                        "type": "string",
+                        "example": "648595623"
+                    },
+                    "email": {
+                        "description": "Client email",
+                        "type": "string",
+                        "example": "mariabirgulilla@gmail.com"
+                    },
+                    "DNI": {
+                        "description": "Client DNI",
+                        "type": "string",
+                        "example": "47864512"
+                    },
+                    "address": {
+                        "description": "Client address",
+                        "type": "string",
+                        "example": "Calle falsa 123, 08167, Barcelona"
+                    },
+                    "dni_expiration": {
+                        "description": "Client DNI expiration date",
+                        "type": "string",
+                        "example": "2025-12-01"
+                    },
+                    "place_birth": {
+                        "description": "Client place of birtgh",
+                        "type": "string",
+                        "example": "Barcelona"
+                    }
+                },
+                "type": "object",
+                "xml": {
+                    "name": "ClientListResource"
+                }
+            },
             "ClientListResource": {
                 "required": [
                     "id"
@@ -799,6 +1033,37 @@
                     "name": "PassportResource"
                 }
             },
+            "TripListResource": {
+                "required": [
+                    "id"
+                ],
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "readOnly": "true",
+                        "example": "1"
+                    },
+                    "title": {
+                        "description": "Trip title",
+                        "type": "string",
+                        "example": "Antartida desde el mar"
+                    },
+                    "description": {
+                        "description": "Trip description",
+                        "type": "string",
+                        "example": "Es un viaje muy chulo"
+                    },
+                    "commentary": {
+                        "description": "Trip commentary",
+                        "type": "string",
+                        "example": "Especial para ciegos"
+                    }
+                },
+                "type": "object",
+                "xml": {
+                    "name": "TripResource"
+                }
+            },
             "TripResource": {
                 "required": [
                     "id"
@@ -809,50 +1074,30 @@
                         "readOnly": "true",
                         "example": "1"
                     },
-                    "surname": {
-                        "description": "Client surname",
+                    "title": {
+                        "description": "Trip title",
                         "type": "string",
-                        "example": "Birgulilla"
+                        "example": "Antartida desde el mar"
                     },
-                    "name": {
-                        "description": "Client name",
+                    "description": {
+                        "description": "Trip description",
                         "type": "string",
-                        "example": "Maria"
+                        "example": "Es un viaje muy chulo"
                     },
-                    "phone": {
-                        "description": "Client phone",
+                    "commentary": {
+                        "description": "Trip commentary",
                         "type": "string",
-                        "example": "648595623"
+                        "example": "Especial para ciegos"
                     },
-                    "email": {
-                        "description": "Client email",
+                    "state": {
+                        "description": "Trip state",
                         "type": "string",
-                        "example": "mariabirgulilla@gmail.com"
-                    },
-                    "DNI": {
-                        "description": "Client DNI",
-                        "type": "string",
-                        "example": "47864512"
-                    },
-                    "address": {
-                        "description": "Client address",
-                        "type": "string",
-                        "example": "Calle falsa 123, 08167, Barcelona"
-                    },
-                    "dni_expiration": {
-                        "description": "Client DNI expiration date",
-                        "type": "string",
-                        "example": "2025-12-01"
-                    },
-                    "place_birth": {
-                        "description": "Client place of birtgh",
-                        "type": "string",
-                        "example": "Barcelona"
+                        "example": "OPEN"
                     }
                 },
                 "type": "object",
                 "xml": {
-                    "name": "ClientListResource"
+                    "name": "TripResource"
                 }
             }
         },

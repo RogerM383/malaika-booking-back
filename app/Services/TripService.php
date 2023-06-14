@@ -2,44 +2,59 @@
 
 namespace App\Services;
 
-use App\Exceptions\ClientNotFoundException;
 use App\Exceptions\TripNotFoundException;
 use App\Models\Trip;
 use App\Traits\HasPagination;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Support\Facades\Log;
 use JetBrains\PhpStorm\Pure;
 
-class TripService
+class TripService extends ResourceService
 {
     use HasPagination;
-
-    private Trip $model;
 
     /**
      * @param Trip $model
      */
-    public function __construct(Trip $model)
+    #[Pure] public function __construct(Trip $model)
     {
-        $this->model = $model;
+        parent::__construct($model);
     }
 
     /**
-     * @return string[]
+     * @param null $client
+     * @param null $trip_state
+     * @param null $per_page
+     * @param null $page
+     * @return array|LengthAwarePaginator|Collection
      */
-    #[Pure] public function getFillable(): array
+    public function all(
+        $client = null,
+        $trip_state = null,
+        $per_page = null,
+        $page = null
+    ): array|LengthAwarePaginator|Collection
     {
-        return $this->model->getFillable();
-    }
+        $query = $this->model::query();
 
-    /**
-     * @param $data
-     * @return mixed
-     */
-    public function create($data): mixed
-    {
-        return $this->model->create($data);
+        if ($trip_state) {
+            $this->addTripStateId($query, $trip_state);
+        }
+
+        /*if ($client_id) {
+            $this->addClientIdFilter($query, $client_id);
+        }*/
+
+        if ($this->isPaginated($per_page, $page)) {
+            return $query->paginate(
+                $per_page ?? $this->defaultPerPage,
+                ['*'],
+                'trips',
+                $page ?? $this->defaultPage
+            );
+        } else {
+            return $query->get();
+        }
     }
 
     /**
@@ -53,125 +68,37 @@ class TripService
     }
 
     /**
-     * @param null $client_type
-     * @param null $name
-     * @param null $surname
-     * @param null $phone
-     * @param null $email
-     * @param null $dni
-     * @param null $passport
-     * @param null $per_page
-     * @param null $page
-     * @return array|Collection|LengthAwarePaginator
-     */
-    public function all(
-        $client_type = null,
-        $name = null,
-        $surname = null,
-        $phone = null,
-        $email = null,
-        $dni = null,
-        $passport = null,
-        $per_page = null,
-        $page = null,
-    ): array|Collection|LengthAwarePaginator
-    {
-        $query = $this->model::query();
-
-        if ($client_type) {
-            $this->addClientTypeFilter($query, $client_type);
-        }
-
-        if (!empty($name)) {
-            $this->addNameFilter($query, $name);
-        }
-
-        if (!empty($surname)) {
-            $this->addSurnameFilter($query, $surname);
-        }
-
-        if (!empty($phone)) {
-            $this->addPhoneFilter($query, $phone);
-        }
-
-        if (!empty($email)) {
-            $this->addEmailFilter($query, $email);
-        }
-
-        if (!empty($dni)) {
-            $this->addDniFilter($query, $dni);
-        }
-
-        if (!empty($passport)) {
-            $this->addPassportFilter($query, $passport);
-        }
-
-        if ($this->isPaginated($per_page, $page)) {
-            return $query->paginate(
-                $per_page ?? $this->defaultPerPage,
-                ['*'],
-                'clients',
-                $page ?? $this->defaultPage
-            );
-        } else {
-            return $query->get();
-        }
-    }
-
-    /**
      * @param int $id
      * @param array $data
      * @return mixed
-     * @throws ClientNotFoundException
+     * @throws TripNotFoundException
      */
     public function update(int $id, array $data): mixed
     {
-        $client = $this->model->find($id) ?? throw new TripNotFoundException($id);
+        $client = $this->getById($id);
         $client->update($data);
         return $client;
     }
 
     /**
      * @param $query
-     * @param $id
+     * @param $trip_state
      * @return void
      */
-    public function addClientTypeFilter(&$query, $id)
+    private function addTripStateId(&$query, $trip_state)
     {
-        $query->whereHas('traveler', function ($q) use ($id) {
-            $q->where('travelers.client_type_id', $id);
-        });
+        $query->orWhere('trip_state_id', $trip_state);
     }
 
-    public function addNameFilter(&$query, $name)
+    /**
+     * @param $query
+     * @param $client
+     * @return void
+     */
+    private function addClientIdFilter(&$query, $client)
     {
-        $query->orWhere('clients.name', 'LIKE', '%'.$name.'%');
-    }
-
-    public function addSurnameFilter(&$query, $surname)
-    {
-        $query->orWhere('clients.surname', 'LIKE', '%'.$surname.'%');
-    }
-
-    public function addPhoneFilter(&$query, $phone)
-    {
-        $query->orWhere('clients.phone', 'LIKE', '%'.$phone.'%');
-    }
-
-    public function addEmailFilter(&$query, $email)
-    {
-        $query->orWhere('clients.email', 'LIKE', '%'.$email.'%');
-    }
-
-    public function addDniFilter(&$query, $dni)
-    {
-        $query->orWhere('clients.dni', 'LIKE', '%'.$dni.'%');
-    }
-
-    public function addPassportFilter(&$query, $number)
-    {
-        $query->whereHas('passport', function ($q) use ($number) {
-            $q->where('passports.number_passport', $number);
+        $query->whereHas('departures', function ($q) use ($client) {
+            $q->where('client_id', '=', $client);
         });
     }
 }

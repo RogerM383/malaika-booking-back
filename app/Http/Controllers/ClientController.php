@@ -167,7 +167,7 @@ class ClientController extends Controller implements ResourceControllerInterface
      *          )
      *      )
      *  )
-     * @throws ClientNotFoundException
+     * @throws ClientNotFoundException|ValidationException
      */
     public function getById(Request $request, $id): JsonResponse
     {

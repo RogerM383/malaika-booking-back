@@ -20,7 +20,7 @@ class TripState extends Model
     /**
      * @return HasMany
      */
-    public function tips(): HasMany
+    public function trips(): HasMany
     {
         return $this->hasMany(Trip::class);
     }

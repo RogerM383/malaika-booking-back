@@ -14,7 +14,7 @@ class DepartureStatesSeeder extends Seeder
      */
     public function run()
     {
-        DepartureState::create(['name' => 'LOCKED']);
         DepartureState::create(['name' => 'OPEN']);
+        DepartureState::create(['name' => 'LOCKED']);
     }
 }
