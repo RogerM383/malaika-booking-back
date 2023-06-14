@@ -61,14 +61,14 @@ class Departure extends Model
      */
     public function clients(): BelongsToMany
     {
-        return $this->belongsToMany(Client::class,'rel_departure_client')
+        return $this->belongsToMany(Client::class,'rel_client_departure')
             ->withPivot(
                 'state',
                 'number_room',
                 'type_room',
                 'observations')
             ->withTimestamps()
-            ->orderBy('rel_departure_client.updated_at', 'asc');
+            ->orderBy('rel_client_departure.updated_at', 'asc');
     }
 
     /**
@@ -76,14 +76,14 @@ class Departure extends Model
      */
     public function clientSortRoom(): BelongsToMany
     {
-        return $this->belongsToMany(Client::class,'rel_departure_client')
+        return $this->belongsToMany(Client::class,'rel_client_departure')
             ->withPivot(
                 'state',
                 'number_room',
                 'type_room',
                 'observations')
             ->withTimestamps()
-            ->orderBy('rel_departure_client.number_room', 'asc');
+            ->orderBy('rel_client_departure.number_room', 'asc');
     }
 
     /**
@@ -91,7 +91,7 @@ class Departure extends Model
      */
     public function clientsExports(): BelongsToMany
     {
-        return $this->belongsToMany(Client::class,'rel_departure_client')
+        return $this->belongsToMany(Client::class,'rel_client_departure')
             //->wherePivot('state','<',4)
             ->withPivot(
                 'state',
@@ -99,6 +99,6 @@ class Departure extends Model
                 'type_room',
                 'observations')
             ->withTimestamps()
-            ->orderBy('rel_departure_client.number_room', 'asc');
+            ->orderBy('rel_client_departure.number_room', 'asc');
     }
 }

@@ -12,6 +12,7 @@ use App\Traits\HasPagination;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
@@ -130,7 +131,8 @@ class ClientController extends Controller
             'page'          => 'integer|min:1'
         ])->validate();
 
-        if ($this->isPaginated(...$validatedData)) {
+        // TODO MIrar como solucionar lo de pasar el spread de parametros que no existan como parametros e la funcion
+        if ($this->isPaginated(...Arr::only($validatedData, ['per_page', 'page']))) {
             $data = new ClientListCollection($this->service->all(...$validatedData));
         } else {
             $data = ClientListResource::collection($this->service->all(...$validatedData));

@@ -7,10 +7,14 @@ use Illuminate\Auth\AuthenticationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\QueryException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\UnauthorizedException;
 use Illuminate\Validation\ValidationException;
 use Symfony\Component\HttpFoundation\File\Exception\AccessDeniedException;
+use Symfony\Component\HttpFoundation\Response;
 use Throwable;
 
 class Handler extends ExceptionHandler
@@ -18,10 +22,10 @@ class Handler extends ExceptionHandler
     /**
      * Report or log an exception.
      *
-     * @param  \Throwable  $exception
+     * @param Throwable $exception
      * @return void
      *
-     * @throws \Exception
+     * @throws \Exception|Throwable
      */
     public function report(Throwable $exception)
     {
@@ -60,8 +64,8 @@ class Handler extends ExceptionHandler
      * @Override
      * Determine if the exception handler response should be JSON.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \Throwable  $e
+     * @param  Request  $request
+     * @param Throwable $e
      * @return bool
      */
     protected function shouldReturnJson($request, Throwable $e): bool
@@ -72,13 +76,13 @@ class Handler extends ExceptionHandler
     /**
      * Render an exception into an HTTP response.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \Throwable  $e
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @param Request $request
+     * @param Throwable $e
+     * @return \Illuminate\Http\Response|JsonResponse|Response
      *
-     * @throws \Throwable
+     * @throws Throwable
      */
-    public function render($request, Throwable $e): \Illuminate\Http\Response|\Illuminate\Http\JsonResponse|\Symfony\Component\HttpFoundation\Response
+    public function render($request, Throwable $e): \Illuminate\Http\Response|JsonResponse|Response
     {
 
         //return parent::render($request, $e);
@@ -93,9 +97,9 @@ class Handler extends ExceptionHandler
     /**
      * @param $request
      * @param \Exception $exception
-     * @return $this|\Illuminate\Http\JsonResponse|\Illuminate\Http\Response|\Symfony\Component\HttpFoundation\Response
+     * @return $this|JsonResponse|\Illuminate\Http\Response|Response
      */
-    public function handleException($request, Throwable $exception)
+    public function handleException($request, Throwable $exception): \Illuminate\Http\Response|JsonResponse|Response|static
     {
         if ($exception instanceof ModelNotFoundException) {
             return $this->sendError('Model not found.', $this->convertExceptionToArray($exception), 404);
@@ -139,7 +143,7 @@ class Handler extends ExceptionHandler
     /**
      * Convert the given exception to an array.
      *
-     * @param  \Throwable  $e
+     * @param Throwable $e
      * @return array
      */
     protected function convertExceptionToArray(Throwable $e): array
@@ -153,7 +157,7 @@ class Handler extends ExceptionHandler
         return $response;
     }
 
-    public function sendError($message, $exception, $code = 404): \Illuminate\Http\JsonResponse
+    public function sendError($message, $exception, $code = 404): JsonResponse
     {
         $response = [
             'success' => false,

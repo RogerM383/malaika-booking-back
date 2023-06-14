@@ -29,5 +29,5 @@ Route::prefix('clients')->group(function () {
     Route::get('/', [ClientController::class, 'get'])->middleware('auth:api');
     Route::get('/{id}', [ClientController::class, 'getById'])->middleware('auth:api');
     Route::post('/', [ClientController::class, 'create'])->middleware('auth:api');
-    Route::post('/{id}', [ClientController::class, 'update'])->middleware('auth:api');
+    Route::post('/{id}', [ClientController::class, 'update'])->middleware(['must.json', 'auth:api']);
 });

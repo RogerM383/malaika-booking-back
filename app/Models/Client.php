@@ -48,13 +48,13 @@ class Client extends Model
      */
     public function departures(): BelongsToMany
     {
-        return $this->belongsToMany(Departure::class,'rel_departure_client')
+        return $this->belongsToMany(Departure::class,'rel_client_departure')
             ->withPivot(
                 'state',
                     'number_room',
                     'type_room',
                     'observations')
-            ->orderBy('rel_departure_client.number_room')
+            ->orderBy('rel_client_departure.number_room')
             ->withTimestamps();
     }
 }

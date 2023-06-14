@@ -16,7 +16,7 @@ return new class extends Migration
 
             $table->foreignId('client_id')->constrained('clients')->cascadeOnDelete();
 
-            $table->string('number_passport')->nullable(true);
+            $table->string('number_passport')->unique();
             $table->string('nationality', 50)->nullable(true);
             $table->date('issue')->nullable(true);          // Esto que es?
             $table->date('exp')->nullable(true);            // Expedition date?
