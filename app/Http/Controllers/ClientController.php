@@ -131,8 +131,7 @@ class ClientController extends Controller
             'page'          => 'integer|min:1'
         ])->validate();
 
-        // TODO MIrar como solucionar lo de pasar el spread de parametros que no existan como parametros e la funcion
-        if ($this->isPaginated(...Arr::only($validatedData, ['per_page', 'page']))) {
+        if ($this->isPaginated(...$request->only('per_page', 'page'))) {
             $data = new ClientListCollection($this->service->all(...$validatedData));
         } else {
             $data = ClientListResource::collection($this->service->all(...$validatedData));

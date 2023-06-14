@@ -19,7 +19,7 @@ class ClientListCollection extends ResourceCollection
     {
         return [
             'clients' => $this->collection,
-            'meta' => [
+            'pagination' => [
                 'current_page' => $this->resource->currentPage(),
                 'last_page' => $this->resource->lastPage(),
                 'per_page' => $this->resource->perPage(),
