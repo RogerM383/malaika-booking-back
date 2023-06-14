@@ -10,18 +10,16 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Log;
 use JetBrains\PhpStorm\Pure;
 
-class ClientService
+class ClientService extends ResourceService
 {
     use HasPagination;
-
-    private Client $model;
 
     /**
      * @param Client $model
      */
-    public function __construct(Client $model)
+    #[Pure] public function __construct(Client $model)
     {
-        $this->model = $model;
+        parent::__construct($model);
     }
 
     /**

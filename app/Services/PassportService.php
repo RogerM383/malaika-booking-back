@@ -13,7 +13,6 @@ class PassportService extends ResourceService
 {
     use HasPagination;
 
-    private Passport $model;
     private ClientService $clientService;
 
     /**
@@ -24,14 +23,6 @@ class PassportService extends ResourceService
     {
         parent::__construct($model);
         $this->clientService = $clientService;
-    }
-
-    /**
-     * @return string[]
-     */
-    #[Pure] public function getFillable(): array
-    {
-        return $this->model->getFillable();
     }
 
     /**

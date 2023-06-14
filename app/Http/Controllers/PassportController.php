@@ -3,15 +3,20 @@
 namespace App\Http\Controllers;
 
 use App\Exceptions\ClientNotFoundException;
+use App\Exceptions\ModelNotFoundException;
+use App\Exceptions\PassportNotFoundException;
+use App\Http\Controllers\Interfaces\ResourceControllerInterface;
+use App\Http\Resources\ClientResource;
 use App\Http\Resources\PassportResource;
 use App\Services\PassportService;
 use App\Traits\HasPagination;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 
-class PassportController extends Controller
+class PassportController extends Controller implements ResourceControllerInterface
 {
     use HasPagination;
 
@@ -65,5 +70,68 @@ class PassportController extends Controller
             new PassportResource($this->service->create($validatedData)),
             'Passport created successfully'
         );
+    }
+
+    /**
+     * @OA\Post(
+     *      path="/api/passports/{id}",
+     *      tags={"Passports"},
+     *      summary="Actualiza los datos del pasaporte",
+     *      security={{"bearer_token":{}}},
+     *      description="Actualiza los datos del pasaporte",
+     *      operationId="updatePassport",
+     *      @OA\Parameter(
+     *          name="id",
+     *          in="path",
+     *          description="Id del pasaporte",
+     *          required=true,
+     *          @OA\Schema(type="integer")
+     *      ),
+     *     @OA\RequestBody(
+     *          description="Update passport",
+     *          required=true,
+     *          @OA\JsonContent(
+     *              required={"number_passport"},
+     *              @OA\Property(property="number_passport", type="string", description="Passport number", example="4567845454WW"),
+     *              @OA\Property(property="birth", type="string", description="Passport owner bith date", example="1975/12/01"),
+     *              @OA\Property(property="issue", type="string", description="Passport issue", example="2021/12/01"),
+     *              @OA\Property(property="exp", type="string", description="Passport expiration date", example="2026/12/01"),
+     *              @OA\Property(property="nationality", type="string", description="Passport owner nacinality", example="Spanish"),
+     *          )
+     *      ),
+     *      @OA\Response(
+     *          response="200",
+     *          description="Passport updated successfully",
+     *      ),
+     *  )
+     * @throws ValidationException|PassportNotFoundException|ModelNotFoundException
+     */
+    public function update(Request $request, $id): JsonResponse
+    {
+        $params = array_merge($request->only($this->service->getFillable()), ['id' => $id]);
+        Log::debug(json_encode($params));
+        $validatedData = Validator::make($params, [
+            'id'                => 'required',
+            'number_passport'   => 'required|string',
+            'birth'             => 'string',
+            'issue'             => 'string',
+            'exp'               => 'string',
+            'nationality'       => 'string',
+        ])->validate();
+
+        return $this->sendResponse(
+            new PassportResource($this->service->update($id, $validatedData)),
+            'Passport updated successfully'
+        );
+    }
+
+    public function get(Request $request)
+    {
+        // TODO: Implement get() method.
+    }
+
+    public function getById(Request $request, $id)
+    {
+        // TODO: Implement getById() method.
     }
 }

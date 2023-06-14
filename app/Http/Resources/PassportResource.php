@@ -37,7 +37,7 @@ class PassportResource extends JsonResource
             'birth'             => $this->birth,
             'issue'             => $this->issue,
             'exp'               => $this->exp,
-            'nationality'       => $this->nac,
+            'nationality'       => $this->nationality,
         ];
     }
 }

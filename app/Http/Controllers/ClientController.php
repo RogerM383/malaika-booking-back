@@ -3,21 +3,19 @@
 namespace App\Http\Controllers;
 
 use App\Exceptions\ClientNotFoundException;
+use App\Http\Controllers\Interfaces\ResourceControllerInterface;
 use App\Http\Resources\ClientListCollection;
 use App\Http\Resources\ClientListResource;
 use App\Http\Resources\ClientResource;
-use App\Models\Client;
 use App\Services\ClientService;
 use App\Traits\HasPagination;
-use Illuminate\Contracts\View\View;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 
-class ClientController extends Controller
+class ClientController extends Controller implements ResourceControllerInterface
 {
     use HasPagination;
 

@@ -493,6 +493,78 @@
                     }
                 ]
             }
+        },
+        "/api/passports/{id}": {
+            "post": {
+                "tags": [
+                    "Passports"
+                ],
+                "summary": "Actualiza los datos del pasaporte",
+                "description": "Actualiza los datos del pasaporte",
+                "operationId": "updatePassport",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Id del pasaporte",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "Update passport",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "number_passport"
+                                ],
+                                "properties": {
+                                    "number_passport": {
+                                        "description": "Passport number",
+                                        "type": "string",
+                                        "example": "4567845454WW"
+                                    },
+                                    "birth": {
+                                        "description": "Passport owner bith date",
+                                        "type": "string",
+                                        "example": "1975/12/01"
+                                    },
+                                    "issue": {
+                                        "description": "Passport issue",
+                                        "type": "string",
+                                        "example": "2021/12/01"
+                                    },
+                                    "exp": {
+                                        "description": "Passport expiration date",
+                                        "type": "string",
+                                        "example": "2026/12/01"
+                                    },
+                                    "nationality": {
+                                        "description": "Passport owner nacinality",
+                                        "type": "string",
+                                        "example": "Spanish"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Passport updated successfully"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
         }
     },
     "components": {
