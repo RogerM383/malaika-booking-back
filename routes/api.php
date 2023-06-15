@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ClientController;
+use App\Http\Controllers\DepartureController;
 use App\Http\Controllers\PassportController;
 use App\Http\Controllers\TripController;
 use Illuminate\Http\Request;
@@ -46,4 +47,11 @@ Route::prefix('trips')->group(function () {
     Route::get('/{id}', [TripController::class, 'getById'])->middleware('auth:api');
     //Route::post('/', [TripController::class, 'create'])->middleware('auth:api');
     Route::put('/{id}', [TripController::class, 'update'])->middleware(['must.json', 'auth:api']);
+});
+
+Route::prefix('departures')->group(function () {
+    Route::get('/', [DepartureController::class, 'get'])->middleware('auth:api');
+    //Route::get('/{id}', [DepartureController::class, 'getById'])->middleware('auth:api');
+    //Route::post('/', [DepartureController::class, 'create'])->middleware('auth:api');
+    //Route::put('/{id}', [DepartureController::class, 'update'])->middleware(['must.json', 'auth:api']);
 });

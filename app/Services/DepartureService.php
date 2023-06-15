@@ -1,0 +1,91 @@
+<?php
+
+namespace App\Services;
+
+use App\Exceptions\DepartureNotFoundException;
+use App\Exceptions\TripNotFoundException;
+use App\Models\Departure;
+use App\Models\Trip;
+use App\Traits\HasPagination;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Facades\Log;
+use JetBrains\PhpStorm\Pure;
+
+class DepartureService extends ResourceService
+{
+    use HasPagination;
+
+    /**
+     * @param Departure $model
+     */
+    #[Pure] public function __construct(Departure $model)
+    {
+        parent::__construct($model);
+    }
+
+    /**
+     * @param null $trip_id
+     * @param null $per_page
+     * @param null $page
+     * @return array|LengthAwarePaginator|Collection
+     */
+    public function all(
+        $trip_id = null,
+        $per_page = null,
+        $page = null
+    ): array|LengthAwarePaginator|Collection
+    {
+        $query = $this->model::query();
+
+        if ($trip_id) {
+            $this->addTripIdFilter($query, $trip_id);
+        }
+
+        if ($this->isPaginated($per_page, $page)) {
+            return $query->paginate(
+                $per_page ?? $this->defaultPerPage,
+                ['*'],
+                'trips',
+                $page ?? $this->defaultPage
+            );
+        } else {
+            return $query->get();
+        }
+    }
+
+    /**
+     * @param $id
+     * @return mixed
+     * @throws DepartureNotFoundException
+     */
+    public function getById($id): mixed
+    {
+        return $this->model->find($id) ?? throw new DepartureNotFoundException($id);
+    }
+
+    /**
+     * @param int $id
+     * @param array $data
+     * @return mixed
+     * @throws DepartureNotFoundException
+     */
+    public function update(int $id, array $data): mixed
+    {
+        $client = $this->getById($id);
+        $client->update($data);
+        return $client;
+    }
+
+    /**
+     * @param $query
+     * @param $trip_id
+     * @return void
+     */
+    private function addTripIdFilter(&$query, $trip_id)
+    {
+        $query->whereHas('trip', function ($q) use ($trip_id) {
+            return $q->where('trip_id', $trip_id);
+        });
+    }
+}
