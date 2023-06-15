@@ -356,7 +356,7 @@
                     }
                 ]
             },
-            "post": {
+            "put": {
                 "tags": [
                     "Clients"
                 ],
@@ -544,7 +544,7 @@
                     }
                 ]
             },
-            "post": {
+            "put": {
                 "tags": [
                     "Passports"
                 ],
@@ -730,7 +730,7 @@
                     }
                 ]
             },
-            "post": {
+            "put": {
                 "tags": [
                     "Trips"
                 ],

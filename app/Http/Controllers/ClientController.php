@@ -236,7 +236,7 @@ class ClientController extends Controller implements ResourceControllerInterface
     }
 
     /**
-     * @OA\Post(
+     * @OA\Put(
      *      path="/api/clients/{id}",
      *      tags={"Clients"},
      *      summary="Actualiza los datos del cliente",

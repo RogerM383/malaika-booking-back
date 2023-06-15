@@ -75,7 +75,7 @@ class PassportController extends Controller implements ResourceControllerInterfa
     }
 
     /**
-     * @OA\Post(
+     * @OA\Put(
      *      path="/api/passports/{id}",
      *      tags={"Passports"},
      *      summary="Actualiza los datos del pasaporte",

@@ -31,19 +31,19 @@ Route::prefix('clients')->group(function () {
     Route::get('/', [ClientController::class, 'get'])->middleware('auth:api');
     Route::get('/{id}', [ClientController::class, 'getById'])->middleware('auth:api');
     Route::post('/', [ClientController::class, 'create'])->middleware('auth:api');
-    Route::post('/{id}', [ClientController::class, 'update'])->middleware(['must.json', 'auth:api']);
+    Route::put('/{id}', [ClientController::class, 'update'])->middleware(['must.json', 'auth:api']);
 });
 
 Route::prefix('passports')->group(function () {
     //Route::get('/', [PassportController::class, 'get'])->middleware('auth:api');
     Route::get('/{id}', [PassportController::class, 'getById'])->middleware('auth:api');
     Route::post('/', [PassportController::class, 'create'])->middleware('auth:api');
-    Route::post('/{id}', [PassportController::class, 'update'])->middleware(['must.json', 'auth:api']);
+    Route::put('/{id}', [PassportController::class, 'update'])->middleware(['must.json', 'auth:api']);
 });
 
 Route::prefix('trips')->group(function () {
     Route::get('/', [TripController::class, 'get'])->middleware('auth:api');
     Route::get('/{id}', [TripController::class, 'getById'])->middleware('auth:api');
     //Route::post('/', [TripController::class, 'create'])->middleware('auth:api');
-    Route::post('/{id}', [TripController::class, 'update'])->middleware(['must.json', 'auth:api']);
+    Route::put('/{id}', [TripController::class, 'update'])->middleware(['must.json', 'auth:api']);
 });

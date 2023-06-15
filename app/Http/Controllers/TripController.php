@@ -138,7 +138,7 @@ class TripController extends Controller implements ResourceControllerInterface
         ])->validate();
 
         return $this->sendResponse(
-            new TripResource($this->service->getById($validatedData)),
+            new TripResource($this->service->getById($validatedData['id'])),
             'Trip retrieved successfully'
         );
     }
@@ -149,7 +149,7 @@ class TripController extends Controller implements ResourceControllerInterface
     }
 
     /**
-     * @OA\Post(
+     * @OA\Put(
      *      path="/api/trips/{id}",
      *      tags={"Trips"},
      *      summary="Actualiza los datos del viaje",
