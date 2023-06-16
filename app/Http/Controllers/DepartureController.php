@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Exceptions\DepartureNotFoundException;
+use App\Exceptions\TripNotFoundException;
 use App\Http\Controllers\Interfaces\ResourceControllerInterface;
 use App\Http\Resources\DepartureCollection;
 use App\Http\Resources\DepartureResource;
@@ -95,13 +97,126 @@ class DepartureController extends Controller implements ResourceControllerInterf
         // TODO: Implement getById() method.
     }
 
-    public function create(Request $request)
+    /**
+     * @OA\Post(
+     *      path="/api/departures",
+     *      tags={"Departures"},
+     *      summary="Crea una nueva salida",
+     *      security={{"bearer_token":{}}},
+     *      description="Crea una nueva salida",
+     *      operationId="createDeparture",
+     *     @OA\RequestBody(
+     *          description="Create departure",
+     *          required=true,
+     *          @OA\JsonContent(
+     *              required={"trip_id"},
+     *              @OA\Property(property="trip_id", type="integer", example="1"),
+     *              @OA\Property(property="start", type="string", example="12/20/2023"),
+     *              @OA\Property(property="final", type="string", example="12/28/2023"),
+     *              @OA\Property(property="price", type="numeric", example="7800.55"),
+     *              @OA\Property(property="pax_available", type="integer", example="20"),
+     *              @OA\Property(property="individual_supplement", type="numeric", example="550.00"),
+     *              @OA\Property(property="state_id", type="integer", example="1"),
+     *              @OA\Property(property="commentary", type="string", example="Salimos muy temprano"),
+     *              @OA\Property(property="expedient", type="integer", example="55688"),
+     *              @OA\Property(property="taxes", type="numeric", example="157.65"),
+     *          )
+     *      ),
+     *      @OA\Response(
+     *          response="200",
+     *          description="Departure created successfully",
+     *      ),
+     *  )
+     * @throws ValidationException|TripNotFoundException
+     */
+    public function create(Request $request): JsonResponse
     {
-        // TODO: Implement create() method.
+        //$params = array_merge($request->only($this->service->getFillable());
+        $validatedData = Validator::make($request->all(), [
+            'trip_id'               => 'required|integer',
+            'start'                 => 'required|string',
+            'final'                 => 'required|string',
+            'price'                 => 'required|numeric',
+            'pax_available'         => 'required|integer',
+            'individual_supplement' => 'numeric',
+            'state_id'              => 'integer|min:1',
+            'commentary'            => 'string',
+            'expedient'             => 'integer',
+            'taxes'                 => 'numeric',
+        ])->validate();
+
+        // TODO: Mirar maneras mejores de formatear las fechas, sobretodo ver comop vienen del front
+        $validatedData['start'] = date('Y-m-d', strtotime($validatedData['start']));
+        $validatedData['final'] = date('Y-m-d', strtotime($validatedData['final']));
+
+        return $this->sendResponse(
+            new DepartureResource($this->service->create($validatedData)),
+            'Departure created successfully'
+        );
     }
 
-    public function update(Request $request, $id)
+    /**
+     * @OA\Put(
+     *      path="/api/departures/{id}",
+     *      tags={"Departures"},
+     *      summary="Actualiza los datos de una salida",
+     *      security={{"bearer_token":{}}},
+     *      description="Actualiza los datos de una salida",
+     *      operationId="updateDeparture",
+     *      @OA\Parameter(
+     *          name="id",
+     *          in="path",
+     *          description="Id de departure",
+     *          required=true,
+     *          @OA\Schema(type="integer")
+     *      ),
+     *     @OA\RequestBody(
+     *          description="Update departure",
+     *          required=true,
+     *          @OA\JsonContent(
+     *              required={},
+     *              @OA\Property(property="start", type="string", example="12/20/2023"),
+     *              @OA\Property(property="final", type="string", example="12/28/2023"),
+     *              @OA\Property(property="price", type="numeric", example="7800.55"),
+     *              @OA\Property(property="pax_available", type="integer", example="20"),
+     *              @OA\Property(property="individual_supplement", type="numeric", example="550.00"),
+     *              @OA\Property(property="state_id", type="integer", example="1"),
+     *              @OA\Property(property="commentary", type="string", example="Salimos muy temprano"),
+     *              @OA\Property(property="expedient", type="integer", example="55688"),
+     *              @OA\Property(property="taxes", type="numeric", example="157.65"),
+     *          )
+     *      ),
+     *      @OA\Response(
+     *          response="200",
+     *          description="Departure updated successfully",
+     *      ),
+     *  )
+     * @throws ValidationException
+     * @throws DepartureNotFoundException
+     */
+    public function update(Request $request, $id): JsonResponse
     {
-        // TODO: Implement update() method.
+        $params = array_merge($request->only($this->service->getFillable()), ['id' => $id]);
+        $validatedData = Validator::make($params, [
+            'id'                    => 'required|integer',
+            'start'                 => 'string',
+            'final'                 => 'string',
+            'price'                 => 'numeric',
+            'pax_available'         => 'integer',
+            'individual_supplement' => 'numeric',
+            'state_id'              => 'integer|min:1',
+            'commentary'            => 'string',
+            'expedient'             => 'integer',
+            'taxes'                 => 'numeric',
+        ])->validate();
+
+        // TODO: Mirar maneras mejores de formatear las fechas, sobretodo ver comop vienen del front
+        $validatedData['start'] = date('Y-m-d', strtotime($validatedData['start']));
+        $validatedData['final'] = date('Y-m-d', strtotime($validatedData['final']));
+
+        return $this->sendResponse(
+            new DepartureResource($this->service->update($id, $validatedData)),
+            'Departure updated successfully'
+        );
     }
 }

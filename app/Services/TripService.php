@@ -76,9 +76,9 @@ class TripService extends ResourceService
      */
     public function update(int $id, array $data): mixed
     {
-        $client = $this->getById($id);
-        $client->update($data);
-        return $client;
+        $trip = $this->getById($id);
+        $trip->update($data);
+        return $trip;
     }
 
     /**

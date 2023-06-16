@@ -497,6 +497,161 @@
                         "bearer_token": []
                     }
                 ]
+            },
+            "post": {
+                "tags": [
+                    "Departures"
+                ],
+                "summary": "Crea una nueva salida",
+                "description": "Crea una nueva salida",
+                "operationId": "createDeparture",
+                "requestBody": {
+                    "description": "Create departure",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "trip_id"
+                                ],
+                                "properties": {
+                                    "trip_id": {
+                                        "type": "integer",
+                                        "example": "1"
+                                    },
+                                    "start": {
+                                        "type": "string",
+                                        "example": "12/20/2023"
+                                    },
+                                    "final": {
+                                        "type": "string",
+                                        "example": "12/28/2023"
+                                    },
+                                    "price": {
+                                        "type": "numeric",
+                                        "example": "7800.55"
+                                    },
+                                    "pax_available": {
+                                        "type": "integer",
+                                        "example": "20"
+                                    },
+                                    "individual_supplement": {
+                                        "type": "numeric",
+                                        "example": "550.00"
+                                    },
+                                    "state_id": {
+                                        "type": "integer",
+                                        "example": "1"
+                                    },
+                                    "commentary": {
+                                        "type": "string",
+                                        "example": "Salimos muy temprano"
+                                    },
+                                    "expedient": {
+                                        "type": "integer",
+                                        "example": "55688"
+                                    },
+                                    "taxes": {
+                                        "type": "numeric",
+                                        "example": "157.65"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Departure created successfully"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
+        },
+        "/api/departures/{id}": {
+            "put": {
+                "tags": [
+                    "Departures"
+                ],
+                "summary": "Actualiza los datos de una salida",
+                "description": "Actualiza los datos de una salida",
+                "operationId": "updateDeparture",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Id de departure",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "Update departure",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [],
+                                "properties": {
+                                    "start": {
+                                        "type": "string",
+                                        "example": "12/20/2023"
+                                    },
+                                    "final": {
+                                        "type": "string",
+                                        "example": "12/28/2023"
+                                    },
+                                    "price": {
+                                        "type": "numeric",
+                                        "example": "7800.55"
+                                    },
+                                    "pax_available": {
+                                        "type": "integer",
+                                        "example": "20"
+                                    },
+                                    "individual_supplement": {
+                                        "type": "numeric",
+                                        "example": "550.00"
+                                    },
+                                    "state_id": {
+                                        "type": "integer",
+                                        "example": "1"
+                                    },
+                                    "commentary": {
+                                        "type": "string",
+                                        "example": "Salimos muy temprano"
+                                    },
+                                    "expedient": {
+                                        "type": "integer",
+                                        "example": "55688"
+                                    },
+                                    "taxes": {
+                                        "type": "numeric",
+                                        "example": "157.65"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Departure updated successfully"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
             }
         },
         "/api/passports": {
@@ -1011,6 +1166,43 @@
                 "type": "object",
                 "xml": {
                     "name": "ClientListResource"
+                }
+            },
+            "DepartureListResource": {
+                "required": [
+                    "id"
+                ],
+                "properties": {
+                    "id": {
+                        "description": "TODO update data",
+                        "type": "integer",
+                        "readOnly": "true",
+                        "example": "1"
+                    },
+                    "title": {
+                        "description": "Trip title",
+                        "type": "string",
+                        "example": "Antartida desde el mar"
+                    },
+                    "description": {
+                        "description": "Trip description",
+                        "type": "string",
+                        "example": "Es un viaje muy chulo"
+                    },
+                    "commentary": {
+                        "description": "Trip commentary",
+                        "type": "string",
+                        "example": "Especial para ciegos"
+                    },
+                    "state": {
+                        "description": "Trip state",
+                        "type": "string",
+                        "example": "OPEN"
+                    }
+                },
+                "type": "object",
+                "xml": {
+                    "name": "TripResource"
                 }
             },
             "DepartureResource": {

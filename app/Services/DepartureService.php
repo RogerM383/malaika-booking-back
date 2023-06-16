@@ -5,7 +5,6 @@ namespace App\Services;
 use App\Exceptions\DepartureNotFoundException;
 use App\Exceptions\TripNotFoundException;
 use App\Models\Departure;
-use App\Models\Trip;
 use App\Traits\HasPagination;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection;
@@ -16,12 +15,15 @@ class DepartureService extends ResourceService
 {
     use HasPagination;
 
+    private $tripService;
+
     /**
      * @param Departure $model
      */
-    #[Pure] public function __construct(Departure $model)
+    #[Pure] public function __construct(Departure $model, TripService $tripService)
     {
         parent::__construct($model);
+        $this->tripService = $tripService;
     }
 
     /**
@@ -62,6 +64,17 @@ class DepartureService extends ResourceService
     public function getById($id): mixed
     {
         return $this->model->find($id) ?? throw new DepartureNotFoundException($id);
+    }
+
+    /**
+     * @param $data
+     * @return mixed
+     * @throws TripNotFoundException
+     */
+    public function create($data): mixed
+    {
+        $trip = $this->tripService->getById($data['trip_id']);
+        return $trip->departures()->create($data);
     }
 
     /**
