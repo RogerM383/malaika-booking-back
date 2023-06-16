@@ -21,7 +21,7 @@ use Illuminate\Http\Resources\Json\JsonResource;
  * Class TripResource
  *
  */
-class DepartureResource extends JsonResource
+class DepartureListResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -31,16 +31,15 @@ class DepartureResource extends JsonResource
      */
     public function toArray($request): array
     {
+        /**
+         * TODO: pax ha de devolver algo del formato 11/20 sinedo 11 el resultadod e restar los pillados - el toal
+         * TODO: añadir habitaciones, se calcula segun el numero de gente apuntadsa a la salida y las habiatciones en las eus estan
+         */
         return [
             'id'                    => $this->id,
             'start'                 => $this->start,
             'final'                 => $this->final,
-            'price'                 => $this->price,
             'pax_available'         => $this->pax_available,
-            'individual_supplement' => $this->individual_supplement,
-            'state'                 => $this->state->name,
-            'commentary'            => $this->commentary,
-            'taxes'                 => $this->taxes,
             'expedient'             => $this->expedient,
         ];
     }

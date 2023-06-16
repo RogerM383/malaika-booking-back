@@ -23,14 +23,13 @@ class Departure extends Model
         'price',
         'pax_available',
         'individual_supplement',
-        'state',
+        'state_id',
         'commentary',
-        'number_room',
-        'type_room',
-        'expedient'
+        'expedient',
+        'taxes',
     ];
 
-    public function setFinalAttribute($value)
+    /*public function setFinalAttribute($value)
     {
         $this->attributes['final'] = date('Y-m-d',strtotime($value));
     }
@@ -38,14 +37,14 @@ class Departure extends Model
     public function setStartAttribute($value)
     {
         $this->attributes['start'] = date('Y-m-d',strtotime($value));
-    }
+    }*/
 
     /**
-     * @return HasOne
+     * @return BelongsTo
      */
-    public function state(): HasOne
+    public function state(): BelongsTo
     {
-        return $this->hasOne(DepartureState::class);
+        return $this->belongsTo(DepartureState::class);
     }
 
     /**
@@ -59,7 +58,7 @@ class Departure extends Model
     /**
      * @return BelongsToMany
      */
-    public function clients(): BelongsToMany
+    /*public function clients(): BelongsToMany
     {
         return $this->belongsToMany(Client::class,'rel_client_departure')
             ->withPivot(
@@ -69,12 +68,12 @@ class Departure extends Model
                 'observations')
             ->withTimestamps()
             ->orderBy('rel_client_departure.updated_at', 'asc');
-    }
+    }*/
 
     /**
      * @return BelongsToMany
      */
-    public function clientSortRoom(): BelongsToMany
+    /*public function clientSortRoom(): BelongsToMany
     {
         return $this->belongsToMany(Client::class,'rel_client_departure')
             ->withPivot(
@@ -84,12 +83,12 @@ class Departure extends Model
                 'observations')
             ->withTimestamps()
             ->orderBy('rel_client_departure.number_room', 'asc');
-    }
+    }*/
 
     /**
      * @return BelongsToMany
      */
-    public function clientsExports(): BelongsToMany
+    /*public function clientsExports(): BelongsToMany
     {
         return $this->belongsToMany(Client::class,'rel_client_departure')
             //->wherePivot('state','<',4)
@@ -100,5 +99,5 @@ class Departure extends Model
                 'observations')
             ->withTimestamps()
             ->orderBy('rel_client_departure.number_room', 'asc');
-    }
+    }*/
 }
