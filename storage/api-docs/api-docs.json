@@ -574,6 +574,50 @@
             }
         },
         "/api/departures/{id}": {
+            "get": {
+                "tags": [
+                    "Departures"
+                ],
+                "summary": "Retorna los detalles de una salida",
+                "description": "Retorna los detalles de una salida",
+                "operationId": "departureData",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Id de slaida",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Departure retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/DepartureResource"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            },
             "put": {
                 "tags": [
                     "Departures"
@@ -645,6 +689,57 @@
                 "responses": {
                     "200": {
                         "description": "Departure updated successfully"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
+        },
+        "/api/departures/{id}/add-client": {
+            "post": {
+                "tags": [
+                    "Departures"
+                ],
+                "summary": "Añade un cliente a una salida",
+                "description": "Añade un cliente a una salida",
+                "operationId": "addClientToDeparture",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Id de departure",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "Add client to departure",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "client_id"
+                                ],
+                                "properties": {
+                                    "client_id": {
+                                        "type": "integer",
+                                        "example": "1"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Departure created successfully"
                     }
                 },
                 "security": [

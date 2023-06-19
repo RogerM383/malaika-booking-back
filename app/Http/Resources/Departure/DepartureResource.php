@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources\Departure;
 
+use App\Http\Resources\RoomType\RoomTypeAvailabilityResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -41,6 +42,7 @@ class DepartureResource extends JsonResource
             'commentary'            => $this->commentary,
             'taxes'                 => $this->taxes,
             'expedient'             => $this->expedient,
+            'room_availability'     => RoomTypeAvailabilityResource::collection($this->roomTypes)
         ];
     }
 }

@@ -89,9 +89,46 @@ class DepartureController extends Controller implements ResourceControllerInterf
         return $this->sendResponse($data, 'Departures retrieved successfully');
     }
 
+    /**
+     * @OA\Get(
+     *      path="/api/departures/{id}",
+     *      tags={"Departures"},
+     *      summary="Retorna los detalles de una salida",
+     *      security={{"bearer_token":{}}},
+     *      description="Retorna los detalles de una salida",
+     *      operationId="departureData",
+     *      @OA\Parameter(
+     *          name="id",
+     *          in="path",
+     *          description="Id de slaida",
+     *          required=false,
+     *          @OA\Schema(type="integer")
+     *      ),
+     *      @OA\Response(
+     *          response="200",
+     *          description="Departure retrieved successfully",
+     *           @OA\JsonContent(
+     *              type="object",
+     *              @OA\Property(
+     *                  property="data",
+     *                  type="array",
+     *                  @OA\Items(ref="#/components/schemas/DepartureResource")
+     *              )
+     *          )
+     *      )
+     *  )
+     *
+     * @param Request $request
+     * @param $id
+     * @return JsonResponse
+     * @throws DepartureNotFoundException
+     */
     public function getById(Request $request, $id)
     {
-        // TODO: Implement getById() method.
+        return $this->sendResponse(
+            new DepartureResource($this->service->getById($id)),
+            'Departure retrieved successfully'
+        );
     }
 
     /**
@@ -292,6 +329,7 @@ class DepartureController extends Controller implements ResourceControllerInterf
      * @param Request $request
      * @param $id
      * @return JsonResponse
+     * @throws DepartureNotFoundException
      */
     public function getDepartureRooming(Request $request, $id): JsonResponse
     {

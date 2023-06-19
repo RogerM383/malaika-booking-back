@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('departure_id')->constrained('departures');
             $table->foreignId('room_type_id')->constrained('room_types');
-            $table->string('quantity')->nullable(true);
+            $table->unsignedTinyInteger('quantity')->nullable(true);
             $table->timestamps();
         });
     }
