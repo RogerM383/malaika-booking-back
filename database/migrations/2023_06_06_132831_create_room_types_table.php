@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('description')->default(null)->nullable(true);
+            $table->unsignedTinyInteger('capacity');
             $table->timestamps();
             $table->softDeletes();
         });

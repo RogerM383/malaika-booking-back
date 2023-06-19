@@ -14,9 +14,9 @@ class RoomTypesSeeder extends Seeder
      */
     public function run()
     {
-        RoomType::create(['name' => 'Dui']);
-        RoomType::create(['name' => 'Doble']);
-        RoomType::create(['name' => 'Twin']);
-        RoomType::create(['name' => 'Triple']);
+        RoomType::create(['name' => 'Dui', 'capacity' => 1]);
+        RoomType::create(['name' => 'Doble', 'capacity' => 2]);
+        RoomType::create(['name' => 'Twin', 'capacity' => 2]);
+        RoomType::create(['name' => 'Triple', 'capacity' => 3]);
     }
 }

@@ -11,16 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('rel_client_departure', function (Blueprint $table) {
+        Schema::create('rel_client_room', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('departure_id')->constrained('departures');
             $table->foreignId('client_id')->constrained('clients');
-
-            $table->string('seat')->nullable(true);
-            $table->unsignedTinyInteger('state')->default(0);
-
-            $table->text('observations')->nullable(true);
-
+            $table->foreignId('room_id')->constrained('rooms');
             $table->timestamps();
         });
     }
@@ -30,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('rel_client_departure');
+        Schema::dropIfExists('rel_client_room');
     }
 };

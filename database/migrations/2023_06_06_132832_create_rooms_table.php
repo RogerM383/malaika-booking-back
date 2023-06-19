@@ -11,17 +11,21 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('rel_client_departure', function (Blueprint $table) {
+        Schema::create('rooms', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('departure_id')->constrained('departures');
-            $table->foreignId('client_id')->constrained('clients');
 
-            $table->string('seat')->nullable(true);
-            $table->unsignedTinyInteger('state')->default(0);
+            $table->foreignId('room_type_id')->constrained('room_types');
+            $table->foreignId('departure_id')->constrained('departures');
+
+            $table->unsignedTinyInteger('room_number');
 
             $table->text('observations')->nullable(true);
 
             $table->timestamps();
+            $table->softDeletes();
+
+            // Definimos restricción para que no puede haber numeros de habitacion repetidos por salida.
+            $table->unique(['departure_id', 'room_number']);
         });
     }
 
@@ -30,6 +34,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('rel_client_departure');
+        Schema::dropIfExists('rooms');
     }
 };
