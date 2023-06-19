@@ -64,11 +64,19 @@ class Departure extends Model
             ->using(ClientDepartures::class)
             ->withPivot(
                 'state',
-                'number_room',
-                'room_type_id',
+                //'number_room',
+                //'room_type_id',
                 'observations')
             ->withTimestamps()
             ->orderBy('rel_client_departure.updated_at', 'asc');
+    }
+
+    /**
+     * @return BelongsToMany
+     */
+    public function roomTypes(): BelongsToMany
+    {
+        return $this->belongsToMany(RoomType::class, 'rel_departure_room_type')->withTimestamps();
     }
 
     /**

@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class RoomType extends Model
@@ -23,5 +24,13 @@ class RoomType extends Model
     public function tips(): HasMany
     {
         return $this->hasMany(Trip::class);
+    }
+
+    /**
+     * @return BelongsToMany
+     */
+    public function departures(): BelongsToMany
+    {
+        return $this->belongsToMany(Departure::class, 'rel_departure_room_type')->withTimestamps();
     }
 }

@@ -21,19 +21,42 @@ class TripsSeeder extends Seeder
                 $date1 = fake()->dateTimeBetween('+1 week', '+5 week' );
                 $date2 = fake()->dateTimeBetween('+5 week', '+8 week' );
 
+                $pax_available = fake()->numberBetween(10, 50);
+
                 for ($i = 0; $i < $numberOfDepartures; $i++) {
                     $trip->departures()->create([
                         'start' => $date1,
                         'final' => $date2,
                         'price' => fake()->randomFloat(2,0, 12000),
                         'taxes' => fake()->randomFloat(2,0, 200),
-                        'pax_available' => fake()->randomNumber(2),
+                        'pax_available' => $pax_available,
                         'individual_supplement' => fake()->randomFloat(2, 0, 500),
                         'state_id' => DepartureState::all()->random()->id,
                         'commentary' => rand(0, 10) >= 8 ? fake()->paragraph() : null,
                         'expedient' => fake()->randomNumber(4, true),
                     ]);
                 }
+
+                $trip->departures()->each(function ($departure) use ($pax_available) {
+
+                    if (rand(0, 10) >= 3) {
+                        $dui = mt_rand(0, $pax_available);
+                        if (($pax_available - $dui) % 2 !== 0 && $dui < $pax_available) {
+                            $dui++;
+                        }
+                        $twin = mt_rand(0, $pax_available - $dui);
+                        $doble = $pax_available - $dui - $twin;
+                    } else {
+                        $dui = $twin = $doble = null;
+                    }
+
+                    $departure->roomTypes()->attach([
+                        1 => ['quantity' => $dui],
+                        2 => ['quantity' => $twin],
+                        3 => ['quantity' => $doble],
+                        4 => ['quantity' => 0], // Triples fora
+                    ]);
+                });
             });
     }
 }
