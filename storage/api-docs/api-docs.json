@@ -654,6 +654,52 @@
                 ]
             }
         },
+        "/api/departures/{id}/rooming": {
+            "get": {
+                "tags": [
+                    "Departures"
+                ],
+                "summary": "Lista las salidas",
+                "description": "Lista las salidas",
+                "operationId": "departureRoomingList",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Id del viaje",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Departure list retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/DepartureResource"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
+        },
         "/api/passports": {
             "post": {
                 "tags": [

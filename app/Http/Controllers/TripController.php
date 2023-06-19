@@ -2,15 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Exceptions\AppModelNotFoundException;
-use App\Exceptions\ClientNotFoundException;
 use App\Exceptions\TripNotFoundException;
 use App\Http\Controllers\Interfaces\ResourceControllerInterface;
-use App\Http\Resources\ClientListCollection;
-use App\Http\Resources\ClientListResource;
-use App\Http\Resources\TripListCollection;
-use App\Http\Resources\TripListResource;
-use App\Http\Resources\TripResource;
+use App\Http\Resources\Trip\TripListCollection;
+use App\Http\Resources\Trip\TripListResource;
+use App\Http\Resources\Trip\TripResource;
 use App\Services\TripService;
 use App\Traits\HasPagination;
 use Illuminate\Http\JsonResponse;

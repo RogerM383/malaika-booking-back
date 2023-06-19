@@ -5,12 +5,9 @@ namespace App\Http\Controllers;
 use App\Exceptions\DepartureNotFoundException;
 use App\Exceptions\TripNotFoundException;
 use App\Http\Controllers\Interfaces\ResourceControllerInterface;
-use App\Http\Resources\DepartureCollection;
-use App\Http\Resources\DepartureResource;
-use App\Http\Resources\TripListCollection;
-use App\Http\Resources\TripListResource;
+use App\Http\Resources\Departure\DepartureCollection;
+use App\Http\Resources\Departure\DepartureResource;
 use App\Services\DepartureService;
-use App\Services\TripService;
 use App\Traits\HasPagination;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -216,6 +213,90 @@ class DepartureController extends Controller implements ResourceControllerInterf
 
         return $this->sendResponse(
             new DepartureResource($this->service->update($id, $validatedData)),
+            'Departure updated successfully'
+        );
+    }
+
+    /**
+     * @OA\Post(
+     *      path="/api/departures/{id}/add-client",
+     *      tags={"Departures"},
+     *      summary="Añade un cliente a una salida",
+     *      security={{"bearer_token":{}}},
+     *      description="Añade un cliente a una salida",
+     *      operationId="addClientToDeparture",
+     *      @OA\Parameter(
+     *          name="id",
+     *          in="path",
+     *          description="Id de departure",
+     *          required=true,
+     *          @OA\Schema(type="integer")
+     *      ),
+     *     @OA\RequestBody(
+     *          description="Add client to departure",
+     *          required=true,
+     *          @OA\JsonContent(
+     *              required={"client_id"},
+     *              @OA\Property(property="client_id", type="integer", example="1"),
+     *          )
+     *      ),
+     *      @OA\Response(
+     *          response="200",
+     *          description="Departure created successfully",
+     *      ),
+     *  )
+     * @throws ValidationException|TripNotFoundException
+     */
+    public function addClient(Request $request, $id)
+    {
+        $params = array_merge($request->only('client_id'), ['id' => $id]);
+        $validatedData = Validator::make($params, [
+            'id'        => 'required|integer',
+            'client_id' => 'required@integer',
+        ])->validate();
+
+        $this->service->addClient(...$validatedData);
+    }
+
+    // -----------------------------------------------------------------------------------------------------------------
+
+    /**
+     * @OA\Get(
+     *      path="/api/departures/{id}/rooming",
+     *      tags={"Departures"},
+     *      summary="Lista las salidas",
+     *      security={{"bearer_token":{}}},
+     *      description="Lista las salidas",
+     *      operationId="departureRoomingList",
+     *      @OA\Parameter(
+     *          name="id",
+     *          in="path",
+     *          description="Id del viaje",
+     *          required=false,
+     *          @OA\Schema(type="integer")
+     *      ),
+     *      @OA\Response(
+     *          response="200",
+     *          description="Departure list retrieved successfully",
+     *           @OA\JsonContent(
+     *              type="object",
+     *              @OA\Property(
+     *                  property="data",
+     *                  type="array",
+     *                  @OA\Items(ref="#/components/schemas/DepartureResource")
+     *              )
+     *          )
+     *      )
+     *  )
+     *
+     * @param Request $request
+     * @param $id
+     * @return JsonResponse
+     */
+    public function getDepartureRooming(Request $request, $id): JsonResponse
+    {
+        return $this->sendResponse(
+            $this->service->getDepartureRoomingData($id),
             'Departure updated successfully'
         );
     }

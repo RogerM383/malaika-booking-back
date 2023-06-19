@@ -1,13 +1,12 @@
 <?php
 
-namespace App\Http\Resources;
+namespace App\Http\Resources\Departure;
 
-use App\Services\ClientService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 /**
- *
+ *TODO update data
  * @OA\Schema(
  *      required={"id"},
  *      @OA\Xml(name="TripResource"),
@@ -21,7 +20,7 @@ use Illuminate\Http\Resources\Json\JsonResource;
  * Class TripResource
  *
  */
-class TripResource extends JsonResource
+class DepartureListResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -31,12 +30,16 @@ class TripResource extends JsonResource
      */
     public function toArray($request): array
     {
+        /**
+         * TODO: pax ha de devolver algo del formato 11/20 sinedo 11 el resultadod e restar los pillados - el toal
+         * TODO: añadir habitaciones, se calcula segun el numero de gente apuntadsa a la salida y las habiatciones en las eus estan
+         */
         return [
-            'id'            => $this->id,
-            'title'         => $this->title,
-            'description'   => $this->description,
-            'commentary'    => $this->commentary,
-            'state'         => $this->whenNotNull($this->state->name),
+            'id'                    => $this->id,
+            'start'                 => $this->start,
+            'final'                 => $this->final,
+            'pax_available'         => $this->pax_available,
+            'expedient'             => $this->expedient,
         ];
     }
 }

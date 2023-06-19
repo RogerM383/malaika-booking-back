@@ -4,10 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Exceptions\ClientNotFoundException;
 use App\Http\Controllers\Interfaces\ResourceControllerInterface;
-use App\Http\Resources\ClientDetailResource;
-use App\Http\Resources\ClientListCollection;
-use App\Http\Resources\ClientListResource;
-use App\Http\Resources\ClientResource;
+use App\Http\Resources\Client\ClientDetailResource;
+use App\Http\Resources\Client\ClientListCollection;
+use App\Http\Resources\Client\ClientListResource;
+use App\Http\Resources\Client\ClientResource;
 use App\Services\ClientService;
 use App\Traits\HasPagination;
 use Illuminate\Http\JsonResponse;

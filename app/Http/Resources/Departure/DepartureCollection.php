@@ -1,14 +1,13 @@
 <?php
 
-namespace App\Http\Resources;
+namespace App\Http\Resources\Departure;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\ResourceCollection;
-use Illuminate\Support\Facades\Log;
 
 // https://laravel.com/api/10.x/Illuminate/Contracts/Pagination/Paginator.html#method_currentPage
 
-class ClientListCollection extends ResourceCollection
+class DepartureCollection extends ResourceCollection
 {
     /**
      * Transform the resource collection into an array.
@@ -18,7 +17,7 @@ class ClientListCollection extends ResourceCollection
     public function toArray(Request $request): array
     {
         return [
-            'clients' => $this->collection,
+            'departures' => $this->collection,
             'pagination' => [
                 'current_page' => $this->resource->currentPage(),
                 'last_page' => $this->resource->lastPage(),

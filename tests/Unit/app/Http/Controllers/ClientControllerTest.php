@@ -1,16 +1,13 @@
 <?php
 
 use App\Http\Controllers\ClientController;
-use App\Http\Resources\ClientListResource;
+use App\Http\Resources\Client\ClientListResource;
 use App\Models\Client;
 use App\Services\ClientService;
 use Database\Seeders\DatabaseSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Testing\TestResponse;
 use Tests\TestCase;
 
 uses(TestCase::class, RefreshDatabase::class, WithoutMiddleware::class);

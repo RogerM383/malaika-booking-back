@@ -91,6 +91,26 @@ class DepartureService extends ResourceService
     }
 
     /**
+     * @param int $id
+     * @return mixed
+     * @throws DepartureNotFoundException
+     */
+    public function getDepartureRoomingData(int $id)
+    {
+        $departure = $this->getById($id);
+        return $departure->with('clients')->get();
+    }
+
+    public function addClient($id, $client_id)
+    {
+        $departure = $this->getById($id);
+
+        // 1.- Mirar si ya existe el usuario
+
+        $departure->clients()->attach($client_id);
+    }
+
+    /**
      * @param $query
      * @param $trip_id
      * @return void

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Resources;
+namespace App\Http\Resources\Passport;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -11,8 +11,6 @@ use Illuminate\Http\Resources\Json\JsonResource;
  *      required={"id"},
  *      @OA\Xml(name="PassportResource"),
  *      @OA\Property(property="id", type="integer", readOnly="true", example="1"),
- *      @OA\Property(property="name", type="string", description="Passport owner name", example="Selene"),
- *      @OA\Property(property="surname", type="string", description="Passport owner surname", example="Selenita"),
  *      @OA\Property(property="number_passport", type="string", description="Passport number", example="4567845454WW"),
  *      @OA\Property(property="birth", type="string", description="Passport owner bith date", example="1975/12/01"),
  *      @OA\Property(property="issue", type="string", description="Passport issue", example="2021/12/01"),
@@ -20,10 +18,10 @@ use Illuminate\Http\Resources\Json\JsonResource;
  *      @OA\Property(property="nac", type="string", description="Passport owner nacinality", example="Spanish"),
  * )
  *
- * Class PassportDetailResource
+ * Class PassportResource
  *
  */
-class PassportDetailResource extends JsonResource
+class PassportResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -35,8 +33,6 @@ class PassportDetailResource extends JsonResource
     {
         return [
             'id'                => $this->id,
-            'name'              => $this->client->name,
-            'surname'           => $this->client->surname,
             'number_passport'   => $this->number_passport,
             'birth'             => $this->birth,
             'issue'             => $this->issue,

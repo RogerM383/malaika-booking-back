@@ -65,6 +65,7 @@ class Client extends Model
     {
         // TODO: mirar como meter las relaciones intermedias, room_type_id, state_id
         return $this->belongsToMany(Departure::class,'rel_client_departure')
+            ->using(ClientDepartures::class)
             ->withPivot(
                 'state',
                 'number_room',
