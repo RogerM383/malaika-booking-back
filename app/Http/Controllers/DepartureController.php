@@ -346,11 +346,11 @@ class DepartureController extends Controller implements ResourceControllerInterf
      * @return JsonResponse
      * @throws DepartureNotFoundException
      */
-    public function getDepartureRooming(Request $request, $id): JsonResponse
+    /*public function getDepartureRooming(Request $request, $id): JsonResponse
     {
         return $this->sendResponse(
             $this->service->getDepartureRoomingData($id),
             'Departure updated successfully'
         );
-    }
+    }*/
 }

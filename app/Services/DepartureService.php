@@ -25,7 +25,10 @@ class DepartureService extends ResourceService
     /**
      * @param Departure $model
      */
-    #[Pure] public function __construct(Departure $model, TripService $tripService, RoomTypeService $romTypeService)
+    #[Pure] public function __construct(
+        Departure $model,
+        TripService $tripService,
+        RoomTypeService $romTypeService)
     {
         parent::__construct($model);
         $this->tripService = $tripService;
@@ -145,19 +148,35 @@ class DepartureService extends ResourceService
      * @return mixed
      * @throws DepartureNotFoundException
      */
-    public function getDepartureRoomingData(int $id)
+    /*public function getDepartureRoomingData(int $id)
     {
         $departure = $this->getById($id);
         return $departure->with('clients')->get();
-    }
+    }*/
 
-    public function addClient($id, $client_id)
+    /**
+     * @param $id
+     * @param $client_id
+     * @param $room_type_id
+     * @return void
+     * @throws DepartureNotFoundException
+     */
+    public function addClient($id, $client_id, $room_type_id)
     {
         $departure = $this->getById($id);
+        $departure->clients()->attach($client_id, ['room_type_id' => $room_type_id]);
+        return $departure->with('clients');
+    }
 
-        // 1.- Mirar si ya existe el usuario
+    /**
+     * @param $id
+     * @param $client_id
+     * @param $room_type_id
+     * @return void
+     */
+    public function addRoom($id, $client_id, $room_type_id)
+    {
 
-        $departure->clients()->attach($client_id);
     }
 
     /**

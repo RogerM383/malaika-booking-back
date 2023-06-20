@@ -18,8 +18,10 @@ return new class extends Migration
 
             $table->string('seat')->nullable(true);
             $table->unsignedTinyInteger('state')->default(0);
-
             $table->text('observations')->nullable(true);
+
+            // Designa el tipo de habitacion solicitada.
+            $table->$table->foreignId('room_type_id')->constrained('room_types');
 
             $table->timestamps();
         });

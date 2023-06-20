@@ -40,7 +40,6 @@ class ClientService extends ResourceService
             ['email' => $data['email'], 'dni' => $data['dni']],
             $data
         );
-        //return $this->model->create($data);
     }
 
     /**
