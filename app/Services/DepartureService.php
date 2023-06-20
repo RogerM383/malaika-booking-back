@@ -185,7 +185,7 @@ class DepartureService extends ResourceService implements ResourceServiceInterfa
     public function addRoom($id, $client_id, $room_type_id, $observations): Room
     {
         $departure = $this->getById($id);
-        return $this->roomService->createInDeparture($departure->id, $client_id, $room_type_id, $observations);
+        return $this->roomService->createInDeparture($departure, $client_id, $room_type_id, $observations);
     }
 
     /**

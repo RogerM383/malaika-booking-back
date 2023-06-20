@@ -8,22 +8,20 @@ use App\Models\Room;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use JetBrains\PhpStorm\Pure;
-use phpseclib3\Common\Functions\Strings;
 
 class RoomService extends ResourceService implements ResourceServiceInterface
 {
     protected $model;
 
-    private DepartureService $departureService;
+    //private DepartureService $departureService;
 
     /**
      * @param Room $model
-     * @param DepartureService $departureService
      */
-    #[Pure] public function __construct(Room $model, DepartureService $departureService)
+    #[Pure] public function __construct(Room $model/*, DepartureService $departureService*/)
     {
         parent::__construct($model);
-        $this->departureService = $departureService;
+        //$this->departureService = $departureService;
     }
 
     /**
@@ -63,12 +61,12 @@ class RoomService extends ResourceService implements ResourceServiceInterface
      * @return Room
      * @throws DepartureNotFoundException
      */
-    public function createInDeparture($departure_id, $client_id, $room_type_id, $observations): Room
+    public function createInDeparture($departure, $client_id, $room_type_id, $observations): Room
     {
-        $departure = $this->departureService->getById($departure_id);
+        // $departure = $this->departureService->getById($departure_id);
         $room = $departure->rooms()->create([
             'room_type_id'  => $room_type_id,
-            'room_number'   => 0, // Calcular de alguna manerda el numero de habitacion / ultimo o hueco
+            'room_number'   => $this->getNextRoomNumber($departure->id), // Calcular de alguna manerda el numero de habitacion / ultimo o hueco
             'observations'  => $observations
         ]);
         $room->clients()->attach($client_id); // TODO: asegurarme de que no necesitan observaciones
@@ -82,8 +80,8 @@ class RoomService extends ResourceService implements ResourceServiceInterface
             ->where('departure_id', $departure_id)
             ->whereNotExists(function ($query) {
                 $query->select(DB::raw(1))
-                    ->from('tu_tabla as t2')
-                    ->whereRaw('tu_tabla.room_number + 1 = t2.room_number');
+                    ->from('rooms as t2')
+                    ->whereRaw('rooms.room_number + 1 = t2.room_number');
             })
             ->pluck('lowest_available')
             ->first();

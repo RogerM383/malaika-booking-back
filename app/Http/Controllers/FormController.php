@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Exceptions\DepartureNotFoundException;
+use App\Services\ClientService;
 use App\Services\DepartureService;
 use App\Services\RoomService;
 use Illuminate\Http\JsonResponse;
@@ -13,13 +14,16 @@ use Illuminate\Validation\ValidationException;
 
 class FormController extends Controller
 {
+    private ClientService $clientService;
     private DepartureService $departureService;
     private RoomService $roomService;
 
     public function __construct(
+        ClientService $clientService,
         DepartureService $departureService,
         RoomService $roomService)
     {
+        $this->clientService = $clientService;
         $this->departureService = $departureService;
         $this->roomService = $roomService;
     }
@@ -64,7 +68,7 @@ class FormController extends Controller
     {
         Log::debug('ME cago en to lo que se menea');
 
-        /*$validatedData = Validator::make($request->all(), [
+        $validatedData = Validator::make($request->all(), [
             'departure_id'      => 'required|integer|min:1',
 
             'room_type_id'      => 'required|integer|min:1',
@@ -83,20 +87,39 @@ class FormController extends Controller
         Log::debug('VALIDATED DATA YEPE YIPA YEY MOTHEDRFUCKERS');
         Log::debug(json_encode($validatedData));
 
+        if (!empty($request->MNAC)) {
+            $client_type_id = 2;
+        } else {
+            $client_type_id = 1;
+        }
+
+        // TODO: meter valores default para language y client_type
+        $client = $this->clientService->create([
+            'name'      => $validatedData['name'],
+            'surname'   => $validatedData['surname'],
+            'dni'       => $validatedData['dni'],
+            'MNAC'      => $validatedData['MNAC'],
+            'client_type_id' => $client_type_id,
+            'language_id' => 1
+        ]);
+
+        $r = $this->departureService->addRoom(
+            $validatedData['departure_id'],
+            $client->id,
+            $validatedData['room_type_id'],
+            null
+        //$validatedData['observations'],
+        );
+
         $v = $this->departureService->addClient(
             $validatedData['departure_id'],
-            $validatedData['client_id'],
+            $client->id,
             $validatedData['room_type_id']
         );
 
         Log::debug(json_encode($v));
 
-        $r = $this->departureService->addRoom(
-            $validatedData['id'],
-            $validatedData['client_id'],
-            $validatedData['room_type_id'],
-            $validatedData['observations'],
-        );
+
 
         Log::debug(json_encode($r));
 
@@ -105,6 +128,6 @@ class FormController extends Controller
         return $this->sendResponse(
             ['message' => 'OK', 'num' => $lowestNum],
             'Form processed successfully'
-        );*/
+        );
     }
 }

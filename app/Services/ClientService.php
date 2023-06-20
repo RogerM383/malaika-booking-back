@@ -37,7 +37,7 @@ class ClientService extends ResourceService implements ResourceServiceInterface
     public function create($data): mixed
     {
         return $this->model->firstOrCreate(
-            ['email' => $data['email'], 'dni' => $data['dni']],
+            [/*'email' => $data['email'], */'dni' => $data['dni']],
             $data
         );
     }

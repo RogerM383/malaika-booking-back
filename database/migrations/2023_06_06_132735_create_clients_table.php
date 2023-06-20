@@ -14,7 +14,8 @@ return new class extends Migration
         Schema::create('clients', function (Blueprint $table) {
             $table->id();
 
-            $table->foreignId('client_type_id')->constrained('client_types')->cascadeOnDelete();
+            // Default MALAIKA
+            $table->foreignId('client_type_id')->default(1)->constrained('client_types')->cascadeOnDelete();
 
             $table->string('dni')->unique();
             $table->date('dni_expiration')->nullable();
@@ -28,6 +29,7 @@ return new class extends Migration
             $table->string('intolerances')->nullable(true);
             $table->string('frequent_flyer')->nullable(true);
 
+            // Aixo es el numero del MANC -> no pot estar omplert i ser d'un tipo diferent a MNAC id 2
             $table->string('member_number')->nullable(true);
             $table->text('notes')->nullable(true);
 

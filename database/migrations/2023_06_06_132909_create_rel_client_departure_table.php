@@ -21,7 +21,7 @@ return new class extends Migration
             $table->text('observations')->nullable(true);
 
             // Designa el tipo de habitacion solicitada.
-            $table->$table->foreignId('room_type_id')->constrained('room_types');
+            $table->foreignId('room_type_id')->constrained('room_types');
 
             $table->timestamps();
         });
