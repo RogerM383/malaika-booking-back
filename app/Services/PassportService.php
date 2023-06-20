@@ -10,7 +10,7 @@ use App\Models\Passport;
 use App\Traits\HasPagination;
 use JetBrains\PhpStorm\Pure;
 
-class PassportService extends ResourceService
+class PassportService extends ResourceService implements ResourceServiceInterface
 {
     use HasPagination;
 
@@ -54,5 +54,11 @@ class PassportService extends ResourceService
         $model = $this->getById($id);
         $model->update($data);
         return $model;
+    }
+
+    public function getById(int $id): mixed
+    {
+        // TODO: Implement getById() method.
+        return null;
     }
 }

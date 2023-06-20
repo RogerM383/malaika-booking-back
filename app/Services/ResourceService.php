@@ -44,19 +44,19 @@ abstract class ResourceService
      * @return mixed
      * @throws AppModelNotFoundException
      */
-    public function getById($id): mixed
+    /*public function getById($id): mixed
     {
         return $this->model->find($id) ?? throw new AppModelNotFoundException($id);
-    }
+    }*/
 
     /**
      * @param $data
      * @return mixed
      */
-    public function create($data): mixed
+    /*public function create($data): mixed
     {
         return $this->model->create($data);
-    }
+    }*/
 
     /**
      * @param int $id
@@ -64,10 +64,10 @@ abstract class ResourceService
      * @return mixed
      * @throws AppModelNotFoundException
      */
-    public function update(int $id, array $data): mixed
+    /*public function update(int $id, array $data): mixed
     {
         $model = $this->getById($id);
         $model->update($data);
         return $model;
-    }
+    }*/
 }

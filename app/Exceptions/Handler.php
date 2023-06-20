@@ -101,6 +101,7 @@ class Handler extends ExceptionHandler
      */
     public function handleException($request, Throwable $exception): \Illuminate\Http\Response|JsonResponse|Response|static
     {
+        Log::debug('me cago en la reputgissima');
         if ($exception instanceof ModelNotFoundException) {
             return $this->sendError('Model not found.', $this->convertExceptionToArray($exception), 404);
         }

@@ -5,9 +5,9 @@ namespace App\Services;
 use App\Exceptions\AppModelNotFoundException;
 use App\Exceptions\DepartureNotFoundException;
 use App\Exceptions\DeparturePaxCapacityExceededException;
-use App\Exceptions\MaxDeparturePaxCapacityExceededException;
 use App\Exceptions\TripNotFoundException;
 use App\Models\Departure;
+use App\Models\Room;
 use App\Models\RoomType;
 use App\Traits\HasPagination;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
@@ -15,24 +15,30 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Log;
 use JetBrains\PhpStorm\Pure;
 
-class DepartureService extends ResourceService
+class DepartureService extends ResourceService implements ResourceServiceInterface
 {
     use HasPagination;
 
     private TripService $tripService;
     private RoomTypeService $roomTypeService;
+    private RoomService $roomService;
 
     /**
      * @param Departure $model
+     * @param TripService $tripService
+     * @param RoomTypeService $romTypeService
+     * @param RoomService $roomService
      */
     #[Pure] public function __construct(
         Departure $model,
         TripService $tripService,
-        RoomTypeService $romTypeService)
+        RoomTypeService $romTypeService,
+        RoomService $roomService)
     {
         parent::__construct($model);
         $this->tripService = $tripService;
         $this->roomTypeService = $romTypeService;
+        $this->roomService = $roomService;
     }
 
     /**
@@ -66,11 +72,11 @@ class DepartureService extends ResourceService
     }
 
     /**
-     * @param $id
+     * @param int $id
      * @return mixed
      * @throws DepartureNotFoundException
      */
-    public function getById($id): mixed
+    public function getById(int $id): mixed
     {
         return $this->model->find($id) ?? throw new DepartureNotFoundException($id);
     }
@@ -158,10 +164,10 @@ class DepartureService extends ResourceService
      * @param $id
      * @param $client_id
      * @param $room_type_id
-     * @return void
+     * @return mixed
      * @throws DepartureNotFoundException
      */
-    public function addClient($id, $client_id, $room_type_id)
+    public function addClient($id, $client_id, $room_type_id): mixed
     {
         $departure = $this->getById($id);
         $departure->clients()->attach($client_id, ['room_type_id' => $room_type_id]);
@@ -172,11 +178,14 @@ class DepartureService extends ResourceService
      * @param $id
      * @param $client_id
      * @param $room_type_id
-     * @return void
+     * @param $observations
+     * @return Room
+     * @throws DepartureNotFoundException
      */
-    public function addRoom($id, $client_id, $room_type_id)
+    public function addRoom($id, $client_id, $room_type_id, $observations): Room
     {
-
+        $departure = $this->getById($id);
+        return $this->roomService->createInDeparture($departure->id, $client_id, $room_type_id, $observations);
     }
 
     /**

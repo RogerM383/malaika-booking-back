@@ -12,8 +12,10 @@ use App\Services\DepartureService;
 use App\Traits\HasPagination;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
+use function Psy\debug;
 
 class DepartureController extends Controller implements ResourceControllerInterface
 {
@@ -75,6 +77,7 @@ class DepartureController extends Controller implements ResourceControllerInterf
      */
     public function get(Request $request): JsonResponse
     {
+        Log::debug('mecago en dios');
         $validatedData = Validator::make($request->all(), [
             'trip_id'       => 'integer|min:1',
             'per_page'      => 'integer|min:1',

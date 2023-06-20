@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Log;
 use JetBrains\PhpStorm\Pure;
 
-class TripService extends ResourceService
+class TripService extends ResourceService implements ResourceServiceInterface
 {
     use HasPagination;
 
@@ -101,5 +101,11 @@ class TripService extends ResourceService
         $query->whereHas('departures', function ($q) use ($client) {
             $q->where('client_id', '=', $client);
         });
+    }
+
+    public function create(array $data): mixed
+    {
+        // TODO: Implement create() method.
+        return null;
     }
 }

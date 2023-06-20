@@ -3,6 +3,7 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\DepartureController;
+//use App\Http\Controllers\FormController;
 use App\Http\Controllers\PassportController;
 use App\Http\Controllers\TripController;
 use Illuminate\Http\Request;
@@ -58,3 +59,7 @@ Route::prefix('departures')->group(function () {
 
     Route::get('/{id}/rooming', [DepartureController::class, 'getDepartureRooming'])->middleware('auth:api');
 });
+
+/*Route::prefix('forms')->group(function () {
+    Route::post('/process', [FormController::class, 'process'])->middleware(['must.json', 'auth:api']);
+});*/

@@ -811,6 +811,82 @@
                 ]
             }
         },
+        "/api/forms/process": {
+            "post": {
+                "tags": [
+                    "Forms"
+                ],
+                "summary": "Procesa un formulario",
+                "description": "Procesa un formulario",
+                "operationId": "prcessForm",
+                "requestBody": {
+                    "description": "Process form",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "departure_id"
+                                ],
+                                "properties": {
+                                    "departure_id": {
+                                        "type": "integer",
+                                        "example": "1"
+                                    },
+                                    "name": {
+                                        "type": "string",
+                                        "example": "Selene"
+                                    },
+                                    "surname": {
+                                        "type": "string",
+                                        "example": "Selenita"
+                                    },
+                                    "dni": {
+                                        "type": "string",
+                                        "example": "47854123X"
+                                    },
+                                    "MNAC": {
+                                        "type": "string",
+                                        "example": "4545454545"
+                                    },
+                                    "room_type_id": {
+                                        "type": "integer",
+                                        "example": "1"
+                                    },
+                                    "contact_name": {
+                                        "type": "string",
+                                        "example": "Selene"
+                                    },
+                                    "contact_surname": {
+                                        "type": "string",
+                                        "example": "Selenita"
+                                    },
+                                    "contact_phone": {
+                                        "type": "string",
+                                        "example": "6945798"
+                                    },
+                                    "contact_email": {
+                                        "type": "string",
+                                        "example": "selene@gmail.com"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Form processed succesfully"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
+        },
         "/api/passports": {
             "post": {
                 "tags": [
