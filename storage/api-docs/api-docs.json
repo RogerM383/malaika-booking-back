@@ -554,6 +554,14 @@
                                     "taxes": {
                                         "type": "numeric",
                                         "example": "157.65"
+                                    },
+                                    "rooms": {
+                                        "type": "object",
+                                        "example": {
+                                            "1": 10,
+                                            "2": 10,
+                                            "3": 0
+                                        }
                                     }
                                 },
                                 "type": "object"
@@ -679,6 +687,14 @@
                                     "taxes": {
                                         "type": "numeric",
                                         "example": "157.65"
+                                    },
+                                    "rooms": {
+                                        "type": "object",
+                                        "example": {
+                                            "1": 10,
+                                            "2": 10,
+                                            "3": 0
+                                        }
                                     }
                                 },
                                 "type": "object"
@@ -1309,6 +1325,43 @@
                     "name": "ClientListResource"
                 }
             },
+            "DepartureDetailsResource": {
+                "required": [
+                    "id"
+                ],
+                "properties": {
+                    "id": {
+                        "description": "TODO update data",
+                        "type": "integer",
+                        "readOnly": "true",
+                        "example": "1"
+                    },
+                    "title": {
+                        "description": "Trip title",
+                        "type": "string",
+                        "example": "Antartida desde el mar"
+                    },
+                    "description": {
+                        "description": "Trip description",
+                        "type": "string",
+                        "example": "Es un viaje muy chulo"
+                    },
+                    "commentary": {
+                        "description": "Trip commentary",
+                        "type": "string",
+                        "example": "Especial para ciegos"
+                    },
+                    "state": {
+                        "description": "Trip state",
+                        "type": "string",
+                        "example": "OPEN"
+                    }
+                },
+                "type": "object",
+                "xml": {
+                    "name": "TripResource"
+                }
+            },
             "DepartureListResource": {
                 "required": [
                     "id"
@@ -1473,6 +1526,32 @@
                 "type": "object",
                 "xml": {
                     "name": "PassportResource"
+                }
+            },
+            "RoomTypeAvailabilityResource": {
+                "required": [
+                    "id"
+                ],
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "readOnly": "true",
+                        "example": "1"
+                    },
+                    "name": {
+                        "description": "Room types nmame",
+                        "type": "string",
+                        "example": "Dui"
+                    },
+                    "quantity": {
+                        "description": "Room type avaiable",
+                        "type": "integer",
+                        "example": "10"
+                    }
+                },
+                "type": "object",
+                "xml": {
+                    "name": "RoomTypeAviabilityResource"
                 }
             },
             "TripListResource": {

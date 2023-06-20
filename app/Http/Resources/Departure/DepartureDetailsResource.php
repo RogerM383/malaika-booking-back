@@ -21,7 +21,7 @@ use Illuminate\Http\Resources\Json\JsonResource;
  * Class TripResource
  *
  */
-class DepartureResource extends JsonResource
+class DepartureDetailsResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -42,7 +42,7 @@ class DepartureResource extends JsonResource
             'commentary'            => $this->commentary,
             'taxes'                 => $this->taxes,
             'expedient'             => $this->expedient,
-            'room_availability'     => RoomTypeAvailabilityResource::collection($this->whenLoaded('roomTypes'))
+            'room_availability'     => RoomTypeAvailabilityResource::collection($this->roomTypes)
         ];
     }
 }

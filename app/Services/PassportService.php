@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Exceptions\AppModelNotFoundException;
 use App\Exceptions\ClientNotFoundException;
 use App\Exceptions\ModelNotFoundException;
 use App\Exceptions\PassportNotFoundException;
@@ -46,11 +47,11 @@ class PassportService extends ResourceService
      * @param array $data
      * @return mixed
      * @throws PassportNotFoundException
-     * @throws ModelNotFoundException
+     * @throws AppModelNotFoundException
      */
     public function update(int $id, array $data): mixed
     {
-        $model = $this->model->find($id) ?? throw new PassportNotFoundException($id);
+        $model = $this->getById($id);
         $model->update($data);
         return $model;
     }

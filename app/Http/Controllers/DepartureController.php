@@ -6,6 +6,7 @@ use App\Exceptions\DepartureNotFoundException;
 use App\Exceptions\TripNotFoundException;
 use App\Http\Controllers\Interfaces\ResourceControllerInterface;
 use App\Http\Resources\Departure\DepartureCollection;
+use App\Http\Resources\Departure\DepartureDetailsResource;
 use App\Http\Resources\Departure\DepartureResource;
 use App\Services\DepartureService;
 use App\Traits\HasPagination;
@@ -123,10 +124,10 @@ class DepartureController extends Controller implements ResourceControllerInterf
      * @return JsonResponse
      * @throws DepartureNotFoundException
      */
-    public function getById(Request $request, $id)
+    public function getById(Request $request, $id): JsonResponse
     {
         return $this->sendResponse(
-            new DepartureResource($this->service->getById($id)),
+            new DepartureDetailsResource($this->service->getById($id)),
             'Departure retrieved successfully'
         );
     }
@@ -154,6 +155,7 @@ class DepartureController extends Controller implements ResourceControllerInterf
      *              @OA\Property(property="commentary", type="string", example="Salimos muy temprano"),
      *              @OA\Property(property="expedient", type="integer", example="55688"),
      *              @OA\Property(property="taxes", type="numeric", example="157.65"),
+     *              @OA\Property(property="rooms", type="object", example={"1": 10, "2": 10, "3": 0})
      *          )
      *      ),
      *      @OA\Response(
@@ -177,6 +179,9 @@ class DepartureController extends Controller implements ResourceControllerInterf
             'commentary'            => 'string',
             'expedient'             => 'integer',
             'taxes'                 => 'numeric',
+
+            'rooms'                 => 'array',
+            'rooms.*'               => 'integer'
         ])->validate();
 
         // TODO: Mirar maneras mejores de formatear las fechas, sobretodo ver comop vienen del front
@@ -218,6 +223,7 @@ class DepartureController extends Controller implements ResourceControllerInterf
      *              @OA\Property(property="commentary", type="string", example="Salimos muy temprano"),
      *              @OA\Property(property="expedient", type="integer", example="55688"),
      *              @OA\Property(property="taxes", type="numeric", example="157.65"),
+     *              @OA\Property(property="rooms", type="object", example={"1": 10, "2": 10, "3": 0})
      *          )
      *      ),
      *      @OA\Response(
@@ -230,7 +236,13 @@ class DepartureController extends Controller implements ResourceControllerInterf
      */
     public function update(Request $request, $id): JsonResponse
     {
-        $params = array_merge($request->only($this->service->getFillable()), ['id' => $id]);
+        $params = array_merge(
+            $request->only($this->service->getFillable()),
+            [
+                'id' => $id,
+                'rooms' => $request->rooms
+            ]
+        );
         $validatedData = Validator::make($params, [
             'id'                    => 'required|integer',
             'start'                 => 'string',
@@ -242,6 +254,9 @@ class DepartureController extends Controller implements ResourceControllerInterf
             'commentary'            => 'string',
             'expedient'             => 'integer',
             'taxes'                 => 'numeric',
+
+            'rooms'                 => 'array',
+            'rooms.*'               => 'integer'
         ])->validate();
 
         // TODO: Mirar maneras mejores de formatear las fechas, sobretodo ver comop vienen del front
@@ -249,7 +264,7 @@ class DepartureController extends Controller implements ResourceControllerInterf
         $validatedData['final'] = date('Y-m-d', strtotime($validatedData['final']));
 
         return $this->sendResponse(
-            new DepartureResource($this->service->update($id, $validatedData)),
+            new DepartureDetailsResource($this->service->update($id, $validatedData)),
             'Departure updated successfully'
         );
     }
