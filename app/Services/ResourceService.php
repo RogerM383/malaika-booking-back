@@ -2,12 +2,10 @@
 
 namespace App\Services;
 
-use App\Exceptions\AppModelNotFoundException;
-use App\Exceptions\ClientNotFoundException;
-use App\Models\Passport;
+use App\Exceptions\ModelNotFoundException;
 use App\Traits\HasPagination;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
-use JetBrains\PhpStorm\Pure;
 
 abstract class ResourceService
 {
@@ -16,58 +14,77 @@ abstract class ResourceService
     protected $model;
 
     /**
-     * @param Model $model
+     * @param $model
      */
-    public function __construct(Model $model)
+    public function __construct($model)
     {
         $this->model = $model;
     }
 
     /**
-     * @return string[]
+     * @return array
      */
-    #[Pure] public function getFillable(): array
+    public function getFillable(): array
     {
         return $this->model->getFillable();
     }
 
     /**
+     * @param array $data
      * @return mixed
      */
-    public function all(): mixed
+    public function make(array $data): mixed
     {
-        return $this->model->get();
+        return $this->model::make($data);
     }
 
     /**
-     * @param $id
+     * @param array $data
      * @return mixed
-     * @throws AppModelNotFoundException
      */
-    /*public function getById($id): mixed
+    public function create(array $data): mixed
     {
-        return $this->model->find($id) ?? throw new AppModelNotFoundException($id);
-    }*/
+        return $this->model::create($data);
+    }
 
     /**
-     * @param $data
-     * @return mixed
+     * @return Collection
      */
-    /*public function create($data): mixed
+    public function get(): Collection
     {
-        return $this->model->create($data);
-    }*/
+        return $this->model::all();
+    }
+
+    /**
+     * @param array|int $ids
+     * @return Model
+     * @throws ModelNotFoundException
+     */
+    public function getById(array|int $ids): Model
+    {
+        return $this->model::find($ids) ?? throw new ModelNotFoundException($this->model, $ids);
+    }
 
     /**
      * @param int $id
      * @param array $data
-     * @return mixed
-     * @throws AppModelNotFoundException
+     * @return Model
+     * @throws ModelNotFoundException
      */
-    /*public function update(int $id, array $data): mixed
+    public function update(int $id, array $data): Model
     {
         $model = $this->getById($id);
         $model->update($data);
         return $model;
-    }*/
+    }
+
+    /**
+     * @param $id
+     * @return bool
+     * @throws ModelNotFoundException
+     */
+    public function delete ($id): bool
+    {
+        return $this->getById($id)->delete();
+    }
 }

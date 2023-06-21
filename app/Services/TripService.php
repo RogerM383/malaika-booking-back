@@ -4,16 +4,12 @@ namespace App\Services;
 
 use App\Exceptions\TripNotFoundException;
 use App\Models\Trip;
-use App\Traits\HasPagination;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Support\Facades\Log;
 use JetBrains\PhpStorm\Pure;
 
-class TripService extends ResourceService implements ResourceServiceInterface
+class TripService extends ResourceService
 {
-    use HasPagination;
-
     /**
      * @param Trip $model
      */
@@ -27,19 +23,19 @@ class TripService extends ResourceService implements ResourceServiceInterface
      * @param null $trip_state
      * @param null $per_page
      * @param null $page
-     * @return array|LengthAwarePaginator|Collection
+     * @return Collection
      */
-    public function all(
+    public function get(
         $client = null,
         $trip_state = null,
         $per_page = null,
         $page = null
-    ): array|LengthAwarePaginator|Collection
+    ): Collection
     {
         $query = $this->model::query();
 
         if ($trip_state) {
-            $this->addTripStateId($query, $trip_state);
+            $this->addTripStateIdFilter($query, $trip_state);
         }
 
         /*if ($client_id) {
@@ -59,34 +55,11 @@ class TripService extends ResourceService implements ResourceServiceInterface
     }
 
     /**
-     * @param $id
-     * @return mixed
-     * @throws TripNotFoundException
-     */
-    public function getById($id): mixed
-    {
-        return $this->model->find($id) ?? throw new TripNotFoundException($id);
-    }
-
-    /**
-     * @param int $id
-     * @param array $data
-     * @return mixed
-     * @throws TripNotFoundException
-     */
-    public function update(int $id, array $data): mixed
-    {
-        $trip = $this->getById($id);
-        $trip->update($data);
-        return $trip;
-    }
-
-    /**
      * @param $query
      * @param $trip_state
      * @return void
      */
-    private function addTripStateId(&$query, $trip_state)
+    private function addTripStateIdFilter(&$query, $trip_state)
     {
         $query->orWhere('trip_state_id', $trip_state);
     }
@@ -101,11 +74,5 @@ class TripService extends ResourceService implements ResourceServiceInterface
         $query->whereHas('departures', function ($q) use ($client) {
             $q->where('client_id', '=', $client);
         });
-    }
-
-    public function create(array $data): mixed
-    {
-        // TODO: Implement create() method.
-        return null;
     }
 }

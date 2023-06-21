@@ -84,9 +84,9 @@ class DepartureController extends Controller implements ResourceControllerInterf
         ])->validate();
 
         if ($this->isPaginated(...$request->only('per_page', 'page'))) {
-            $data = new DepartureCollection($this->service->all(...$validatedData));
+            $data = new DepartureCollection($this->service->get(...$validatedData));
         } else {
-            $data = DepartureResource::collection($this->service->all(...$validatedData));
+            $data = DepartureResource::collection($this->service->get(...$validatedData));
         }
 
         return $this->sendResponse($data, 'Departures retrieved successfully');

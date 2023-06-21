@@ -2,11 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Exceptions\AppModelNotFoundException;
-use App\Exceptions\ClientNotFoundException;
 use App\Exceptions\ModelNotFoundException;
-use App\Exceptions\PassportNotFoundException;
-use App\Http\Controllers\Interfaces\ResourceControllerInterface;
 use App\Http\Resources\Passport\PassportDetailResource;
 use App\Http\Resources\Passport\PassportResource;
 use App\Services\PassportService;
@@ -17,7 +13,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 
-class PassportController extends Controller implements ResourceControllerInterface
+class PassportController extends Controller
 {
     use HasPagination;
 
@@ -54,7 +50,7 @@ class PassportController extends Controller implements ResourceControllerInterfa
      *          )
      *      )
      *  )
-     * @throws ValidationException|ClientNotFoundException
+     * @throws ValidationException|ModelNotFoundException
      */
     public function create(Request $request): JsonResponse
     {
@@ -105,7 +101,7 @@ class PassportController extends Controller implements ResourceControllerInterfa
      *          description="Passport updated successfully",
      *      ),
      *  )
-     * @throws ValidationException|PassportNotFoundException|ModelNotFoundException
+     * @throws ValidationException|ModelNotFoundException
      */
     public function update(Request $request, $id): JsonResponse
     {
@@ -154,7 +150,7 @@ class PassportController extends Controller implements ResourceControllerInterfa
      *          )
      *      )
      *  )
-     * @throws ValidationException|AppModelNotFoundException
+     * @throws ValidationException|ModelNotFoundException
      */
     public function getById(Request $request, $id): JsonResponse
     {
@@ -166,10 +162,5 @@ class PassportController extends Controller implements ResourceControllerInterfa
             new PassportDetailResource($this->service->getById($validatedData['id'])),
             'Passport retrieved successfully'
         );
-    }
-
-    public function get(Request $request)
-    {
-        // TODO: Implement get() method.
     }
 }

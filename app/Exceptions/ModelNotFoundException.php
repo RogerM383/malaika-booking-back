@@ -3,18 +3,20 @@
 namespace App\Exceptions;
 
 use Exception;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use JetBrains\PhpStorm\Pure;
 use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
 
 class ModelNotFoundException extends Exception implements HttpExceptionInterface
 {
-    #[Pure] public function __construct($id, $modelName, $msg = null)
+    #[Pure] public function __construct(Model $model, array|int $ids, string $msg = null)
     {
-        $message = $msg ?? $modelName.' with id '.$id.' doesen\'t exists';
+        $name = class_basename($model);
+        $_ids = is_array($ids) ? join(', ', $ids) : $ids.' ';
+        $message = $msg ?? $name.' with id '.$_ids.'doesen\'t exists';
         parent::__construct($message);
     }
 
@@ -25,9 +27,7 @@ class ModelNotFoundException extends Exception implements HttpExceptionInterface
      */
     protected function context(): array
     {
-        return array_merge(parent::context(), [
-            'user_id' => Auth::id(),
-        ]);
+        return parent::context();
     }
 
     /**

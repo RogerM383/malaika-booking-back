@@ -5,20 +5,15 @@ namespace App\Services;
 use App\Exceptions\AppModelNotFoundException;
 use App\Exceptions\DepartureNotFoundException;
 use App\Exceptions\DeparturePaxCapacityExceededException;
-use App\Exceptions\TripNotFoundException;
+use App\Exceptions\ModelNotFoundException;
 use App\Models\Departure;
 use App\Models\Room;
-use App\Models\RoomType;
-use App\Traits\HasPagination;
-use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Support\Facades\Log;
+use Illuminate\Database\Eloquent\Model;
 use JetBrains\PhpStorm\Pure;
 
-class DepartureService extends ResourceService implements ResourceServiceInterface
+class DepartureService extends ResourceService
 {
-    use HasPagination;
-
     private TripService $tripService;
     private RoomTypeService $roomTypeService;
     private RoomService $roomService;
@@ -45,13 +40,13 @@ class DepartureService extends ResourceService implements ResourceServiceInterfa
      * @param null $trip_id
      * @param null $per_page
      * @param null $page
-     * @return array|LengthAwarePaginator|Collection
+     * @return Collection
      */
-    public function all(
+    public function get(
         $trip_id = null,
         $per_page = null,
         $page = null
-    ): array|LengthAwarePaginator|Collection
+    ): Collection
     {
         $query = $this->model::query();
 
@@ -72,29 +67,31 @@ class DepartureService extends ResourceService implements ResourceServiceInterfa
     }
 
     /**
-     * @param int $id
+     * @param $data
      * @return mixed
-     * @throws DepartureNotFoundException
      */
-    public function getById(int $id): mixed
+    public function make($data): mixed
     {
-        return $this->model->find($id) ?? throw new DepartureNotFoundException($id);
+        return $this->model::firstOrNew(
+            ['dni' => $data['dni']],
+            $data
+        );
     }
 
     /**
      * @param $data
      * @return mixed
-     * @throws DeparturePaxCapacityExceededException|TripNotFoundException
+     * @throws ModelNotFoundException|DeparturePaxCapacityExceededException
      */
     public function create($data): mixed
     {
-        $rooms = isset($data['rooms']) ? $data['rooms'] : null;
+        $rooms = $data['rooms'] ?? null;
         // Obtenemos el Trip
         $trip = $this->tripService->getById($data['trip_id']);
         // Le creamos una nueva Departure
         $departure = $trip->departures()->create($data);
         // Obtenemos todos los RoomType con su ID y capaciodad
-        $roomTypes = $this->roomTypeService->all()->pluck('capacity', 'id');
+        $roomTypes = $this->roomTypeService->get()->pluck('capacity', 'id');
         // Obtenemos los tipos pasados en la request o genera una array con todos los tipos de la DB con valor null
         $requestRooms = !empty($rooms) ? collect($rooms) : $roomTypes->map(fn($room, $key) => null);
         // Obtenemos el totasl de plazas
@@ -116,12 +113,12 @@ class DepartureService extends ResourceService implements ResourceServiceInterfa
     /**
      * @param int $id
      * @param array $data
-     * @return mixed
+     * @return Model
      * @throws DepartureNotFoundException
      * @throws AppModelNotFoundException
-     * @throws DeparturePaxCapacityExceededException
+     * @throws DeparturePaxCapacityExceededException|ModelNotFoundException
      */
-    public function update(int $id, array $data): mixed
+    public function update(int $id, array $data): Model
     {
         $departure = $this->getById($id);
 
@@ -129,7 +126,7 @@ class DepartureService extends ResourceService implements ResourceServiceInterfa
         // Que pasa si las eliminamos? perdemos  ala agente asignada? Quedan sin asignar?
 
         if (isset($data['rooms'])) {
-            $roomTypes = $this->roomTypeService->all()->pluck('capacity', 'id');
+            $roomTypes = $this->roomTypeService->get()->pluck('capacity', 'id');
 
             $total = collect($data['rooms'])->map(function ($room, $key) use ($roomTypes) {
                 return $roomTypes->has($key) ? $roomTypes[$key] * $room : 0;
@@ -165,7 +162,7 @@ class DepartureService extends ResourceService implements ResourceServiceInterfa
      * @param $client_id
      * @param $room_type_id
      * @return mixed
-     * @throws DepartureNotFoundException
+     * @throws ModelNotFoundException
      */
     public function addClient($id, $client_id, $room_type_id): mixed
     {
@@ -180,7 +177,7 @@ class DepartureService extends ResourceService implements ResourceServiceInterfa
      * @param $room_type_id
      * @param $observations
      * @return Room
-     * @throws DepartureNotFoundException
+     * @throws ModelNotFoundException
      */
     public function addRoom($id, $client_id, $room_type_id, $observations): Room
     {

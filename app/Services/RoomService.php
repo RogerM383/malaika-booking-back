@@ -3,13 +3,12 @@
 namespace App\Services;
 
 use App\Exceptions\AppModelNotFoundException;
-use App\Exceptions\DepartureNotFoundException;
 use App\Models\Room;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use JetBrains\PhpStorm\Pure;
 
-class RoomService extends ResourceService implements ResourceServiceInterface
+class RoomService extends ResourceService
 {
     protected $model;
 
@@ -25,41 +24,11 @@ class RoomService extends ResourceService implements ResourceServiceInterface
     }
 
     /**
-     * @return mixed
-     */
-    public function all(): mixed
-    {
-        $query = $this->model::query();
-        return $query->get();
-    }
-
-    /**
-     * @param $id
-     * @return mixed
-     * @throws AppModelNotFoundException
-     */
-    public function getById($id): mixed
-    {
-        return $this->model->find($id) ?? throw new AppModelNotFoundException($id, 'Room with id '.$id.' doesen\'t exists');
-    }
-
-    /**
-     * @param $ids
-     * @return mixed
-     * @throws AppModelNotFoundException
-     */
-    public function getByIds($ids): mixed
-    {
-        return $this->model::find($ids) ?? throw new AppModelNotFoundException($ids, 'RoomType with ids '.join(',', $ids).' doesen\'t exists');
-    }
-
-    /**
-     * @param $departure_id
+     * @param $departure
      * @param $client_id
      * @param $room_type_id
      * @param $observations
      * @return Room
-     * @throws DepartureNotFoundException
      */
     public function createInDeparture($departure, $client_id, $room_type_id, $observations): Room
     {
@@ -87,20 +56,5 @@ class RoomService extends ResourceService implements ResourceServiceInterface
             ->first();
         Log::debug($lowestAvailableRoomNumber);
         return $lowestAvailableRoomNumber;
-    }
-
-    /**
-     * @param $data
-     * @return mixed
-     */
-    public function create($data): mixed
-    {
-        return null;
-    }
-
-    public function update(int $id, array $data): mixed
-    {
-        // TODO: Implement update() method.
-        return null;
     }
 }

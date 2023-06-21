@@ -52,14 +52,14 @@ class ClientDetailResource extends JsonResource
             'intolerances'      => $this->intolerances,
             'frequent_flyer'    => $this->frequent_flyer,
             'member_number'     => $this->member_number,
-            'client_type'       => $this->whenNotNull($this->clientTypes->name),
             'language'          => $this->language->name,
+            'client_type'       => $this->when(!empty($this->clientTypes), fn () => $this->clientTypes->name),
 
-            'number_passport'   => $this->passport->number_passport,
-            'birth'             => $this->passport->birth,
-            'issue'             => $this->passport->issue,
-            'exp'               => $this->passport->exp,
-            'nationality'       => $this->passport->nationality,
+            'number_passport'   => $this->when(!empty($this->passport), fn () => $this->passport->number_passport),
+            'birth'             => $this->when(!empty($this->passport), fn () => $this->passport->birth),
+            'issue'             => $this->when(!empty($this->passport), fn () => $this->passport->issue),
+            'exp'               => $this->when(!empty($this->passport), fn () => $this->passport->exp),
+            'nationality'       => $this->when(!empty($this->passport), fn () => $this->passport->nationality),
 
 
         ];

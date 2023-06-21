@@ -2,18 +2,14 @@
 
 namespace App\Services;
 
-use App\Exceptions\ClientNotFoundException;
 use App\Models\Client;
 use App\Traits\HasPagination;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Support\Facades\Log;
 use JetBrains\PhpStorm\Pure;
 
-class ClientService extends ResourceService implements ResourceServiceInterface
+class ClientService extends ResourceService
 {
-    use HasPagination;
-
     /**
      * @param Client $model
      */
@@ -23,33 +19,27 @@ class ClientService extends ResourceService implements ResourceServiceInterface
     }
 
     /**
-     * @return string[]
-     */
-    #[Pure] public function getFillable(): array
-    {
-        return $this->model->getFillable();
-    }
-
-    /**
-     * @param $data
+     * @param array $data
      * @return mixed
      */
-    public function create($data): mixed
+    public function make(array $data): mixed
     {
-        return $this->model->firstOrCreate(
-            [/*'email' => $data['email'], */'dni' => $data['dni']],
+        return $this->model::firstOrNew(
+            ['dni' => $data['dni']],
             $data
         );
     }
 
     /**
-     * @param $id
+     * @param array $data
      * @return mixed
-     * @throws ClientNotFoundException
      */
-    public function getById($id): mixed
+    public function create(array $data): mixed
     {
-        return $this->model->find($id) ?? throw new ClientNotFoundException($id);
+        return $this->model->firstOrCreate(
+            ['dni' => $data['dni']],
+            $data
+        );
     }
 
     /**
@@ -62,9 +52,9 @@ class ClientService extends ResourceService implements ResourceServiceInterface
      * @param null $passport
      * @param null $per_page
      * @param null $page
-     * @return array|Collection|LengthAwarePaginator
+     * @return Collection
      */
-    public function all(
+    public function get(
         $client_type = null,
         $name = null,
         $surname = null,
@@ -74,7 +64,7 @@ class ClientService extends ResourceService implements ResourceServiceInterface
         $passport = null,
         $per_page = null,
         $page = null,
-    ): array|Collection|LengthAwarePaginator
+    ): Collection
     {
         $query = $this->model::query();
 
@@ -116,19 +106,6 @@ class ClientService extends ResourceService implements ResourceServiceInterface
         } else {
             return $query->get();
         }
-    }
-
-    /**
-     * @param int $id
-     * @param array $data
-     * @return mixed
-     * @throws ClientNotFoundException
-     */
-    public function update(int $id, array $data): mixed
-    {
-        $client = $this->getById($id);
-        $client->update($data);
-        return $client;
     }
 
     /**

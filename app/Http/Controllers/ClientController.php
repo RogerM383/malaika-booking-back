@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Exceptions\ClientNotFoundException;
+use App\Exceptions\ModelNotFoundException;
 use App\Http\Controllers\Interfaces\ResourceControllerInterface;
 use App\Http\Resources\Client\ClientDetailResource;
 use App\Http\Resources\Client\ClientListCollection;
@@ -131,9 +132,9 @@ class ClientController extends Controller implements ResourceControllerInterface
         ])->validate();
 
         if ($this->isPaginated(...$request->only('per_page', 'page'))) {
-            $data = new ClientListCollection($this->service->all(...$validatedData));
+            $data = new ClientListCollection($this->service->get(...$validatedData));
         } else {
-            $data = ClientListResource::collection($this->service->all(...$validatedData));
+            $data = ClientListResource::collection($this->service->get(...$validatedData));
         }
 
         return $this->sendResponse($data,'Client list retrieved successfully');
@@ -167,7 +168,7 @@ class ClientController extends Controller implements ResourceControllerInterface
      *          )
      *      )
      *  )
-     * @throws ClientNotFoundException|ValidationException
+     * @throws ValidationException|ModelNotFoundException
      */
     public function getById(Request $request, $id): JsonResponse
     {
