@@ -52,7 +52,7 @@ class ClientService extends ResourceService
      * @param null $passport
      * @param null $per_page
      * @param null $page
-     * @return Collection
+     * @return Collection|LengthAwarePaginator
      */
     public function get(
         $client_type = null,
@@ -64,7 +64,7 @@ class ClientService extends ResourceService
         $passport = null,
         $per_page = null,
         $page = null,
-    ): Collection
+    ): Collection|LengthAwarePaginator
     {
         $query = $this->model::query();
 

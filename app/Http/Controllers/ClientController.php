@@ -2,9 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Exceptions\ClientNotFoundException;
 use App\Exceptions\ModelNotFoundException;
-use App\Http\Controllers\Interfaces\ResourceControllerInterface;
 use App\Http\Resources\Client\ClientDetailResource;
 use App\Http\Resources\Client\ClientListCollection;
 use App\Http\Resources\Client\ClientListResource;
@@ -17,7 +15,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 
-class ClientController extends Controller implements ResourceControllerInterface
+class ClientController extends Controller
 {
     use HasPagination;
 

@@ -2,8 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Exceptions\TripNotFoundException;
-use App\Http\Controllers\Interfaces\ResourceControllerInterface;
 use App\Http\Resources\Trip\TripListCollection;
 use App\Http\Resources\Trip\TripListResource;
 use App\Http\Resources\Trip\TripResource;
@@ -14,7 +12,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 
-class TripController extends Controller implements ResourceControllerInterface
+class TripController extends Controller
 {
     use HasPagination;
 
@@ -89,9 +87,9 @@ class TripController extends Controller implements ResourceControllerInterface
         ])->validate();
 
         if ($this->isPaginated(...$request->only('per_page', 'page'))) {
-            $data = new TripListCollection($this->service->all(...$validatedData));
+            $data = new TripListCollection($this->service->get(...$validatedData));
         } else {
-            $data = TripListResource::collection($this->service->all(...$validatedData));
+            $data = TripListResource::collection($this->service->get(...$validatedData));
         }
 
         return $this->sendResponse($data, 'Trips retrieved successfully');

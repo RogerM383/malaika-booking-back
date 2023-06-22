@@ -2,7 +2,6 @@
 
 namespace App\Services;
 
-use App\Exceptions\TripNotFoundException;
 use App\Models\Trip;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection;
@@ -23,14 +22,14 @@ class TripService extends ResourceService
      * @param null $trip_state
      * @param null $per_page
      * @param null $page
-     * @return Collection
+     * @return Collection|LengthAwarePaginator
      */
     public function get(
         $client = null,
         $trip_state = null,
         $per_page = null,
         $page = null
-    ): Collection
+    ): Collection|LengthAwarePaginator
     {
         $query = $this->model::query();
 

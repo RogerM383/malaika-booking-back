@@ -8,6 +8,8 @@ use App\Exceptions\DeparturePaxCapacityExceededException;
 use App\Exceptions\ModelNotFoundException;
 use App\Models\Departure;
 use App\Models\Room;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use JetBrains\PhpStorm\Pure;
@@ -40,13 +42,13 @@ class DepartureService extends ResourceService
      * @param null $trip_id
      * @param null $per_page
      * @param null $page
-     * @return Collection
+     * @return Collection|LengthAwarePaginator
      */
     public function get(
         $trip_id = null,
         $per_page = null,
         $page = null
-    ): Collection
+    ): Collection|LengthAwarePaginator
     {
         $query = $this->model::query();
 
@@ -114,8 +116,6 @@ class DepartureService extends ResourceService
      * @param int $id
      * @param array $data
      * @return Model
-     * @throws DepartureNotFoundException
-     * @throws AppModelNotFoundException
      * @throws DeparturePaxCapacityExceededException|ModelNotFoundException
      */
     public function update(int $id, array $data): Model
@@ -146,10 +146,17 @@ class DepartureService extends ResourceService
         return $departure;
     }
 
+    /*public function getRemainingSlots($id)
+    {
+
+
+    }*/
+
+    // -----------------------
+
     /**
      * @param int $id
      * @return mixed
-     * @throws DepartureNotFoundException
      */
     /*public function getDepartureRoomingData(int $id)
     {
@@ -161,10 +168,10 @@ class DepartureService extends ResourceService
      * @param $id
      * @param $client_id
      * @param $room_type_id
-     * @return mixed
+     * @return Builder
      * @throws ModelNotFoundException
      */
-    public function addClient($id, $client_id, $room_type_id): mixed
+    public function addClient($id, $client_id, $room_type_id): Builder
     {
         $departure = $this->getById($id);
         $departure->clients()->attach($client_id, ['room_type_id' => $room_type_id]);
@@ -182,7 +189,13 @@ class DepartureService extends ResourceService
     public function addRoom($id, $client_id, $room_type_id, $observations): Room
     {
         $departure = $this->getById($id);
-        return $this->roomService->createInDeparture($departure, $client_id, $room_type_id, $observations);
+        $room = $this->roomService->make([
+            'room_type_id'  => $room_type_id,
+            'room_number'   => $this->roomService->getNextRoomNumber($departure->id),
+            'observations'  => $observations
+        ]);
+        //$room->cliets()->
+        //return $this->roomService->createInDeparture($departure, $client_id, $room_type_id, $observations);
     }
 
     /**

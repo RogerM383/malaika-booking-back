@@ -765,52 +765,6 @@
                 ]
             }
         },
-        "/api/departures/{id}/rooming": {
-            "get": {
-                "tags": [
-                    "Departures"
-                ],
-                "summary": "Lista las salidas",
-                "description": "Lista las salidas",
-                "operationId": "departureRoomingList",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "description": "Id del viaje",
-                        "required": false,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Departure list retrieved successfully",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "data": {
-                                            "type": "array",
-                                            "items": {
-                                                "$ref": "#/components/schemas/DepartureResource"
-                                            }
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    }
-                },
-                "security": [
-                    {
-                        "bearer_token": []
-                    }
-                ]
-            }
-        },
         "/api/forms/process": {
             "post": {
                 "tags": [
@@ -818,40 +772,57 @@
                 ],
                 "summary": "Procesa un formulario",
                 "description": "Procesa un formulario",
-                "operationId": "prcessForm",
+                "operationId": "processForm",
                 "requestBody": {
                     "description": "Process form",
                     "required": true,
                     "content": {
                         "application/json": {
                             "schema": {
-                                "required": [
-                                    "departure_id"
-                                ],
                                 "properties": {
+                                    "clients": {
+                                        "type": "array",
+                                        "items": {
+                                            "properties": {
+                                                "name": {
+                                                    "type": "string",
+                                                    "example": "Selene"
+                                                },
+                                                "surname": {
+                                                    "type": "string",
+                                                    "example": "Selenita"
+                                                },
+                                                "dni": {
+                                                    "type": "string",
+                                                    "example": "47854123X"
+                                                },
+                                                "MNAC": {
+                                                    "type": "string",
+                                                    "example": "4545454545"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
                                     "departure_id": {
                                         "type": "integer",
                                         "example": "1"
                                     },
-                                    "name": {
-                                        "type": "string",
-                                        "example": "Selene"
-                                    },
-                                    "surname": {
-                                        "type": "string",
-                                        "example": "Selenita"
-                                    },
-                                    "dni": {
-                                        "type": "string",
-                                        "example": "47854123X"
-                                    },
-                                    "MNAC": {
-                                        "type": "string",
-                                        "example": "4545454545"
-                                    },
-                                    "room_type_id": {
-                                        "type": "integer",
-                                        "example": "1"
+                                    "rooms": {
+                                        "type": "array",
+                                        "items": {
+                                            "properties": {
+                                                "room_type_id": {
+                                                    "type": "integer",
+                                                    "example": "1"
+                                                },
+                                                "quantity": {
+                                                    "type": "integer",
+                                                    "example": "1"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
                                     },
                                     "contact_name": {
                                         "type": "string",
@@ -877,7 +848,10 @@
                 },
                 "responses": {
                     "200": {
-                        "description": "Form processed succesfully"
+                        "description": "Form processed successfully"
+                    },
+                    "400": {
+                        "description": "Bad request"
                     }
                 },
                 "security": [

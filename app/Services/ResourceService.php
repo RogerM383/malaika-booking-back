@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Exceptions\ModelNotFoundException;
 use App\Traits\HasPagination;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 
@@ -48,9 +49,9 @@ abstract class ResourceService
     }
 
     /**
-     * @return Collection
+     * @return Collection|LengthAwarePaginator
      */
-    public function get(): Collection
+    public function get(): Collection|LengthAwarePaginator
     {
         return $this->model::all();
     }

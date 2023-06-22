@@ -2,9 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Exceptions\DepartureNotFoundException;
-use App\Exceptions\TripNotFoundException;
-use App\Http\Controllers\Interfaces\ResourceControllerInterface;
 use App\Http\Resources\Departure\DepartureCollection;
 use App\Http\Resources\Departure\DepartureDetailsResource;
 use App\Http\Resources\Departure\DepartureResource;
@@ -16,7 +13,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 
-class DepartureController extends Controller implements ResourceControllerInterface
+class DepartureController extends Controller
 {
     use HasPagination;
 

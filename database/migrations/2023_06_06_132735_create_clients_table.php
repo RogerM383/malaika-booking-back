@@ -33,7 +33,7 @@ return new class extends Migration
             $table->string('member_number')->nullable(true);
             $table->text('notes')->nullable(true);
 
-            $table->foreignId('language_id')->constrained('languages');
+            $table->foreignId('language_id')->default(1)->constrained('languages');
 
             $table->timestamps();
             $table->softDeletes();
