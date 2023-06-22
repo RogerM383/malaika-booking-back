@@ -50,7 +50,7 @@ class DepartureFactory extends Factory
             'final' => $date2,
             'price' => fake()->randomFloat(2,0, 12000),
             'taxes' => fake()->randomFloat(2,0, 200),
-            'pax_available' => fake()->randomNumber(2),
+            'pax_capacity' => fake()->randomNumber(2),
             'individual_supplement' => fake()->randomFloat(2, 0, 500),
             'state_id' => DepartureState::all()->random()->id,
             'commentary' => rand(0, 10) >= 8 ? fake()->paragraph() : null,

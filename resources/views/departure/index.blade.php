@@ -9,7 +9,7 @@
         {{ session()->get('message') }}
     </div>
   </div>
-    
+
 @endif
 
 
@@ -45,34 +45,34 @@
       <th tyle="text-align:center;"  >{{__('Lock')}}</th>
       <th style="text-align:center;"  >{{__('Commentary')}}</th>
       <!-- <th  >{{__('Delete')}}</th> -->
-     
+
     </tr>
   </thead>
   <tbody>
 
-    
-    @forelse($departures as $departure) 
+
+    @forelse($departures as $departure)
         <tr>
-       
-          <td>{{ date('d-m-Y', strtotime($departure->start)) }}</td>    
 
-            <td>{{ date('d-m-Y', strtotime($departure->final)) }}</td>    
+          <td>{{ date('d-m-Y', strtotime($departure->start)) }}</td>
 
-            <td>{{ $departure->pax_available - $departure->clients()->where('state','<',4)->count()}} / {{$departure->pax_available}}</td>
-       
+            <td>{{ date('d-m-Y', strtotime($departure->final)) }}</td>
+
+            <td>{{ $departure->pax_capacity - $departure->clients()->where('state','<',4)->count()}} / {{$departure->pax_capacity}}</td>
+
        <td> {{ $departure->clients()->distinct('number_room')->count('number_room') }}</td>
-           
 
-             <!-- <td> {{ $departure->clients->count()  }} / {{$departure->pax_available}}</td>      -->
-           
-             <td>{{$departure->expedient}}</td>   
-          
-          
 
- 
-            <td> <a href="{{route('departure.edit', $departure->id)}}" class="btn btn-info " style="border: none; background: none;"><i class="fas fa-pencil-alt fa-lg indexicon" ></i></a> </td> 
-            <td> <a href="{{route('departure.clients',['departure' => $departure->id])}}" class="btn btn-info" style="border: none; background: none;"><i class="fas fa-users indexicon"></i></a> </td> 
-         
+             <!-- <td> {{ $departure->clients->count()  }} / {{$departure->pax_capacity}}</td>      -->
+
+             <td>{{$departure->expedient}}</td>
+
+
+
+
+            <td> <a href="{{route('departure.edit', $departure->id)}}" class="btn btn-info " style="border: none; background: none;"><i class="fas fa-pencil-alt fa-lg indexicon" ></i></a> </td>
+            <td> <a href="{{route('departure.clients',['departure' => $departure->id])}}" class="btn btn-info" style="border: none; background: none;"><i class="fas fa-users indexicon"></i></a> </td>
+
           @if($departure->state == 1)
           <td> <a href="{{route('lockdeparture',['departure' => $departure->id])}}" class="btn btn-info" style="border: none; background: none;"><i  class="fas fa-lock-open indexicon"></i></a></td>
 
@@ -83,7 +83,7 @@
 
 
 
-         
+
           <td style="text-align: center; vertical-align : middle;">
           @if($departure->commentary)
                <button  type="button" class="commenticon" data-target="#commentaryDeparture" data-toggle="modal"
@@ -93,9 +93,9 @@
                 data-departure="{{$departure->id}}" data-title="{{$trip->title}}" data-commentary="{{ $departure->commentary }}" >   <i class="fas fa-comment indexicon passportgrey"></i> </button>
 
 
-          @endif   
+          @endif
            </td>
-          
+
 
 
             <!-- <td>         <button data-toggle="modal" data-target="#deleteDeparture" data-departure="{{$departure->id}}" data-name="{{$departure->start}}"
@@ -103,19 +103,19 @@
             </td> -->
 
 
-        
+
         </tr>
 
 
     @empty
-    <td>{{__('No departures found')}}</td>  
+    <td>{{__('No departures found')}}</td>
     @endForelse
         </tbody>
     </table>
 
     <div class="row justify-content-center align-items-center">
       {{ $departures->appends(request()->query())->links() }}
-   
+
     </div>
 
 

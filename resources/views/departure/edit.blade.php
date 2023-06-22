@@ -66,7 +66,7 @@
 							<div class="cols-sm-10">
 								<div class="input-group">
 									<span class="input-group-addon"><i class="fa fa-user fa" aria-hidden="true"></i></span>
-									<input type="number" maxlength="190" class="form-control" name="pax_available" id="pax_available" value="{{$departure->pax_available}}"  />
+									<input type="number" maxlength="190" class="form-control" name="pax_capacity" id="pax_capacity" value="{{$departure->pax_capacity}}"  />
 								</div>
 							</div>
 						</div>

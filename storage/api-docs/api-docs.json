@@ -531,7 +531,7 @@
                                         "type": "numeric",
                                         "example": "7800.55"
                                     },
-                                    "pax_available": {
+                                    "pax_capacity": {
                                         "type": "integer",
                                         "example": "20"
                                     },
@@ -664,7 +664,7 @@
                                         "type": "numeric",
                                         "example": "7800.55"
                                     },
-                                    "pax_available": {
+                                    "pax_capacity": {
                                         "type": "integer",
                                         "example": "20"
                                     },

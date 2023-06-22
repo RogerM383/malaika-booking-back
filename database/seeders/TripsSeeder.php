@@ -21,7 +21,7 @@ class TripsSeeder extends Seeder
                 $date1 = fake()->dateTimeBetween('+1 week', '+5 week' );
                 $date2 = fake()->dateTimeBetween('+5 week', '+8 week' );
 
-                $pax_available = fake()->numberBetween(10, 50);
+                $pax_capacity = fake()->numberBetween(10, 50);
 
                 for ($i = 0; $i < $numberOfDepartures; $i++) {
                     $trip->departures()->create([
@@ -29,7 +29,7 @@ class TripsSeeder extends Seeder
                         'final' => $date2,
                         'price' => fake()->randomFloat(2,0, 12000),
                         'taxes' => fake()->randomFloat(2,0, 200),
-                        'pax_available' => $pax_available,
+                        'pax_capacity' => $pax_capacity,
                         'individual_supplement' => fake()->randomFloat(2, 0, 500),
                         'state_id' => DepartureState::all()->random()->id,
                         'commentary' => rand(0, 10) >= 8 ? fake()->paragraph() : null,
@@ -37,15 +37,15 @@ class TripsSeeder extends Seeder
                     ]);
                 }
 
-                $trip->departures()->each(function ($departure) use ($pax_available) {
+                $trip->departures()->each(function ($departure) use ($pax_capacity) {
 
                     if (rand(0, 10) >= 3) {
-                        $dui = mt_rand(0, $pax_available);
-                        if (($pax_available - $dui) % 2 !== 0 && $dui < $pax_available) {
+                        $dui = mt_rand(0, $pax_capacity);
+                        if (($pax_capacity - $dui) % 2 !== 0 && $dui < $pax_capacity) {
                             $dui++;
                         }
-                        $twin = mt_rand(0, $pax_available - $dui);
-                        $doble = $pax_available - $dui - $twin;
+                        $twin = mt_rand(0, $pax_capacity - $dui);
+                        $doble = $pax_capacity - $dui - $twin;
                     } else {
                         $dui = $twin = $doble = null;
                     }

@@ -36,7 +36,7 @@ class DepartureDetailsResource extends JsonResource
             'start'                 => $this->start,
             'final'                 => $this->final,
             'price'                 => $this->price,
-            'pax_available'         => $this->pax_available,
+            'pax_capacity'         => $this->pax_capacity,
             'individual_supplement' => $this->individual_supplement,
             'state'                 => $this->state->name,
             'commentary'            => $this->commentary,

@@ -79,7 +79,7 @@
 							<div class="cols-sm-10">
 								<div class="input-group">
 									<span class="input-group-addon"><i class="fa fa-user fa" aria-hidden="true"></i></span>
-									<input type="number" maxlength="190" class="form-control" name="pax_available" id="pax_available" placeholder="{{__('Enter rooms available')}}" required />
+									<input type="number" maxlength="190" class="form-control" name="pax_capacity" id="pax_capacity" placeholder="{{__('Enter rooms available')}}" required />
 								</div>
 							</div>
 						</div>

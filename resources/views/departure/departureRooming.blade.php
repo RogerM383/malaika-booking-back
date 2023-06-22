@@ -190,12 +190,12 @@
                 <div class="row">
 
                     <div class="col-6">
-                        <p> {{__('Pax Available')}}: {{ $departure->pax_available - $departure->clients()->where('state','<',4)->count()}}</p>
+                        <p> {{__('Pax Available')}}: {{ $departure->pax_capacity - $departure->clients()->where('state','<',4)->count()}}</p>
                     </div>
 
                     <div class="col-6">
                         <p>
-                        {{__('Pax Totals')}}: {{$departure->pax_available }}
+                        {{__('Pax Totals')}}: {{$departure->pax_capacity }}
                         </p>
                     </div>
                 </div>

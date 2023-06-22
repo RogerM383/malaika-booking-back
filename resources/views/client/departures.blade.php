@@ -68,7 +68,7 @@
                 <td>{{$departure->trip->title}}</td>
                 <td>{{ date('d-m-Y', strtotime($departure->start)) }}</td>
                 <td>{{ date('d-m-Y', strtotime($departure->final)) }}</td>
-                <td>{{ $departure->pax_available - $departure->clients()->where('state','<',4)->count()}} / {{$departure->pax_available}}</td>
+                <td>{{ $departure->pax_capacity - $departure->clients()->where('state','<',4)->count()}} / {{$departure->pax_capacity}}</td>
                 <td>{{$departure->expedient}}</td>
 
 

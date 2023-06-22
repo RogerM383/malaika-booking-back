@@ -101,7 +101,7 @@ class DepartureService extends ResourceService
             return $roomTypes->has($key) ? $roomTypes[$key] * $room : 0;
         })->sum();
         // Check que no nos pasemos de plazas (puede haber menos xo no más)
-        if ($total > $departure->pax_available) {
+        if ($total > $departure->pax_capacity) {
             throw new DeparturePaxCapacityExceededException();
         }
         // Genera la relación entre Departure y RoomType
@@ -132,7 +132,7 @@ class DepartureService extends ResourceService
                 return $roomTypes->has($key) ? $roomTypes[$key] * $room : 0;
             })->sum();
 
-            if ($total > $departure->pax_available) {
+            if ($total > $departure->pax_capacity) {
                 throw new DeparturePaxCapacityExceededException();
             }
 

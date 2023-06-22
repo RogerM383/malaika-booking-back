@@ -22,7 +22,7 @@ class Departure extends Model
         'start',
         'final',
         'price',
-        'pax_available',
+        'pax_capacity',
         'individual_supplement',
         'state_id',
         'commentary',
