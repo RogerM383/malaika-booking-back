@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exceptions\DeparturePaxCapacityExceededException;
 use App\Exceptions\ModelNotFoundException;
 use App\Services\ClientService;
 use App\Services\ClientTypeService;
@@ -87,6 +88,7 @@ class FormController extends Controller
      * )
      *
      * @throws ValidationException|ModelNotFoundException
+     * @throws DeparturePaxCapacityExceededException
      */
     public function process(Request $request): JsonResponse
     {
@@ -108,10 +110,18 @@ class FormController extends Controller
 
         $departureId = $validatedData['departure_id'];
 
-        // Check si tenemos suficiente espacio
+        // --- Check si tenemos suficiente espacio ---------------------------------------------------------------------
         // Get available slots
         $availableSlots = $this->departureService->getAvailableSlots($departureId);
-        Log::debug('Available '.$availableSlots);
+
+        // Si no hay suficientes slots salta error
+        if ($availableSlots < count($validatedData['clients'])) {
+            throw new DeparturePaxCapacityExceededException();
+        }
+
+        // --- Check si hay suficientes habitacions del tipo requerido por el usuario ----------------------------------
+        // Get room types
+
 
         // Creamos clientes
         $clients = [];

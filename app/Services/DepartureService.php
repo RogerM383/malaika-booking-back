@@ -110,7 +110,6 @@ class DepartureService extends ResourceService
         }
         // Retorna resultado
         return $departure;
-        // salta mensaje con no hay habitaciones para lo que solicitas se poindran en contacto contigo
     }
 
     /**

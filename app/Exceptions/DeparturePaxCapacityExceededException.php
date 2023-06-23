@@ -8,6 +8,7 @@ use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use JetBrains\PhpStorm\Pure;
+use Symfony\Component\HttpFoundation\Response as ResponseAlias;
 use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
 
 class DeparturePaxCapacityExceededException extends Exception implements HttpExceptionInterface
@@ -25,9 +26,10 @@ class DeparturePaxCapacityExceededException extends Exception implements HttpExc
      */
     protected function context(): array
     {
-        return array_merge(parent::context(), [
+        parent::context();
+        /*return array_merge(parent::context(), [
             'user_id' => Auth::id(),
-        ]);
+        ]);*/
     }
 
     /**
@@ -53,7 +55,7 @@ class DeparturePaxCapacityExceededException extends Exception implements HttpExc
      */
     public function getStatusCode(): int
     {
-        return 404;
+        return ResponseAlias::HTTP_UNPROCESSABLE_ENTITY;
     }
 
     /**
