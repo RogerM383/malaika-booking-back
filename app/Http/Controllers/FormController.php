@@ -109,7 +109,9 @@ class FormController extends Controller
         $departureId = $validatedData['departure_id'];
 
         // Check si tenemos suficiente espacio
-
+        // Get available slots
+        $availableSlots = $this->departureService->getAvailableSlots($departureId);
+        Log::debug('Available '.$availableSlots);
 
         // Creamos clientes
         $clients = [];
