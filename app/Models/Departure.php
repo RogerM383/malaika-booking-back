@@ -2,12 +2,13 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Support\Facades\DB;
 
 class Departure extends Model
 {
@@ -81,6 +82,17 @@ class Departure extends Model
     }
 
     /**
+     * @return Collection
+     */
+    public function assignedRoomsCount(): Collection
+    {
+        return $this->rooms()
+            ->groupBy('room_type_id')
+            ->select('rooms.room_type_id', DB::raw('count(*) as quantity'))
+            ->get();
+    }
+
+    /**
      * @return BelongsToMany
      */
     public function roomTypes(): BelongsToMany
@@ -90,6 +102,25 @@ class Departure extends Model
                 'quantity'
             )
             ->withTimestamps();
+    }
+
+    /**
+     * Check if departure available slots is equal or more than required slots
+     *
+     * @param $required
+     * @return bool
+     */
+    public function hasEnoughSpace($required): bool
+    {
+        return $this->availableSlots() >= $required;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function availableSlots(): mixed
+    {
+        return $this->pax_capacity - $this->clients()->count();
     }
 
     /**

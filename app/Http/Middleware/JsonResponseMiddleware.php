@@ -17,7 +17,6 @@ class JsonResponseMiddleware
      */
     public function handle(Request $request, Closure $next)
     {
-        Log::debug('me cago en dios');
         $response = $next($request);
         $response->header('Content-Type', 'application/json');
         $response->header('Accept', 'application/json');

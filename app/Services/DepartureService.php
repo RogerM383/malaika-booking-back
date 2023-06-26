@@ -146,11 +146,29 @@ class DepartureService extends ResourceService
         return $departure;
     }
 
-    public function getAvailableSlots($id)
+    /**
+     * Check if departure available slots is equal or more than required slots
+     *
+     * @param $id
+     * @param $required
+     * @return bool
+     * @throws ModelNotFoundException
+     */
+    /*public function hasEnoughSpace($id, $required): bool
+    {
+        return $this->getAvailableSlots($id) >= $required;
+    }*/
+
+    /**
+     * @param $id
+     * @return mixed
+     * @throws ModelNotFoundException
+     */
+    /*public function getAvailableSlots($id): mixed
     {
         $departure = $this->getById($id);
         return $departure->pax_capacity - $departure->clients()->count();
-    }
+    }*/
 
     // -----------------------
 
