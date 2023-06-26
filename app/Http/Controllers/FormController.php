@@ -11,6 +11,7 @@ use App\Services\RoomService;
 use App\Services\RoomTypeService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
@@ -108,20 +109,53 @@ class FormController extends Controller
             'contact_email'         => 'string|email',
         ])->validate();
 
-        $departureId = $validatedData['departure_id'];
+        $departureId    = $validatedData['departure_id'];
+        $clientsCount   = count($validatedData['clients']);
+        $departure      = $this->departureService->getById($departureId);
 
-        // --- Check si tenemos suficiente espacio ---------------------------------------------------------------------
-        // Get available slots
-        $availableSlots = $this->departureService->getAvailableSlots($departureId);
-
-        // Si no hay suficientes slots salta error
-        if ($availableSlots < count($validatedData['clients'])) {
+        if (!$departure->hasEnoughSpace($clientsCount)) {
             throw new DeparturePaxCapacityExceededException();
         }
 
-        // --- Check si hay suficientes habitacions del tipo requerido por el usuario ----------------------------------
-        // Get room types
+        // Get departure room types
+        $departureRoomTypes = $departure->roomTypes->mapWithKeys(function ($item, int $key) {
+                return [$item['id'] => $item['pivot']['quantity']];
+            });
+        // Get departure assigned room types count
+        $assignedRoomTypes = $departure->assignedRoomsCount()->mapWithKeys(function ($room, $key) {
+            return [$room['room_type_id'] => $room['quantity']];
+        });
+        // Get departure available room types
+        $availableRoomTypes = [];
+        foreach ($assignedRoomTypes as $key => $value) {
+            if (is_null($departureRoomTypes[$key])) {
+                $availableRoomTypes[$key] = null;
+            } else {
+                $availableRoomTypes[$key] = $departureRoomTypes[$key] - $value;
+            }
+        }
+        // Check si hay suficientes habitaciones de cada tipos solicitado
+        $requestedRooms = collect($validatedData['rooms'])->mapWithKeys(function ($room, $key) {
+            return [$room['room_type_id'] => $room['quantity']];
+        });
 
+        /*Log::debug('DEPARTURE ROOM TYPES');
+        Log::debug(json_encode($departureRoomTypes));
+        Log::debug('ASSIGNED ROOMS TYPES');
+        Log::debug(json_encode($assignedRoomTypes));
+        Log::debug('AVAILABLE ROOM TYPES');
+        Log::debug(json_encode($availableRoomTypes));
+        Log::debug('REQUESTED ROOM TYPES');
+        Log::debug(json_encode($requestedRooms));*/
+
+        $enoughRooms = $requestedRooms->every(function (int $value, int $key) use ($availableRoomTypes) {
+            return !isset($availableRoomTypes[$key]) || $availableRoomTypes[$key] >= $value;
+        });
+
+        if (!$enoughRooms) {
+            // TODO: Cambiar esto por un throw new RequiredRoomType o alguna historia asi
+            Log::error('Not enough rooms of required types');
+        }
 
         // Creamos clientes
         $clients = [];
@@ -135,80 +169,38 @@ class FormController extends Controller
             if (!empty($request->MNAC)) {
                 $data['client_type_id'] = 2;
             }
-            $clients[] = $this->clientService->make($data);
+            $clients[] = $this->clientService->create($data);
         }
+        $clientsCollection = collect($clients);
 
         // Creamos las habitaciones
-        $rooms = [];
-        foreach ($validatedData['rooms'] as $room) {
-            $roomTypeId = $room['room_type_id'];
-            $roomQuantity = $room['quantity'];
-            // Creamos la array de habitaciones
-            for ($i = 1; $i < $roomQuantity; $i++) {
-                $rooms[] = $this->roomService->make([
+        foreach ($validatedData['rooms'] as $roomData) {
+            $roomTypeId     = $roomData['room_type_id'];
+            $roomQuantity   = $roomData['quantity'];
+            $capacity       = $this->roomTypeService->getById($roomTypeId)->capacity;
+
+            for ($i = 1; $i <= $roomQuantity; $i++) {
+                $room = $this->roomService->create([
                     'room_type_id'  => $roomTypeId,
                     'room_number'   => $this->roomService->getNextRoomNumber($departureId),
+                    'departure_id'  => $departureId
                 ]);
-            }
-            Log::debug(json_encode($room));
-            $capacity = $this->roomTypeService->getById($roomTypeId)->capacity;
-            Log::debug($capacity);
-            for ($i = 1; $i < $capacity; $i++) {
 
+                $assignedClients = $clientsCollection->splice(0, $capacity);
+
+                $room->clients()->sync($assignedClients->pluck('id'));
+
+                // Assignamos todos los clientes a la salida
+                $departure->clients()->attach(
+                    $assignedClients->mapWithKeys(function ($client, $key) use ($roomTypeId) {
+                        return [$client['id'] => ['room_type_id' => $roomTypeId]];
+                    })
+                );
             }
         }
-
-/*
-
-
-        foreach ($request['clients'] as $client) {
-
-            $data = [
-                'name'      => $client['name'],
-                'surname'   => $client['surname'],
-                'dni'       => $client['dni'],
-                'MNAC'      => $client['MNAC']
-            ];
-
-            if (!empty($request->MNAC)) {
-                $data['client_type_id'] = 2;
-            }
-
-            $client = $this->clientService->create($data);
-
-            // 1.- Crea un cliente apara cada item de la rray de clientes
-            // 2.- Segun los tipos de
-
-        }
-
-
-
-        // ---------------------------------------------------------------------
-
-        $r = $this->departureService->addRoom(
-            $validatedData['departure_id'],
-            $client->id,
-            $validatedData['room_type_id'],
-            null
-            //$validatedData['observations'],
-        );
-
-        $v = $this->departureService->addClient(
-            $validatedData['departure_id'],
-            $client->id,
-            $validatedData['room_type_id']
-        );
-
-        Log::debug(json_encode($v));
-
-
-
-        Log::debug(json_encode($r));
-*/
-        $lowestNum = $this->roomService->getNextRoomNumber($validatedData['departure_id']);
 
         return $this->sendResponse(
-            ['message' => 'OK', 'num' => $lowestNum],
+            ['message' => 'OK'],
             'Form processed successfully'
         );
     }
