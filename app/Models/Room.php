@@ -17,6 +17,7 @@ class Room extends Model
         'room_type_id',
         'room_number',
         'observations',
+        'departure_id',
     ];
 
     /**
@@ -33,5 +34,13 @@ class Room extends Model
     public function departure(): BelongsTo
     {
         return $this->belongsTo(Departure::class);
+    }
+
+    /**
+     * @return BelongsTo
+     */
+    public function roomType(): BelongsTo
+    {
+        return $this->belongsTo(RoomType::class, 'room_type_id');
     }
 }

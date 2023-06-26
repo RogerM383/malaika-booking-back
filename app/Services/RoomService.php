@@ -2,8 +2,9 @@
 
 namespace App\Services;
 
-use App\Exceptions\AppModelNotFoundException;
 use App\Models\Room;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use JetBrains\PhpStorm\Pure;
@@ -21,6 +22,42 @@ class RoomService extends ResourceService
     {
         parent::__construct($model);
         //$this->departureService = $departureService;
+    }
+
+    /**
+     * @param null $departure_id
+     * @param null $room_type_id
+     * @param null $per_page
+     * @param null $page
+     * @return Collection|LengthAwarePaginator
+     */
+    public function get(
+        $departure_id = null,
+        $room_type_id = null,
+        $per_page = null,
+        $page = null,
+    ): Collection|LengthAwarePaginator
+    {
+        $query = $this->model::query();
+
+        if ($departure_id) {
+            $this->addDepartureIdFilter($query, $departure_id);
+        }
+
+        if ($room_type_id) {
+            $this->addRoomTypeIdFilter($query, $room_type_id);
+        }
+
+        if ($this->isPaginated($per_page, $page)) {
+            return $query->paginate(
+                $per_page ?? $this->defaultPerPage,
+                ['*'],
+                'rooms',
+                $page ?? $this->defaultPage
+            );
+        } else {
+            return $query->get();
+        }
     }
 
     /**
@@ -44,8 +81,8 @@ class RoomService extends ResourceService
 
     public function getNextRoomNumber($departure_id)
     {
-        $lowestAvailableRoomNumber = DB::table('rooms')
-            ->selectRaw('MIN(room_number + 1) AS lowest_available')
+        $nextNumber = DB::table('rooms')
+            ->selectRaw('MAX(room_number) + 1 AS lowest_available')
             ->where('departure_id', $departure_id)
             ->whereNotExists(function ($query) {
                 $query->select(DB::raw(1))
@@ -54,7 +91,24 @@ class RoomService extends ResourceService
             })
             ->pluck('lowest_available')
             ->first();
-        Log::debug($lowestAvailableRoomNumber);
-        return $lowestAvailableRoomNumber;
+
+        // Si $nextNumber es null, asignar el número más alto existente + 1
+        if (is_null($nextNumber)) {
+            $nextNumber = DB::table('rooms')
+                    ->where('departure_id', $departure_id)
+                    ->max('room_number') + 1;
+        }
+
+        return $nextNumber;
+    }
+
+    public function addDepartureIdFilter(&$query, $id)
+    {
+        $query->orWhere('room.departure_id', $id);
+    }
+
+    public function addRoomTypeIdFilter(&$query, $id)
+    {
+        $query->orWhere('room.room_type_id', $id);
     }
 }

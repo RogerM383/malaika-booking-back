@@ -21,7 +21,7 @@ class RoomType extends Model
     /**
      * @return HasMany
      */
-    public function tips(): HasMany
+    public function trips(): HasMany
     {
         return $this->hasMany(Trip::class);
     }
@@ -32,5 +32,13 @@ class RoomType extends Model
     public function departures(): BelongsToMany
     {
         return $this->belongsToMany(Departure::class, 'rel_departure_room_type')->withTimestamps();
+    }
+
+    /**
+     * @return HasMany
+     */
+    public function rooms(): HasMany
+    {
+        return $this->hasMany(Room::class);
     }
 }
