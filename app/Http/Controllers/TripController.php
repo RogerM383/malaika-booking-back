@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exceptions\ModelNotFoundException;
 use App\Http\Resources\Trip\TripListCollection;
 use App\Http\Resources\Trip\TripListResource;
 use App\Http\Resources\Trip\TripResource;
@@ -123,7 +124,7 @@ class TripController extends Controller
      *          )
      *      )
      *  )
-     * @throws TripNotFoundException|ValidationException
+     * @throws ValidationException|ModelNotFoundException
      */
     public function getById(Request $request, $id): JsonResponse
     {
@@ -173,8 +174,7 @@ class TripController extends Controller
      *          description="Trip updated successfully",
      *      ),
      *  )
-     * @throws ValidationException
-     * @throws TripNotFoundException
+     * @throws ValidationException|ModelNotFoundException
      */
     public function update(Request $request, $id): JsonResponse
     {
