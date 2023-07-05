@@ -42,6 +42,7 @@ class DepartureResource extends JsonResource
             'commentary'            => $this->commentary,
             'taxes'                 => $this->taxes,
             'expedient'             => $this->expedient,
+            'title'                 => $this->trip->title,
             'room_availability'     => RoomTypeAvailabilityResource::collection($this->whenLoaded('roomTypes'))
         ];
     }

@@ -2,8 +2,6 @@
 
 namespace App\Services;
 
-use App\Exceptions\AppModelNotFoundException;
-use App\Exceptions\DepartureNotFoundException;
 use App\Exceptions\DeparturePaxCapacityExceededException;
 use App\Exceptions\ModelNotFoundException;
 use App\Models\Departure;
