@@ -435,6 +435,41 @@
                 ]
             }
         },
+        "/api/client-types": {
+            "get": {
+                "tags": [
+                    "ClientTypes"
+                ],
+                "summary": "Lista los tipos de cliente",
+                "description": "Lista los tipos de cliente",
+                "operationId": "clientTypesList",
+                "responses": {
+                    "200": {
+                        "description": "Client types list retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/ClientTypeListResource"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
+        },
         "/api/departures": {
             "get": {
                 "tags": [
@@ -1443,6 +1478,27 @@
                         "description": "Client place of birtgh",
                         "type": "string",
                         "example": "Barcelona"
+                    }
+                },
+                "type": "object",
+                "xml": {
+                    "name": "ClientListResource"
+                }
+            },
+            "ClientTypeListResource": {
+                "required": [
+                    "id"
+                ],
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "readOnly": "true",
+                        "example": "1"
+                    },
+                    "name": {
+                        "description": "Client name",
+                        "type": "string",
+                        "example": "Maria"
                     }
                 },
                 "type": "object",

@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ClientController;
+use App\Http\Controllers\ClientTypeController;
 use App\Http\Controllers\DepartureController;
 //use App\Http\Controllers\FormController;
 use App\Http\Controllers\FormController;
@@ -28,6 +29,10 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::prefix('auth')->group(function () {
     Route::post('register', [AuthController::class, 'register']);
     Route::post('login', [AuthController::class, 'login']);
+});
+
+Route::prefix('client-types')->group(function () {
+    Route::get('/', [ClientTypeController::class, 'get'])->middleware('auth:api');
 });
 
 Route::prefix('clients')->group(function () {
