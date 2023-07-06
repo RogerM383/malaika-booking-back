@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 
-use App\Models\Traveler;
+use App\Models\Passport;
 use Illuminate\Database\Seeder;
 use App\Models\Client;
 
@@ -16,10 +16,11 @@ class ClientsSeeder extends Seeder
         Client::factory()
             ->count(50)
             ->create()
-            // TODO meter passport
-            /*->each(function ($client) {
-                $client->traveler()->save(Traveler::factory()->make());
-            })*/;
+            ->each(function ($client) {
+                if (rand(0,10) <= 8) {
+                    $client->passport()->save(Passport::factory()->make());
+                }
+            });
     }
 }
 
