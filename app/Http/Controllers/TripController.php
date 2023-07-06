@@ -141,7 +141,7 @@ class TripController extends Controller
 
 
     /**
- *      @OA\Post(
+     *  @OA\Post(
      *      path="/api/trips",
      *      tags={"Trips"},
      *      summary="Crea un nuevo viaje",
@@ -184,29 +184,19 @@ class TripController extends Controller
     }
 
     /**
-     * @OA\Put(
+     * @OA\Delete(
      *      path="/api/trips/{id}",
      *      tags={"Trips"},
-     *      summary="Actualiza los datos del viaje",
+     *      summary="Elimina un viaje",
      *      security={{"bearer_token":{}}},
-     *      description="Actualiza los datos del viaje",
-     *      operationId="updateTrip",
+     *      description="Elimina un viaje",
+     *      operationId="deleteTrip",
      *      @OA\Parameter(
      *          name="id",
      *          in="path",
      *          description="Id de viaje",
      *          required=true,
      *          @OA\Schema(type="integer")
-     *      ),
-     *     @OA\RequestBody(
-     *          description="Update trip",
-     *          required=true,
-     *          @OA\JsonContent(
-     *              @OA\Property(property="title", type="string", example="Tour por Italia"),
-     *              @OA\Property(property="description", type="string", example="Tour por Italia"),
-     *              @OA\Property(property="commentary", type="string", example="Es un viaje muy chulo, comes pasta y pizza"),
-     *              @OA\Property(property="trip_state_id", type="integer", example="1"),
-     *          )
      *      ),
      *      @OA\Response(
      *          response="200",
@@ -232,5 +222,19 @@ class TripController extends Controller
             new TripResource($this->service->update($id, $validatedData)),
             'Trip updated successfully'
         );
+    }
+
+    /**
+     * @param Request $request
+     * @param $id
+     * @return JsonResponse
+     * @throws ModelNotFoundException
+     * @throws ValidationException
+     */
+    public function delete(Request $request, $id): JsonResponse
+    {
+        Validator::make(['id' => $id], ['id' => 'required'])->validate();
+        $this->service->delete($id);
+        return $this->sendResponse([], 'Trip deleted successfully');
     }
 }

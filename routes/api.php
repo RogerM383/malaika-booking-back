@@ -48,6 +48,7 @@ Route::prefix('trips')->group(function () {
     Route::get('/', [TripController::class, 'get'])->middleware('auth:api');
     Route::post('/', [TripController::class, 'create'])->middleware('auth:api');
     Route::get('/{id}', [TripController::class, 'getById'])->middleware('auth:api');
+    Route::delete('/{id}', [TripController::class, 'delete'])->middleware('auth:api');
     //Route::post('/', [TripController::class, 'create'])->middleware('auth:api');
     Route::put('/{id}', [TripController::class, 'update'])->middleware(['must.json', 'auth:api']);
 });
