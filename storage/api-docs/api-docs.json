@@ -1206,6 +1206,64 @@
                     }
                 ]
             },
+            "put": {
+                "tags": [
+                    "Trips"
+                ],
+                "summary": "Actualiza los datos del viaje",
+                "description": "Actualiza los datos del viaje",
+                "operationId": "updateTrip",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Id de viaje",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "Update trip",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "title": {
+                                        "type": "string",
+                                        "example": "Tour por Italia"
+                                    },
+                                    "description": {
+                                        "type": "string",
+                                        "example": "Tour por Italia"
+                                    },
+                                    "commentary": {
+                                        "type": "string",
+                                        "example": "Es un viaje muy chulo, comes pasta y pizza"
+                                    },
+                                    "trip_state_id": {
+                                        "type": "integer",
+                                        "example": "1"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Trip updated successfully"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            },
             "delete": {
                 "tags": [
                     "Trips"

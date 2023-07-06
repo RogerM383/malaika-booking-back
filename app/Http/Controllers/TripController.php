@@ -141,7 +141,7 @@ class TripController extends Controller
 
 
     /**
-     *  @OA\Post(
+ *      @OA\Post(
      *      path="/api/trips",
      *      tags={"Trips"},
      *      summary="Crea un nuevo viaje",
@@ -184,19 +184,29 @@ class TripController extends Controller
     }
 
     /**
-     * @OA\Delete(
+     * @OA\Put(
      *      path="/api/trips/{id}",
      *      tags={"Trips"},
-     *      summary="Elimina un viaje",
+     *      summary="Actualiza los datos del viaje",
      *      security={{"bearer_token":{}}},
-     *      description="Elimina un viaje",
-     *      operationId="deleteTrip",
+     *      description="Actualiza los datos del viaje",
+     *      operationId="updateTrip",
      *      @OA\Parameter(
      *          name="id",
      *          in="path",
      *          description="Id de viaje",
      *          required=true,
      *          @OA\Schema(type="integer")
+     *      ),
+     *     @OA\RequestBody(
+     *          description="Update trip",
+     *          required=true,
+     *          @OA\JsonContent(
+     *              @OA\Property(property="title", type="string", example="Tour por Italia"),
+     *              @OA\Property(property="description", type="string", example="Tour por Italia"),
+     *              @OA\Property(property="commentary", type="string", example="Es un viaje muy chulo, comes pasta y pizza"),
+     *              @OA\Property(property="trip_state_id", type="integer", example="1"),
+     *          )
      *      ),
      *      @OA\Response(
      *          response="200",
@@ -225,11 +235,26 @@ class TripController extends Controller
     }
 
     /**
-     * @param Request $request
-     * @param $id
-     * @return JsonResponse
-     * @throws ModelNotFoundException
-     * @throws ValidationException
+     * @OA\Delete(
+     *      path="/api/trips/{id}",
+     *      tags={"Trips"},
+     *      summary="Elimina un viaje",
+     *      security={{"bearer_token":{}}},
+     *      description="Elimina un viaje",
+     *      operationId="deleteTrip",
+     *      @OA\Parameter(
+     *          name="id",
+     *          in="path",
+     *          description="Id de viaje",
+     *          required=true,
+     *          @OA\Schema(type="integer")
+     *      ),
+     *      @OA\Response(
+     *          response="200",
+     *          description="Trip updated successfully",
+     *      ),
+     *  )
+     * @throws ValidationException|ModelNotFoundException
      */
     public function delete(Request $request, $id): JsonResponse
     {
