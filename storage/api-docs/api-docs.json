@@ -1206,13 +1206,13 @@
                     }
                 ]
             },
-            "put": {
+            "delete": {
                 "tags": [
                     "Trips"
                 ],
-                "summary": "Actualiza los datos del viaje",
-                "description": "Actualiza los datos del viaje",
-                "operationId": "updateTrip",
+                "summary": "Elimina un viaje",
+                "description": "Elimina un viaje",
+                "operationId": "deleteTrip",
                 "parameters": [
                     {
                         "name": "id",
@@ -1224,35 +1224,6 @@
                         }
                     }
                 ],
-                "requestBody": {
-                    "description": "Update trip",
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "properties": {
-                                    "title": {
-                                        "type": "string",
-                                        "example": "Tour por Italia"
-                                    },
-                                    "description": {
-                                        "type": "string",
-                                        "example": "Tour por Italia"
-                                    },
-                                    "commentary": {
-                                        "type": "string",
-                                        "example": "Es un viaje muy chulo, comes pasta y pizza"
-                                    },
-                                    "trip_state_id": {
-                                        "type": "integer",
-                                        "example": "1"
-                                    }
-                                },
-                                "type": "object"
-                            }
-                        }
-                    }
-                },
                 "responses": {
                     "200": {
                         "description": "Trip updated successfully"
