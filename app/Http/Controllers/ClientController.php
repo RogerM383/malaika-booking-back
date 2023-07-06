@@ -212,7 +212,7 @@ class ClientController extends Controller
      *  )
      * @throws ValidationException
      */
-    public function create(Request $request)
+    public function create(Request $request): JsonResponse
     {
         $validatedData = Validator::make($request->only($this->service->getFillable()), [
             'client_type_id'    => 'required|integer|min:1',
@@ -269,8 +269,7 @@ class ClientController extends Controller
      *          description="Client updated successfully",
      *      ),
      *  )
-     * @throws ValidationException
-     * @throws ClientNotFoundException
+     * @throws ValidationException|ModelNotFoundException
      */
     public function update(Request $request, $id): JsonResponse
     {
@@ -292,5 +291,34 @@ class ClientController extends Controller
             new ClientResource($this->service->update($id, $validatedData)),
             'Client updated successfully'
         );
+    }
+
+    /**
+     * @OA\Delete(
+     *      path="/api/clients/{id}",
+     *      tags={"Clients"},
+     *      summary="Elimina un cliente",
+     *      security={{"bearer_token":{}}},
+     *      description="Elimina un cliente",
+     *      operationId="deleteClient",
+     *      @OA\Parameter(
+     *          name="id",
+     *          in="path",
+     *          description="Id de cliente",
+     *          required=true,
+     *          @OA\Schema(type="integer")
+     *      ),
+     *      @OA\Response(
+     *          response="200",
+     *          description="Client deleted successfully",
+     *      ),
+     *  )
+     * @throws ValidationException|ModelNotFoundException
+     */
+    public function delete(Request $request, $id): JsonResponse
+    {
+        Validator::make(['id' => $id], ['id' => 'required'])->validate();
+        $this->service->delete($id);
+        return $this->sendResponse([], 'Trip deleted successfully');
     }
 }

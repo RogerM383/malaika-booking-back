@@ -40,6 +40,7 @@ Route::prefix('clients')->group(function () {
     Route::get('/{id}', [ClientController::class, 'getById'])->middleware('auth:api');
     Route::post('/', [ClientController::class, 'create'])->middleware('auth:api');
     Route::put('/{id}', [ClientController::class, 'update'])->middleware(['must.json', 'auth:api']);
+    Route::delete('/{id}', [ClientController::class, 'delete'])->middleware('auth:api');
 });
 
 Route::prefix('passports')->group(function () {
@@ -47,6 +48,7 @@ Route::prefix('passports')->group(function () {
     Route::get('/{id}', [PassportController::class, 'getById'])->middleware('auth:api');
     Route::post('/', [PassportController::class, 'create'])->middleware('auth:api');
     Route::put('/{id}', [PassportController::class, 'update'])->middleware(['must.json', 'auth:api']);
+    Route::delete('/{id}', [PassportController::class, 'delete'])->middleware('auth:api');
 });
 
 Route::prefix('trips')->group(function () {
@@ -63,7 +65,7 @@ Route::prefix('departures')->group(function () {
     Route::get('/{id}', [DepartureController::class, 'getById'])->middleware('auth:api');
     Route::post('/', [DepartureController::class, 'create'])->middleware('auth:api');
     Route::put('/{id}', [DepartureController::class, 'update'])->middleware(['must.json', 'auth:api']);
-
+    Route::delete('/{id}', [DepartureController::class, 'delete'])->middleware('auth:api');
 
     Route::get('/{id}/rooming', [DepartureController::class, 'getDepartureRooming'])->middleware('auth:api');
 });

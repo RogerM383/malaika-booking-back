@@ -311,6 +311,35 @@ class DepartureController extends Controller
         $this->service->addClient(...$validatedData);
     }
 
+    /**
+     * @OA\Delete(
+     *      path="/api/departures/{id}",
+     *      tags={"Departures"},
+     *      summary="Elimina una salida",
+     *      security={{"bearer_token":{}}},
+     *      description="Elimina una salida",
+     *      operationId="deleteDeparture",
+     *      @OA\Parameter(
+     *          name="id",
+     *          in="path",
+     *          description="Id de salida",
+     *          required=true,
+     *          @OA\Schema(type="integer")
+     *      ),
+     *      @OA\Response(
+     *          response="200",
+     *          description="Departure deleted successfully",
+     *      ),
+     *  )
+     * @throws ValidationException|ModelNotFoundException
+     */
+    public function delete(Request $request, $id): JsonResponse
+    {
+        Validator::make(['id' => $id], ['id' => 'required'])->validate();
+        $this->service->delete($id);
+        return $this->sendResponse([], 'Departure deleted successfully');
+    }
+
     // -----------------------------------------------------------------------------------------------------------------
 
     /**

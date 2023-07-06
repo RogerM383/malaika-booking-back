@@ -251,7 +251,7 @@ class TripController extends Controller
      *      ),
      *      @OA\Response(
      *          response="200",
-     *          description="Trip updated successfully",
+     *          description="Trip deleted successfully",
      *      ),
      *  )
      * @throws ValidationException|ModelNotFoundException

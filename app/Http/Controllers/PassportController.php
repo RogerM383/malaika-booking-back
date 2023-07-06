@@ -163,4 +163,33 @@ class PassportController extends Controller
             'Passport retrieved successfully'
         );
     }
+
+    /**
+     * @OA\Delete(
+     *      path="/api/passports/{id}",
+     *      tags={"Passports"},
+     *      summary="Elimina un pasaporte",
+     *      security={{"bearer_token":{}}},
+     *      description="Elimina un pasaporte",
+     *      operationId="deletePassport",
+     *      @OA\Parameter(
+     *          name="id",
+     *          in="path",
+     *          description="Id de pasaporte",
+     *          required=true,
+     *          @OA\Schema(type="integer")
+     *      ),
+     *      @OA\Response(
+     *          response="200",
+     *          description="Passport deleted successfully",
+     *      ),
+     *  )
+     * @throws ValidationException|ModelNotFoundException
+     */
+    public function delete(Request $request, $id): JsonResponse
+    {
+        Validator::make(['id' => $id], ['id' => 'required'])->validate();
+        $this->service->delete($id);
+        return $this->sendResponse([], 'Passport deleted successfully');
+    }
 }

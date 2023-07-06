@@ -433,6 +433,35 @@
                         "bearer_token": []
                     }
                 ]
+            },
+            "delete": {
+                "tags": [
+                    "Clients"
+                ],
+                "summary": "Elimina un cliente",
+                "description": "Elimina un cliente",
+                "operationId": "deleteClient",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Id de cliente",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Client deleted successfully"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
             }
         },
         "/api/client-types": {
@@ -740,6 +769,35 @@
                 "responses": {
                     "200": {
                         "description": "Departure updated successfully"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Departures"
+                ],
+                "summary": "Elimina una salida",
+                "description": "Elimina una salida",
+                "operationId": "deleteDeparture",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Id de salida",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Departure deleted successfully"
                     }
                 },
                 "security": [
@@ -1074,6 +1132,35 @@
                         "bearer_token": []
                     }
                 ]
+            },
+            "delete": {
+                "tags": [
+                    "Passports"
+                ],
+                "summary": "Elimina un pasaporte",
+                "description": "Elimina un pasaporte",
+                "operationId": "deletePassport",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Id de pasaporte",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Passport deleted successfully"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
             }
         },
         "/api/trips": {
@@ -1319,7 +1406,7 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "Trip updated successfully"
+                        "description": "Trip deleted successfully"
                     }
                 },
                 "security": [
