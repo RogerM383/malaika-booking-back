@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Exceptions\DeparturePaxCapacityExceededException;
+use App\Exceptions\ModelNotFoundException;
 use App\Http\Resources\Departure\DepartureCollection;
 use App\Http\Resources\Departure\DepartureDetailsResource;
 use App\Http\Resources\Departure\DepartureResource;
@@ -121,7 +123,7 @@ class DepartureController extends Controller
      * @param Request $request
      * @param $id
      * @return JsonResponse
-     * @throws DepartureNotFoundException
+     * @throws ModelNotFoundException
      */
     public function getById(Request $request, $id): JsonResponse
     {
@@ -162,7 +164,7 @@ class DepartureController extends Controller
      *          description="Departure created successfully",
      *      ),
      *  )
-     * @throws ValidationException|TripNotFoundException
+     * @throws ValidationException|ModelNotFoundException|DeparturePaxCapacityExceededException
      */
     public function create(Request $request): JsonResponse
     {
@@ -231,7 +233,7 @@ class DepartureController extends Controller
      *      ),
      *  )
      * @throws ValidationException
-     * @throws DepartureNotFoundException
+     * @throws ModelNotFoundException|DeparturePaxCapacityExceededException
      */
     public function update(Request $request, $id): JsonResponse
     {
@@ -296,7 +298,7 @@ class DepartureController extends Controller
      *          description="Departure created successfully",
      *      ),
      *  )
-     * @throws ValidationException|TripNotFoundException
+     * @throws ValidationException|ModelNotFoundException
      */
     public function addClient(Request $request, $id)
     {
@@ -343,7 +345,7 @@ class DepartureController extends Controller
      * @param Request $request
      * @param $id
      * @return JsonResponse
-     * @throws DepartureNotFoundException
+     * @throws ModelNotFoundException
      */
     /*public function getDepartureRooming(Request $request, $id): JsonResponse
     {

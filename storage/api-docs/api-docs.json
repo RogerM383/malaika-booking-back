@@ -1112,6 +1112,56 @@
                         "bearer_token": []
                     }
                 ]
+            },
+            "post": {
+                "tags": [
+                    "Trips"
+                ],
+                "summary": "Crea un nuevo viaje",
+                "description": "Crea un nuevo viaje",
+                "operationId": "createTrip",
+                "requestBody": {
+                    "description": "Create trip",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "title"
+                                ],
+                                "properties": {
+                                    "title": {
+                                        "type": "string",
+                                        "example": "Tour por Italia"
+                                    },
+                                    "description": {
+                                        "type": "string",
+                                        "example": "Tour por Italia"
+                                    },
+                                    "commentary": {
+                                        "type": "string",
+                                        "example": "Es un viaje muy chulo, comes pasta y pizza"
+                                    },
+                                    "trip_state_id": {
+                                        "type": "integer",
+                                        "example": "1"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Trip created successfully"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
             }
         },
         "/api/trips/{id}": {
@@ -1180,10 +1230,6 @@
                     "content": {
                         "application/json": {
                             "schema": {
-                                "required": [
-                                    "warehouse_id",
-                                    "stock"
-                                ],
                                 "properties": {
                                     "title": {
                                         "type": "string",

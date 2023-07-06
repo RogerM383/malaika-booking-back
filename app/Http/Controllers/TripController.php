@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Exceptions\ModelNotFoundException;
+use App\Http\Resources\Departure\DepartureResource;
 use App\Http\Resources\Trip\TripListCollection;
 use App\Http\Resources\Trip\TripListResource;
 use App\Http\Resources\Trip\TripResource;
@@ -138,9 +139,48 @@ class TripController extends Controller
         );
     }
 
+
+    /**
+ *      @OA\Post(
+     *      path="/api/trips",
+     *      tags={"Trips"},
+     *      summary="Crea un nuevo viaje",
+     *      security={{"bearer_token":{}}},
+     *      description="Crea un nuevo viaje",
+     *      operationId="createTrip",
+     *     @OA\RequestBody(
+     *          description="Create trip",
+     *          required=true,
+     *          @OA\JsonContent(
+     *              required={"title"},
+     *              @OA\Property(property="title", type="string", example="Tour por Italia"),
+     *              @OA\Property(property="description", type="string", example="Tour por Italia"),
+     *              @OA\Property(property="commentary", type="string", example="Es un viaje muy chulo, comes pasta y pizza"),
+     *              @OA\Property(property="trip_state_id", type="integer", example="1"),
+     *          )
+     *      ),
+     *      @OA\Response(
+     *          response="200",
+     *          description="Trip created successfully",
+     *      ),
+     *  )
+     * @param Request $request
+     * @return JsonResponse
+     * @throws ValidationException
+     */
     public function create(Request $request)
     {
-        // TODO: Implement create() method.
+        $validatedData = Validator::make($request->all(), [
+            'title'         => 'required|string',
+            'description'   => 'string',
+            'commentary'    => 'string',
+            'trip_state_id' => 'integer',
+        ])->validate();
+
+        return $this->sendResponse(
+            new TripResource($this->service->create($validatedData)),
+            'Trip created successfully'
+        );
     }
 
     /**
@@ -162,7 +202,6 @@ class TripController extends Controller
      *          description="Update trip",
      *          required=true,
      *          @OA\JsonContent(
-     *              required={"warehouse_id", "stock"},
      *              @OA\Property(property="title", type="string", example="Tour por Italia"),
      *              @OA\Property(property="description", type="string", example="Tour por Italia"),
      *              @OA\Property(property="commentary", type="string", example="Es un viaje muy chulo, comes pasta y pizza"),

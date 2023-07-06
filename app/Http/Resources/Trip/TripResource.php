@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources\Trip;
 
+use App\Http\Resources\Images\ImageResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -35,7 +36,7 @@ class TripResource extends JsonResource
             'title'         => $this->title,
             'description'   => $this->description,
             'commentary'    => $this->commentary,
-            'state'         => $this->whenNotNull($this->state->name),
+            'state'         => $this->when(!empty($this->state), fn () => $this->state->name),
         ];
     }
 }
