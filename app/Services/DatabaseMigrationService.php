@@ -21,11 +21,11 @@ class DatabaseMigrationService
 
     #[Pure] function migrate ()
     {
-        //$this->migrateUsers();
-        //$this->migrateClients();
-        //$this->migrateTrips();
-        //$this->migrateDepartures();
-        //$this->migrateRoles();
+        $this->migrateUsers();
+        $this->migrateClients();
+        $this->migrateTrips();
+        $this->migrateDepartures();
+        $this->migrateRoles();
     }
 
     function migrateUsers (): void
@@ -417,8 +417,8 @@ class DatabaseMigrationService
             $newClientDeparture->client_id      = $traveler->client_id;
             $newClientDeparture->seat           = $traveler->seat;
             $newClientDeparture->state          = $statesValues[$relation->state]; // TODO: mirar de donde viene este esta;
-            $newClientDeparture->observations   = $traveler->observations;
-            $newClientDeparture->room_type_id   = $traveler->type_room;
+            $newClientDeparture->observations   = $traveler->observations . ' ' . $traveler->type_room; // En la original type_room contiene comentarios
+            $newClientDeparture->room_type_id   = $relation->type_room;
             $newClientDeparture->created_at     = $traveler->created_at;
             $newClientDeparture->updated_at     = $traveler->updated_at;
             $newClientDeparture->save();
