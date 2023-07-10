@@ -17,7 +17,7 @@ return new class extends Migration
             // Default MALAIKA
             $table->foreignId('client_type_id')->default(1)->constrained('client_types')->cascadeOnDelete();
 
-            $table->string('dni')->unique();
+            $table->string('dni')->nullable()->unique();
             $table->date('dni_expiration')->nullable();
             $table->string('place_birth')->nullable();
             $table->string('name')->nullable(false);

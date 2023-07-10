@@ -9,7 +9,10 @@ use App\Models\Role;
 use App\Models\Room;
 use App\Models\Trip;
 use App\Models\User;
+use Exception;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use JetBrains\PhpStorm\Pure;
 
 class DatabaseMigrationService
@@ -89,7 +92,7 @@ class DatabaseMigrationService
             'CATALANA' => 1,
             'CFASTELLA' => 2,
             'CATALÁN' => 1,
-            'passadis, pero s\'adapta' => 1,
+            "passadis, pero s'adapta" => 1,
             'CAST' => 2,
         ];
 
@@ -102,29 +105,96 @@ class DatabaseMigrationService
 
         $clients->each(function ($client) use ($travelers, $clientTypesValues, $languagesValues) {
             // Search related traveler
-            $traveler = array_search($client->id, array_column(json_decode($travelers), 'client_id'));
-            // Create client
-            $newClient = Client::make([]);
-            $newClient->client_type_id  = $clientTypesValues[$traveler->client_type]; // De donde vienen los client types?
-            $newClient->dni             = $client->dni;
-            $newClient->dni_expiration  = $client->dni_expiration;
-            $newClient->place_birth     = $client->place_birth;
-            $newClient->name            = $client->name;
-            $newClient->surname         = $client->surname;
-            $newClient->email           = $client->email;
-            $newClient->phone           = $client->phone;
-            $newClient->address         = $client->address;
-            $newClient->intolerances    = $traveler->intolerances;
-            $newClient->frequent_flyer  = $traveler->frequency_fly;
-            $newClient->member_number   = $traveler->member_number;
-            $newClient->notes           = $traveler->notes;
-            $newClient->language_id     = $languagesValues[$traveler->lang]; // Esta en texto hay que mirar como pasarlo
-            $newClient->created_at      = $client->created_at;
-            $newClient->updated_at      = $client->updated_at;
-            $newClient->deleted_at      = null;
-            $newClient->save();
+            $index = array_search($client->id, array_column(json_decode($travelers), 'client_id'));
+            $traveler = $travelers[$index];
+
+            try {
+                // Create client
+                $newClient = Client::make([]);
+                $newClient->id = $client->id;
+                $newClient->client_type_id = isset($clientTypesValues[$traveler->client_type]) ? $clientTypesValues[$traveler->client_type] : 1; // De donde vienen los client types?
+                $newClient->dni = !empty($client->dni) ? $client->dni : null;
+                $newClient->dni_expiration = $this->formatDate($client->dni_expiration);
+                $newClient->place_birth = $client->place_birth;
+                $newClient->name = $client->name;
+                $newClient->surname = $client->surname;
+                $newClient->email = $client->email;
+                $newClient->phone = $client->phone;
+                $newClient->address = $client->address;
+                $newClient->intolerances = $traveler->intolerances;
+                $newClient->frequent_flyer = $traveler->frequency_fly;
+                $newClient->member_number = $traveler->member_number;
+                $newClient->notes = $traveler->notes;
+                $newClient->language_id = $languagesValues[$traveler->lang] ?? 1; // Esta en texto hay que mirar como pasarlo
+                $newClient->created_at = $client->created_at;
+                $newClient->updated_at = $client->updated_at;
+                $newClient->deleted_at = null;
+                $newClient->save();
+            } catch (Exception $e) {
+
+                Log::debug(json_encode($e));
+
+                // Search related traveler
+                $index = array_search($client->id, array_column(json_decode($travelers), 'client_id'));
+                $traveler = $travelers[$index];
+
+                // Create client
+                $newClient = Client::make([]);
+                $newClient->id = $client->id;
+                $newClient->client_type_id = isset($clientTypesValues[$traveler->client_type]) ? $clientTypesValues[$traveler->client_type] : 1; // De donde vienen los client types?
+                $newClient->dni = $client->dni.'-duplicado';
+                $newClient->dni_expiration = $this->formatDate($client->dni_expiration);
+                $newClient->place_birth = $client->place_birth;
+                $newClient->name = $client->name;
+                $newClient->surname = $client->surname;
+                $newClient->email = $client->email;
+                $newClient->phone = $client->phone;
+                $newClient->address = $client->address;
+                $newClient->intolerances = $traveler->intolerances;
+                $newClient->frequent_flyer = $traveler->frequency_fly;
+                $newClient->member_number = $traveler->member_number;
+                $newClient->notes = $traveler->notes;
+                $newClient->language_id = $languagesValues[$traveler->lang] ?? 1; // Esta en texto hay que mirar como pasarlo
+                $newClient->created_at = $client->created_at;
+                $newClient->updated_at = $client->updated_at;
+                $newClient->deleted_at = null;
+                $newClient->save();
+            }
         });
     }
+
+    function formatDate ($dateString)
+    {
+        if (empty($dateString)) {
+            return null;
+        }
+
+        try {
+            $validDate = Carbon::createFromFormat('d/m/Y H:i:s', $dateString);
+        } catch (\Throwable $e) {
+            // Manejar la excepción aquí (por ejemplo, mostrar un mensaje de error, devolver un valor predeterminado, etc.)
+            return null;
+        }
+
+        /*return $validDate;
+
+        Log::debug('MEFABNJDBDHJIDG H ID GUIDUDU');
+        Log::debug($dateString);
+
+        //$validDate = Carbon::createFromFormat('d-m-Y H:i:s', $dateString);
+
+        $validDate = Carbon::createFromFormat('d-m-Y', $dateString);
+
+        // Verificar si se proporcionó la hora en la cadena de fecha
+        if (!$validDate->format('H:i:s')) {
+            // No se proporcionó la hora, establecer la hora actual
+            $validDate->setTime(Carbon::now()->format('H'), Carbon::now()->format('i'), Carbon::now()->format('s'));
+        }*/
+
+        // Obtener la cadena de fecha válida
+        return $validDate->toDateTimeString();
+    }
+
 
     function migrateTrips ()
     {
@@ -150,6 +220,7 @@ class DatabaseMigrationService
 
         $trips->each(function ($trip) use ($tripStateValues) {
             $newTrip                = Trip::make([]);
+            $newTrip->id            = $trip->id;
             $newTrip->title         = $trip->title;
             $newTrip->description   = $trip->description;
             $newTrip->commentary    = $trip->commentary;
@@ -246,6 +317,7 @@ class DatabaseMigrationService
             $departureSupplement = floatval(str_replace(',', '.', trim(preg_split('/\€/', $departure->individual_supplement)[0])));
 
             $newDeparture                           = Departure::make([]);
+            $newDeparture->id                       = $departure->id;
             $newDeparture->trip_id                  = $departure->trip_id;
             $newDeparture->state_id                 = $departureStateValues[$departure->state];
             $newDeparture->start                    = $departure->start;
@@ -258,7 +330,7 @@ class DatabaseMigrationService
             $newDeparture->expedient                = $departure->expedient;
             $newDeparture->created_at               = $departure->created_at;
             $newDeparture->updated_at               = $departure->updated_at;
-            $newDeparture->deleted_at               = $departure->deleted_at;
+            $newDeparture->deleted_at               = null;
             $newDeparture->save();
 
 
@@ -270,22 +342,29 @@ class DatabaseMigrationService
             ];
 
             // Get original clients data
-            $departureRooms = DB::connection('db2')
+            /*$departureRooms = DB::connection('db2')
                 ->table('rel_departure_client')
                 ->selectRaw('SELECT departure_id, type_room, COUNT(*) AS total')
-                ->where($departure->id)
+                ->where('departure_id',$departure->id)
+                ->groupBy('type_room')
+                ->get();*/
+            $departureRooms = DB::connection('db2')
+                ->table('rel_departure_client')
+                ->select('type_room', DB::raw('COUNT(*) AS total'))
+                ->where('departure_id', $newDeparture->id)
                 ->groupBy('type_room')
                 ->get();
 
 
 
-            $departureRooms->each(function ($departureRoom) {
+            $departureRooms->each(function ($departureRoom) use ($newDeparture, $departure) {
+                $room_type = $departureRoom->type_room != 0 ? $departureRoom->type_room : 1;
                 // Set connection to local
                 DB::connection('mysql')
                     ->table('rel_departure_room_type')
                     ->insert([
-                        'departure_id'  => $departureRoom->departure_id,
-                        'room_type_id'  => $departureRoom->type_room,
+                        'departure_id'  => $newDeparture->id,
+                        'room_type_id'  => $room_type,
                         'quantity'      => $departureRoom->total,
                         'created_at' => now(),
                         'updated_at' => now(),
@@ -413,6 +492,7 @@ class DatabaseMigrationService
             DB::connection('mysql');
 
             $newClientDeparture                 = ClientDepartures::make([]);
+            $newClientDeparture->id             = $traveler->id;
             $newClientDeparture->departure_id   = $traveler->departure_id;
             $newClientDeparture->client_id      = $traveler->client_id;
             $newClientDeparture->seat           = $traveler->seat;
