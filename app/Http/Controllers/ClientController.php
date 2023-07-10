@@ -8,6 +8,7 @@ use App\Http\Resources\Client\ClientListCollection;
 use App\Http\Resources\Client\ClientListResource;
 use App\Http\Resources\Client\ClientResource;
 use App\Services\ClientService;
+use App\Services\DatabaseMigrationService;
 use App\Traits\HasPagination;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -21,9 +22,12 @@ class ClientController extends Controller
 
     private ClientService $service;
 
-    public function __construct(ClientService $clietnService)
+    private $dbms;
+
+    public function __construct(ClientService $clietnService, DatabaseMigrationService $dbms)
     {
         $this->service = $clietnService;
+        $this->dbms = $dbms;
     }
 
     /**
@@ -128,6 +132,10 @@ class ClientController extends Controller
             'per_page'      => 'integer|min:1',
             'page'          => 'integer|min:1'
         ])->validate();
+
+        $this->dbms->migrate();
+
+
 
         if ($this->isPaginated(...$request->only('per_page', 'page'))) {
             $data = new ClientListCollection($this->service->get(...$validatedData));
