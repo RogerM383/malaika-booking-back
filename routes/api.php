@@ -76,5 +76,5 @@ Route::prefix('forms')->group(function () {
 });
 
 Route::prefix('db')->group(function () {
-    Route::post('/', [DBMigrationController::class, 'migrate'])->middleware(['must.json', 'auth:api']);
+    Route::get('/', [DBMigrationController::class, 'migrate'])->middleware(['must.json', 'auth:api']);
 });

@@ -2,19 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Exceptions\ModelNotFoundException;
-use App\Http\Resources\Client\ClientDetailResource;
-use App\Http\Resources\Client\ClientListCollection;
-use App\Http\Resources\Client\ClientListResource;
-use App\Http\Resources\Client\ClientResource;
-use App\Services\ClientService;
 use App\Services\DatabaseMigrationService;
-use App\Traits\HasPagination;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Validator;
-use Illuminate\Validation\ValidationException;
 
 class DBMigrationController extends Controller
 {
@@ -32,7 +22,15 @@ class DBMigrationController extends Controller
      *      summary="Migra la base de datos",
      *      security={{"bearer_token":{}}},
      *      description="Migra la base de datos",
-     *      operationId="dbMigrate"
+     *      operationId="dbMigrate",
+     *      @OA\Response(
+     *          response="200",
+     *          description="DB migrated successfully",
+     *           @OA\JsonContent(
+     *              type="object",
+     *              @OA\Property(property="data", type="array", @OA\Items())
+     *          )
+     *      )
      *  )
      *
      * @param Request $request

@@ -12,8 +12,8 @@ use App\Models\User;
 use Exception;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 use JetBrains\PhpStorm\Pure;
+use Illuminate\Support\Facades\Artisan;
 
 class DatabaseMigrationService
 {
@@ -24,6 +24,13 @@ class DatabaseMigrationService
 
     #[Pure] function migrate ()
     {
+        Artisan::call('migrate:refresh');
+        Artisan::call('db:seed', [ '--class' => 'LanguagesSeeder']);
+        Artisan::call('db:seed', [ '--class' => 'DepartureStatesSeeder']);
+        Artisan::call('db:seed', [ '--class' => 'RoomTypesSeeder']);
+        Artisan::call('db:seed', [ '--class' => 'TripStatesSeeder']);
+        Artisan::call('db:seed', [ '--class' => 'ClientTypesSeeder']);
+
         $this->migrateUsers();
         $this->migrateClients();
         $this->migrateTrips();
@@ -131,8 +138,6 @@ class DatabaseMigrationService
                 $newClient->deleted_at = null;
                 $newClient->save();
             } catch (Exception $e) {
-
-                Log::debug(json_encode($e));
 
                 // Search related traveler
                 $index = array_search($client->id, array_column(json_decode($travelers), 'client_id'));
