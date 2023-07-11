@@ -550,6 +550,8 @@ class DatabaseMigrationService
 
         // Get original clients data
         $passports = DB::connection('db2')->table('passports')->get();
+        // Set connection to local
+        DB::connection('mysql');
 
         $passports->each(function ($passport) {
             $newPassport = Passport::make([]);
