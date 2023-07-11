@@ -4,6 +4,7 @@ namespace App\Http\Resources\Client;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Carbon;
 
 /**
  *
@@ -31,13 +32,21 @@ class ClientListResource extends JsonResource
      */
     public function toArray($request): array
     {
+        // Estados de pasaporte 1 - ok, 2 - caducado, 3 - no esta
+        $passportState = 3;
+        $passport = $this->passport;
+        if (!empty($passport)) {
+            $passportState = strtotime($passport->exp) >= strtotime(Carbon::now()) ? 1 : 2;
+        }
+
         return [
             'id'        => $this->id,
             'surname'   => $this->surname,
             'name'      => $this->name,
             'phone'     => $this->phone,
             'email'     => $this->email,
-            'dni'       => $this->dni
+            'dni'       => $this->dni,
+            'passport_state' => $passportState,
         ];
     }
 }

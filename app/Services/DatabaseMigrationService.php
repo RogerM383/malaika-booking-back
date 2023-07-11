@@ -11,10 +11,15 @@ use App\Models\Room;
 use App\Models\Trip;
 use App\Models\User;
 use Exception;
+use GuzzleHttp\Psr7\LazyOpenStream;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use JetBrains\PhpStorm\Pure;
 use Illuminate\Support\Facades\Artisan;
+use Mockery\Generator\StringManipulation\Pass\Pass;
+use Throwable;
+use function PHPUnit\Framework\logicalOr;
 
 class DatabaseMigrationService
 {
@@ -34,6 +39,7 @@ class DatabaseMigrationService
 
         $this->migrateUsers();
         $this->migrateClients();
+        $this->migratePassports();
         $this->migrateTrips();
         $this->migrateDepartures();
         $this->migrateRoles();
@@ -177,36 +183,26 @@ class DatabaseMigrationService
         });
     }
 
-    function formatDate ($dateString)
+    function formatDate ($dateString): ?string
     {
-        if (empty($dateString)) {
+        if (empty($dateString) || $dateString === "PERMANENT" || $dateString === "indefinit" || $dateString === "NIE NO TE CADUCITAT" || $dateString ===  "685008759") {
             return null;
         }
 
-        try {
-            $validDate = Carbon::createFromFormat('d/m/Y H:i:s', $dateString);
-        } catch (\Throwable $e) {
-            // Manejar la excepción aquí (por ejemplo, mostrar un mensaje de error, devolver un valor predeterminado, etc.)
-            return null;
+        if ($dateString === "158/01/2028") {
+            $dateString = "15/01/2028";
+        } else if ($dateString = "15-022012") {
+            $dateString = "15-02-2012";
         }
 
-        /*return $validDate;
+        $dateToParse = str_replace( " ", "-", $dateString);
+        $dateToParse = str_replace( "--", "-", $dateToParse);
+        $dateToParse = str_replace( "(", "", $dateToParse);
+        $dateToParse = str_replace( ")", "", $dateToParse);
+        $dateToParse = str_replace( "/", "-", $dateToParse);
+        $dateToParse = str_replace( ".", "-", $dateToParse);
 
-        Log::debug('MEFABNJDBDHJIDG H ID GUIDUDU');
-        Log::debug($dateString);
-
-        //$validDate = Carbon::createFromFormat('d-m-Y H:i:s', $dateString);
-
-        $validDate = Carbon::createFromFormat('d-m-Y', $dateString);
-
-        // Verificar si se proporcionó la hora en la cadena de fecha
-        if (!$validDate->format('H:i:s')) {
-            // No se proporcionó la hora, establecer la hora actual
-            $validDate->setTime(Carbon::now()->format('H'), Carbon::now()->format('i'), Carbon::now()->format('s'));
-        }*/
-
-        // Obtener la cadena de fecha válida
-        return $validDate->toDateTimeString();
+         return Carbon::createFromFormat('d-m-Y', $dateToParse);
     }
 
 
@@ -554,18 +550,42 @@ class DatabaseMigrationService
         DB::connection('mysql');
 
         $passports->each(function ($passport) {
-            $newPassport = Passport::make([]);
-            $newPassport->id                = $passport->id;
-            $newPassport->client_id         = $passport->client_id;
-            $newPassport->number_passport   = $passport->number_passport;
-            $newPassport->nationality       = $passport->nac;
-            $newPassport->issue             = $passport->issue;
-            $newPassport->exp               = $passport->exp;
-            $newPassport->birth             = $passport->birth;
-            $newPassport->created_at        = $passport->created_at;
-            $newPassport->updated_at        = $passport->updated_at;
-            $newPassport->deleted_at        = null;
-            $newPassport->save();
+            if (!empty($passport->number_passport)) {
+                try {
+                    $newPassport = Passport::make([]);
+                    $newPassport->id                = $passport->id;
+                    $newPassport->client_id         = $passport->client_id;
+                    $newPassport->number_passport   = $passport->number_passport;
+                    $newPassport->nationality       = $passport->nac;
+                    $newPassport->issue             = $this->formatDate($passport->issue);
+                    $newPassport->exp               = $this->formatDate($passport->exp);
+                    $newPassport->birth             = $this->formatDate($passport->birth);
+                    $newPassport->created_at        = $passport->created_at;
+                    $newPassport->updated_at        = $passport->updated_at;
+                    $newPassport->deleted_at        = null;
+                    $newPassport->save();
+                } catch (Exception $e) {
+
+                    Log::debug('Pasport erroneo:'.$passport->id);
+                    Log::debug($e->getMessage());
+
+                    $oldPassport = Passport::where('number_passport', $passport->number_passport)->first();
+                    $oldPassport->update(['number_passport' => $oldPassport->number_passport.'-duplicated']);
+
+                    $newPassport = Passport::make([]);
+                    $newPassport->id                = $passport->id;
+                    $newPassport->client_id         = $passport->client_id;
+                    $newPassport->number_passport   = $passport->number_passport;
+                    $newPassport->nationality       = $passport->nac;
+                    $newPassport->issue             = $this->formatDate($passport->issue);
+                    $newPassport->exp               = $this->formatDate($passport->exp);
+                    $newPassport->birth             = $this->formatDate($passport->birth);
+                    $newPassport->created_at        = $passport->created_at;
+                    $newPassport->updated_at        = $passport->updated_at;
+                    $newPassport->deleted_at        = null;
+                    $newPassport->save();
+                }
+            }
         });
     }
 

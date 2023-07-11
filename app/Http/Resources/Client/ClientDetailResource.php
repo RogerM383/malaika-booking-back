@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources\Client;
 
+use App\Http\Resources\ClientType\ClientTypeListResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -53,7 +54,7 @@ class ClientDetailResource extends JsonResource
             'frequent_flyer'    => $this->frequent_flyer,
             'member_number'     => $this->member_number,
             'language'          => $this->language->name,
-            'client_type'       => $this->when(!empty($this->clientTypes), fn () => $this->clientTypes->name),
+            'client_type'       => $this->when(!empty($this->clientType), fn () => new ClientTypeListResource($this->clientType)),
 
             'number_passport'   => $this->when(!empty($this->passport), fn () => $this->passport->number_passport),
             'birth'             => $this->when(!empty($this->passport), fn () => $this->passport->birth),
