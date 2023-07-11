@@ -25,9 +25,9 @@ class DatabaseSeeder extends Seeder
             DepartureStatesSeeder::class,
             RoomTypesSeeder::class,
             TripStatesSeeder::class,
-            //TripsSeeder::class,
+            TripsSeeder::class,
             ClientTypesSeeder::class,
-            //ClientsSeeder::class,
+            ClientsSeeder::class,
         ]);
     }
 }

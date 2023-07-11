@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\Client;
 use App\Models\ClientDepartures;
 use App\Models\Departure;
+use App\Models\Passport;
 use App\Models\Role;
 use App\Models\Room;
 use App\Models\Trip;
@@ -55,6 +56,14 @@ class DatabaseMigrationService
             $newUser->updated_at        = $user->updated_at;
             $newUser->save();
         });
+
+        Client::create([
+            "nif" => "48965258Z",
+            "name" => "Selene",
+            "username" => "selene",
+            "email" => "selene@gmail.com",
+            "password" => "1234567"
+        ]);
     }
 
     function migrateClients ()
@@ -363,17 +372,19 @@ class DatabaseMigrationService
 
 
             $departureRooms->each(function ($departureRoom) use ($newDeparture, $departure) {
-                $room_type = $departureRoom->type_room != 0 ? $departureRoom->type_room : 1;
-                // Set connection to local
-                DB::connection('mysql')
-                    ->table('rel_departure_room_type')
-                    ->insert([
-                        'departure_id'  => $newDeparture->id,
-                        'room_type_id'  => $room_type,
-                        'quantity'      => $departureRoom->total,
-                        'created_at' => now(),
-                        'updated_at' => now(),
-                    ]);
+                if ($departureRoom->type_room != 0) {
+                    //$room_type = $departureRoom->type_room != 0 ? $departureRoom->type_room : 1;
+                    // Set connection to local
+                    DB::connection('mysql')
+                        ->table('rel_departure_room_type')
+                        ->insert([
+                            'departure_id' => $newDeparture->id,
+                            'room_type_id' => $departureRoom->type_room,
+                            'quantity' => $departureRoom->total,
+                            'created_at' => now(),
+                            'updated_at' => now(),
+                        ]);
+                }
             });
         });
     }
@@ -519,6 +530,40 @@ class DatabaseMigrationService
             $newRoom->save();
 
             $newRoom->clients()->attach($traveler->client_id);
+        });
+    }
+
+    function migratePassports()
+    {
+        $passportValues  = [
+            'id' => 'passport.id',
+            'client_id' => 'passport.client_id',
+            'number_passport' => 'passport.number_passport',
+            'nationality' => 'passport.nac',
+            'issue' => 'passport.issue',
+            'exp' => 'passport.exp',
+            'birth' => 'passport.birth',
+            'created_at' => 'passport.created_at',
+            'updated_at' => 'passport.updated_at',
+            'deleted_at' => null,
+        ];
+
+        // Get original clients data
+        $passports = DB::connection('db2')->table('passports')->get();
+
+        $passports->each(function ($passport) {
+            $newPassport = Passport::make([]);
+            $newPassport->id                = $passport->id;
+            $newPassport->client_id         = $passport->client_id;
+            $newPassport->number_passport   = $passport->number_passport;
+            $newPassport->nationality       = $passport->nac;
+            $newPassport->issue             = $passport->issue;
+            $newPassport->exp               = $passport->exp;
+            $newPassport->birth             = $passport->birth;
+            $newPassport->created_at        = $passport->created_at;
+            $newPassport->updated_at        = $passport->updated_at;
+            $newPassport->deleted_at        = null;
+            $newPassport->save();
         });
     }
 
