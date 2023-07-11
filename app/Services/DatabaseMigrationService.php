@@ -305,6 +305,7 @@ class DatabaseMigrationService
                 $departureObservations = 'ADT- 6850€ - CHD 4875€';
             } else if ($price === 'ADT - 5385€ - CHD 3240€ + TAXES 435€') {
                 $departurePrice = null;
+                $departureTaxes = 435;
                 $departureObservations = 'ADT - 5385€ - CHD 3240€ + TAXES 435€';
             } else {
                 // Saca los precios y los pasa a floats validos
@@ -369,6 +370,7 @@ class DatabaseMigrationService
 
             $departureRooms->each(function ($departureRoom) use ($newDeparture, $departure) {
                 if ($departureRoom->type_room != 0) {
+                    // TODO: Esto es la lista de espera
                     //$room_type = $departureRoom->type_room != 0 ? $departureRoom->type_room : 1;
                     // Set connection to local
                     DB::connection('mysql')
