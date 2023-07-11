@@ -566,9 +566,6 @@ class DatabaseMigrationService
                     $newPassport->save();
                 } catch (Exception $e) {
 
-                    Log::debug('Pasport erroneo:'.$passport->id);
-                    Log::debug($e->getMessage());
-
                     $oldPassport = Passport::where('number_passport', $passport->number_passport)->first();
                     $oldPassport->update(['number_passport' => $oldPassport->number_passport.'-duplicated']);
 
