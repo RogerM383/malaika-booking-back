@@ -3,6 +3,7 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\ClientTypeController;
+use App\Http\Controllers\DBMigrationController;
 use App\Http\Controllers\DepartureController;
 //use App\Http\Controllers\FormController;
 use App\Http\Controllers\FormController;
@@ -72,4 +73,8 @@ Route::prefix('departures')->group(function () {
 
 Route::prefix('forms')->group(function () {
     Route::post('/process', [FormController::class, 'process'])->middleware(['must.json', 'auth:api']);
+});
+
+Route::prefix('db')->group(function () {
+    Route::post('/', [DBMigrationController::class, 'migrate'])->middleware(['must.json', 'auth:api']);
 });

@@ -22,12 +22,9 @@ class ClientController extends Controller
 
     private ClientService $service;
 
-    private $dbms;
-
-    public function __construct(ClientService $clietnService, DatabaseMigrationService $dbms)
+    public function __construct(ClientService $clietnService)
     {
         $this->service = $clietnService;
-        $this->dbms = $dbms;
     }
 
     /**
@@ -132,10 +129,6 @@ class ClientController extends Controller
             'per_page'      => 'integer|min:1',
             'page'          => 'integer|min:1'
         ])->validate();
-
-        $this->dbms->migrate();
-
-
 
         if ($this->isPaginated(...$request->only('per_page', 'page'))) {
             $data = new ClientListCollection($this->service->get(...$validatedData));
