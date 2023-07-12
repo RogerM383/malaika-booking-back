@@ -41,4 +41,31 @@ class DBMigrationController extends Controller
         $this->dbms->migrate();
         return $this->sendResponse([],'Data migrated successfully');
     }
+
+    /**
+     * @OA\Get(
+     *      path="/api/db/2",
+     *      tags={"Database"},
+     *      summary="Migra la base de datos",
+     *      security={{"bearer_token":{}}},
+     *      description="Migra la base de datos",
+     *      operationId="dbMigrate2",
+     *      @OA\Response(
+     *          response="200",
+     *          description="DB migrated successfully",
+     *           @OA\JsonContent(
+     *              type="object",
+     *              @OA\Property(property="data", type="array", @OA\Items())
+     *          )
+     *      )
+     *  )
+     *
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function migrate2(Request $request): JsonResponse
+    {
+        $this->dbms->migrate2();
+        return $this->sendResponse([],'Data migrated successfully');
+    }
 }

@@ -72,8 +72,8 @@ class Client extends Model
                 'number_room',
                 'type_room',
                 'seat',
-                'observations',
-                'room_observations')
+                'observations')
+                //'room_observations')
             ->orderBy('rel_client_departure.number_room')
             ->withTimestamps();
     }

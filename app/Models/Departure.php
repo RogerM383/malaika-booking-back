@@ -70,8 +70,8 @@ class Departure extends Model
                 //'number_room',
                 //'room_type_id',
                 'observations')
-            ->withTimestamps()
-            ->orderBy('rel_client_departure.updated_at', 'asc');
+            ->orderBy('rel_client_departure.updated_at', 'asc')
+            ->withTimestamps();
     }
 
     /**

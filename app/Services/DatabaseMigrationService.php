@@ -23,9 +23,11 @@ use function PHPUnit\Framework\logicalOr;
 
 class DatabaseMigrationService
 {
-    #[Pure] public function __construct()
-    {
+    private RoomService $roomService;
 
+    #[Pure] public function __construct(RoomService $roomService)
+    {
+        $this->roomService = $roomService;
     }
 
     #[Pure] function migrate ()
@@ -41,6 +43,11 @@ class DatabaseMigrationService
         $this->migrateClients();
         $this->migratePassports();
         $this->migrateTrips();
+
+    }
+
+    function migrate2 ()
+    {
         $this->migrateDepartures();
         $this->migrateRoles();
     }
@@ -185,14 +192,20 @@ class DatabaseMigrationService
 
     function formatDate ($dateString): ?string
     {
+        Log::debug('entra'.$dateString);
+
         if (empty($dateString) || $dateString === "PERMANENT" || $dateString === "indefinit" || $dateString === "NIE NO TE CADUCITAT" || $dateString ===  "685008759") {
             return null;
         }
 
         if ($dateString === "158/01/2028") {
             $dateString = "15/01/2028";
-        } else if ($dateString = "15-022012") {
+        } else if ($dateString === "15-022012") {
             $dateString = "15-02-2012";
+        } else if ($dateString === "01-01-999") {
+            $dateString = "01-01-1999";
+        } else if ($dateString === "11-10-78") {
+            $dateString = "11-10-1978";
         }
 
         $dateToParse = str_replace( " ", "-", $dateString);
@@ -202,7 +215,8 @@ class DatabaseMigrationService
         $dateToParse = str_replace( "/", "-", $dateToParse);
         $dateToParse = str_replace( ".", "-", $dateToParse);
 
-         return Carbon::createFromFormat('d-m-Y', $dateToParse);
+        Log::debug('sale '.Carbon::parse( $dateToParse));
+         return Carbon::parse( $dateToParse);
     }
 
 
@@ -344,7 +358,7 @@ class DatabaseMigrationService
             $newDeparture->deleted_at               = null;
             $newDeparture->save();
 
-
+            // EL 0 no es nada, se mete con estados (4) 5 - Cancelado o (5) 6 - En espera
             $roomTypesValues = [
                 '1' => 1,
                 '2' => 2,
@@ -353,25 +367,19 @@ class DatabaseMigrationService
             ];
 
             // Get original clients data
-            /*$departureRooms = DB::connection('db2')
-                ->table('rel_departure_client')
-                ->selectRaw('SELECT departure_id, type_room, COUNT(*) AS total')
-                ->where('departure_id',$departure->id)
-                ->groupBy('type_room')
-                ->get();*/
-            $departureRooms = DB::connection('db2')
+            $departureRoomsTotals = DB::connection('db2')
                 ->table('rel_departure_client')
                 ->select('type_room', DB::raw('COUNT(*) AS total'))
                 ->where('departure_id', $newDeparture->id)
+                ->whereNot('state', 0)
+                ->whereNot('state', 5)
                 ->groupBy('type_room')
                 ->get();
 
-
-
-            $departureRooms->each(function ($departureRoom) use ($newDeparture, $departure) {
+            // Crea los totales de rooms assignados al departure
+            $departureRoomsTotals->each(function ($departureRoom) use ($newDeparture, $departure) {
+                // Excluye el tipo 0 que solo se aplica a cancelados y esperando
                 if ($departureRoom->type_room != 0) {
-                    // TODO: Esto es la lista de espera
-                    //$room_type = $departureRoom->type_room != 0 ? $departureRoom->type_room : 1;
                     // Set connection to local
                     DB::connection('mysql')
                         ->table('rel_departure_room_type')
@@ -382,9 +390,94 @@ class DatabaseMigrationService
                             'created_at' => now(),
                             'updated_at' => now(),
                         ]);
+
                 }
             });
+
+            $this->migrateDepartureRooms($newDeparture);
+
         });
+    }
+
+    function migrateDepartureRooms ($newDeparture)
+    {
+        $departureRooms = DB::connection('db2')
+            ->table('rel_departure_client')
+            ->where('departure_id', $newDeparture->id)
+            ->get();
+
+        /**
+         * Son los distintos estados de una room en el modelo antiguo
+         * 1 - Sin pagar (0)
+         * 2 - Primer pago (1)
+         * 3 - Segundo pago (2)
+         * 4 - Tercer pago (todo pagado) (3)
+         * 5 - Cancelado (4)
+         * 6 - Apuntado en espera (5)
+         */
+        $departureRooms->each(function ($departureRoom) use ($newDeparture) {
+            //
+            $existingRoom = Room::where('departure_id', $newDeparture->id)->where('room_number', $departureRoom->number_room)->first();
+
+            if ($departureRoom->type_room !== 0) {
+                if (empty($existingRoom)) {
+                    // Añadimos la room
+                    $newRoom = Room::make([]);
+                    $newRoom->room_type_id = $departureRoom->type_room;
+                    $newRoom->departure_id = $newDeparture->id;
+                    $newRoom->room_number = !empty($departureRoom->number_room) ? $departureRoom->number_room : $this->roomService->getNextRoomNumber($newDeparture->id);
+                    $newRoom->observations = $departureRoom->observations;
+                    $newRoom->created_at = $departureRoom->created_at;
+                    $newRoom->updated_at = $departureRoom->updated_at;
+                    $newRoom->deleted_at = null;
+                    $newRoom->save();
+                } else {
+                    $newRoom = $existingRoom;
+                }
+            }
+
+            $client = Client::find($departureRoom->client_id);
+            if (!empty($client)) {
+                // Assigna cliente a la room
+                if (isset($newRoom)) {
+                    $newRoom->clients()->attach($departureRoom->client_id,[
+                        'created_at' => now(),
+                        'updated_at' => now()
+                    ]);
+                }
+
+                // Crea la relacion entre cliente y departure, antiguo traveler
+                //$columns = [
+                //        'departure_id'  => 'travalers.departure_id',
+                //        'client_id'     => 'travalers.client_id',
+                //        'seat'          => 'travalers.seat',
+                //        'state'         => '', // TODO: mirar de donde viene este estado
+                //        'observations'  => 'travalers.observations',
+                //        'room_type_id'  => 'travalers.type_room',
+                //        'created_at'    => 'travalers.created_at',
+                //        'updated_at'    => 'travalers.updated_at',
+                //    ];
+                $traveler = DB::connection('db2')
+                    ->table('travelers')
+                    ->where('client_id', $client->id)
+                    ->first();
+
+                if (!empty($traveler)) {
+                    DB::connection('mysql');
+                    $newClientDeparture = ClientDepartures::make([]);
+                    $newClientDeparture->departure_id = $departureRoom->departure_id;
+                    $newClientDeparture->client_id = $departureRoom->client_id;
+                    $newClientDeparture->seat = $traveler->seat;
+                    $newClientDeparture->state = $departureRoom->state + 1;
+                    $newClientDeparture->observations = $traveler->observations;
+                    $newClientDeparture->room_type_id = $departureRoom->type_room !== 0 ? $departureRoom->type_room : 1;
+                    $newClientDeparture->created_at = $traveler->created_at;
+                    $newClientDeparture->updated_at = $traveler->updated_at;
+                    $newClientDeparture->save();
+                }
+            }
+        });
+
     }
 
     function migrateRoles ()
@@ -455,81 +548,82 @@ class DatabaseMigrationService
         });
     }*/
 
-    function migrateClientDeparture ()
-    {
-        $columns = [
-            'departure_id'  => 'travalers.departure_id',
-            'client_id'     => 'travalers.client_id',
-            'seat'          => 'travalers.seat',
-            'state'         => '', // TODO: mirar de donde viene este estado
-            'observations'  => 'travalers.observations',
-            'room_type_id'  => 'travalers.type_room',
-            'created_at'    => 'travalers.created_at',
-            'updated_at'    => 'travalers.updated_at',
-        ];
-
-        /**
-         * TODO: Repasar esto cual es cual
-         * Son los distintos estados de una room en el modelo antiguo
-         * 1 - Sin pagar
-         * 2 - Primer pago
-         * 3 - Segundo pago
-         * 4 - Tercer pago (todo pagado)
-         * 5 - Cancelado
-         */
-        $statesValues = [
-            '0' => 1,
-            '1' => 2,
-            '2' => 3,
-            '3' => 4,
-            '4' => 5,
-        ];
-
-        $roomTypesValues = [
-            '1' => 1,
-            '2' => 2,
-            '3' => 3,
-            '4' => 4
-        ];
-
-        // Get original clients data
-        $travelers = DB::connection('db2')->table('travelers')->get();
-
-        $travelers->each(function ($traveler) use ($statesValues, $roomTypesValues) {
-            // Get original clients data
-            $relation = DB::connection('db2')
-                ->table('rel_departure_client')
-                ->where('departure_id', $traveler->departure_id)
-                ->where('client_id', $traveler->client_id)
-                ->get();
-            // Set connection to local
-            DB::connection('mysql');
-
-            $newClientDeparture                 = ClientDepartures::make([]);
-            $newClientDeparture->id             = $traveler->id;
-            $newClientDeparture->departure_id   = $traveler->departure_id;
-            $newClientDeparture->client_id      = $traveler->client_id;
-            $newClientDeparture->seat           = $traveler->seat;
-            $newClientDeparture->state          = $statesValues[$relation->state]; // TODO: mirar de donde viene este esta;
-            $newClientDeparture->observations   = $traveler->observations . ' ' . $traveler->type_room; // En la original type_room contiene comentarios
-            $newClientDeparture->room_type_id   = $relation->type_room;
-            $newClientDeparture->created_at     = $traveler->created_at;
-            $newClientDeparture->updated_at     = $traveler->updated_at;
-            $newClientDeparture->save();
-
-            $newRoom = Room::make([]);
-            $newRoom->room_type_id  = $roomTypesValues[$relation->type_room];
-            $newRoom->departure_id  = $relation->departure_id;
-            $newRoom->room_number   = $relation->number_room;
-            $newRoom->observations  = $relation->observations;
-            $newRoom->created_at    = $relation->created_at;
-            $newRoom->updated_at    = $relation->updated_at;
-            $newRoom->deleted_at    = null;
-            $newRoom->save();
-
-            $newRoom->clients()->attach($traveler->client_id);
-        });
-    }
+    //function migrateClientDeparture ()
+    //{
+    //    $columns = [
+    //        'departure_id'  => 'travalers.departure_id',
+    //        'client_id'     => 'travalers.client_id',
+    //        'seat'          => 'travalers.seat',
+    //        'state'         => '', // TODO: mirar de donde viene este estado
+    //        'observations'  => 'travalers.observations',
+    //        'room_type_id'  => 'travalers.type_room',
+    //        'created_at'    => 'travalers.created_at',
+    //        'updated_at'    => 'travalers.updated_at',
+    //    ];
+//
+    //    /**
+    //     * TODO: Repasar esto cual es cual
+    //     * Son los distintos estados de una room en el modelo antiguo
+    //     * 1 - Sin pagar (0)
+    //     * 2 - Primer pago (1)
+    //     * 3 - Segundo pago (2)
+    //     * 4 - Tercer pago (todo pagado) (3)
+    //     * 5 - Cancelado (4)
+    //     * 6 - Apuntado en espera (5)
+    //     */
+    //    $statesValues = [
+    //        '0' => 1,
+    //        '1' => 2,
+    //        '2' => 3,
+    //        '3' => 4,
+    //        '4' => 5,
+    //    ];
+//
+    //    $roomTypesValues = [
+    //        '1' => 1,
+    //        '2' => 2,
+    //        '3' => 3,
+    //        '4' => 4
+    //    ];
+//
+    //    // Get original clients data
+    //    $travelers = DB::connection('db2')->table('travelers')->get();
+//
+    //    $travelers->each(function ($traveler) use ($statesValues, $roomTypesValues) {
+    //        // Get original clients data
+    //        $relation = DB::connection('db2')
+    //            ->table('rel_departure_client')
+    //            ->where('departure_id', $traveler->departure_id)
+    //            ->where('client_id', $traveler->client_id)
+    //            ->get();
+    //        // Set connection to local
+    //        DB::connection('mysql');
+//
+    //        $newClientDeparture                 = ClientDepartures::make([]);
+    //        $newClientDeparture->id             = $traveler->id;
+    //        $newClientDeparture->departure_id   = $traveler->departure_id;
+    //        $newClientDeparture->client_id      = $traveler->client_id;
+    //        $newClientDeparture->seat           = $traveler->seat;
+    //        $newClientDeparture->state          = $statesValues[$relation->state]; // TODO: mirar de donde viene este esta;
+    //        $newClientDeparture->observations   = $traveler->observations . ' ' . $traveler->type_room; // En la original type_room contiene comentarios
+    //        $newClientDeparture->room_type_id   = $relation->type_room;
+    //        $newClientDeparture->created_at     = $traveler->created_at;
+    //        $newClientDeparture->updated_at     = $traveler->updated_at;
+    //        $newClientDeparture->save();
+//
+    //        $newRoom = Room::make([]);
+    //        $newRoom->room_type_id  = $roomTypesValues[$relation->type_room];
+    //        $newRoom->departure_id  = $relation->departure_id;
+    //        $newRoom->room_number   = $relation->number_room;
+    //        $newRoom->observations  = $relation->observations;
+    //        $newRoom->created_at    = $relation->created_at;
+    //        $newRoom->updated_at    = $relation->updated_at;
+    //        $newRoom->deleted_at    = null;
+    //        $newRoom->save();
+//
+    //        $newRoom->clients()->attach($traveler->client_id);
+    //    });
+    //}
 
     function migratePassports()
     {
@@ -552,6 +646,7 @@ class DatabaseMigrationService
         DB::connection('mysql');
 
         $passports->each(function ($passport) {
+
             if (!empty($passport->number_passport)) {
                 try {
                     $newPassport = Passport::make([]);

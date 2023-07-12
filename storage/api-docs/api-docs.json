@@ -532,6 +532,39 @@
                 ]
             }
         },
+        "/api/db/2": {
+            "get": {
+                "tags": [
+                    "Database"
+                ],
+                "summary": "Migra la base de datos",
+                "description": "Migra la base de datos",
+                "operationId": "dbMigrate2",
+                "responses": {
+                    "200": {
+                        "description": "DB migrated successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {}
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
+        },
         "/api/departures": {
             "get": {
                 "tags": [
