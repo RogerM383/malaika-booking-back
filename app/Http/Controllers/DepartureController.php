@@ -37,7 +37,14 @@ class DepartureController extends Controller
      *      @OA\Parameter(
      *          name="trip_id",
      *          in="query",
-     *          description="Id del viaje",
+     *          description="Id de la salida",
+     *          required=false,
+     *          @OA\Schema(type="integer")
+     *      ),
+     *       @OA\Parameter(
+     *          name="state",
+     *          in="query",
+     *          description="Estado de la salida",
      *          required=false,
      *          @OA\Schema(type="integer")
      *      ),
@@ -75,9 +82,9 @@ class DepartureController extends Controller
      */
     public function get(Request $request): JsonResponse
     {
-        Log::debug('mecago en dios');
         $validatedData = Validator::make($request->all(), [
             'trip_id'       => 'integer|min:1',
+            'state'         => 'integer|min:1|max:2',
             'per_page'      => 'integer|min:1',
             'page'          => 'integer|min:1'
         ])->validate();

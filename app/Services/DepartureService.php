@@ -44,6 +44,7 @@ class DepartureService extends ResourceService
      */
     public function get(
         $trip_id = null,
+        $state = null,
         $per_page = null,
         $page = null
     ): Collection|LengthAwarePaginator
@@ -52,6 +53,10 @@ class DepartureService extends ResourceService
 
         if ($trip_id) {
             $this->addTripIdFilter($query, $trip_id);
+        }
+
+        if ($state) {
+            $this->addStateFilter($query, $state);
         }
 
         if ($this->isPaginated($per_page, $page)) {
@@ -224,5 +229,15 @@ class DepartureService extends ResourceService
         $query->whereHas('trip', function ($q) use ($trip_id) {
             return $q->where('trip_id', $trip_id);
         });
+    }
+
+    /**
+     * @param $query
+     * @param $trip_id
+     * @return void
+     */
+    private function addStateFilter(&$query, $state)
+    {
+        $query->where('state_id', $state);
     }
 }

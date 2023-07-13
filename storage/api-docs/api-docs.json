@@ -577,7 +577,16 @@
                     {
                         "name": "trip_id",
                         "in": "query",
-                        "description": "Id del viaje",
+                        "description": "Id de la salida",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "state",
+                        "in": "query",
+                        "description": "Estado de la salida",
                         "required": false,
                         "schema": {
                             "type": "integer"
@@ -1572,6 +1581,62 @@
                     "name": "ClientListResource"
                 }
             },
+            "ClientExportResource": {
+                "required": [
+                    "id"
+                ],
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "readOnly": "true",
+                        "example": "1"
+                    },
+                    "surname": {
+                        "description": "Client surname",
+                        "type": "string",
+                        "example": "Birgulilla"
+                    },
+                    "name": {
+                        "description": "Client name",
+                        "type": "string",
+                        "example": "Maria"
+                    },
+                    "phone": {
+                        "description": "Client phone",
+                        "type": "string",
+                        "example": "648595623"
+                    },
+                    "email": {
+                        "description": "Client email",
+                        "type": "string",
+                        "example": "mariabirgulilla@gmail.com"
+                    },
+                    "DNI": {
+                        "description": "Client DNI",
+                        "type": "string",
+                        "example": "47864512"
+                    },
+                    "address": {
+                        "description": "Client address",
+                        "type": "string",
+                        "example": "Calle falsa 123, 08167, Barcelona"
+                    },
+                    "dni_expiration": {
+                        "description": "Client DNI expiration date",
+                        "type": "string",
+                        "example": "2025-12-01"
+                    },
+                    "place_birth": {
+                        "description": "Client place of birtgh",
+                        "type": "string",
+                        "example": "Barcelona"
+                    }
+                },
+                "type": "object",
+                "xml": {
+                    "name": "ClientListResource"
+                }
+            },
             "ClientListResource": {
                 "required": [
                     "id"
@@ -1691,6 +1756,43 @@
                 }
             },
             "DepartureDetailsResource": {
+                "required": [
+                    "id"
+                ],
+                "properties": {
+                    "id": {
+                        "description": "TODO update data",
+                        "type": "integer",
+                        "readOnly": "true",
+                        "example": "1"
+                    },
+                    "title": {
+                        "description": "Trip title",
+                        "type": "string",
+                        "example": "Antartida desde el mar"
+                    },
+                    "description": {
+                        "description": "Trip description",
+                        "type": "string",
+                        "example": "Es un viaje muy chulo"
+                    },
+                    "commentary": {
+                        "description": "Trip commentary",
+                        "type": "string",
+                        "example": "Especial para ciegos"
+                    },
+                    "state": {
+                        "description": "Trip state",
+                        "type": "string",
+                        "example": "OPEN"
+                    }
+                },
+                "type": "object",
+                "xml": {
+                    "name": "TripResource"
+                }
+            },
+            "DepartureExportResource": {
                 "required": [
                     "id"
                 ],
@@ -1891,6 +1993,43 @@
                 "type": "object",
                 "xml": {
                     "name": "PassportResource"
+                }
+            },
+            "RoomExportResource": {
+                "required": [
+                    "id"
+                ],
+                "properties": {
+                    "id": {
+                        "description": "TODO update data",
+                        "type": "integer",
+                        "readOnly": "true",
+                        "example": "1"
+                    },
+                    "title": {
+                        "description": "Trip title",
+                        "type": "string",
+                        "example": "Antartida desde el mar"
+                    },
+                    "description": {
+                        "description": "Trip description",
+                        "type": "string",
+                        "example": "Es un viaje muy chulo"
+                    },
+                    "commentary": {
+                        "description": "Trip commentary",
+                        "type": "string",
+                        "example": "Especial para ciegos"
+                    },
+                    "state": {
+                        "description": "Trip state",
+                        "type": "string",
+                        "example": "OPEN"
+                    }
+                },
+                "type": "object",
+                "xml": {
+                    "name": "RoomExportResource"
                 }
             },
             "RoomTypeAvailabilityResource": {

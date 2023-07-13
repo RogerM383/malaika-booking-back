@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Resources\Departure;
+namespace App\Http\Resources\Room;
 
 use App\Http\Resources\RoomType\RoomTypeAvailabilityResource;
 use Illuminate\Http\Request;
@@ -10,7 +10,7 @@ use Illuminate\Http\Resources\Json\JsonResource;
  *TODO update data
  * @OA\Schema(
  *      required={"id"},
- *      @OA\Xml(name="TripResource"),
+ *      @OA\Xml(name="RoomExportResource"),
  *      @OA\Property(property="id", type="integer", readOnly="true", example="1"),
  *      @OA\Property(property="title", type="string", description="Trip title", example="Antartida desde el mar"),
  *      @OA\Property(property="description", type="string", description="Trip description", example="Es un viaje muy chulo"),
@@ -18,7 +18,7 @@ use Illuminate\Http\Resources\Json\JsonResource;
  *      @OA\Property(property="state", type="string", description="Trip state", example="OPEN"),
  * )
  *
- * Class TripResource
+ * Class RoomExportResource
  *
  */
 class RoomExportResource extends JsonResource
