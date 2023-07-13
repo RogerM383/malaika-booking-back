@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ExportController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ClientController;
 
@@ -21,3 +22,6 @@ Route::get('/', function () {
 Route::resources([
     'clients' => ClientController::class,
 ]);
+
+//DATA==================================================================================================================================
+Route::get('/departure/{id}', [ExportController::class, 'departure'])->middleware([/*, 'auth:api'*/]);

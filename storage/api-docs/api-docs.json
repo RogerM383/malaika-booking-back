@@ -924,6 +924,37 @@
                 ]
             }
         },
+        "/api/exports/departure/{id}": {
+            "get": {
+                "tags": [
+                    "Exports"
+                ],
+                "summary": "Exporta datos de una salida",
+                "description": "Exporta datos de una salida",
+                "operationId": "exportDeparture",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Id de slaida",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Departure data exported successfully"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
+        },
         "/api/forms/process": {
             "post": {
                 "tags": [

@@ -1,13 +1,12 @@
 <?php
 
 namespace App\Exports;
+;
 
 use App\Http\Resources\Departure\DepartureExportResource;
-use App\Models\Client;
 use App\Models\Departure;
-use App\Models\Passport;
-use App\Services\DepartureService;
-use Illuminate\Support\Facades\Log;
+use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\Exportable;
 use Maatwebsite\Excel\Concerns\FromArray;
@@ -28,62 +27,65 @@ use \Maatwebsite\Excel\Sheet;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 
 use Maatwebsite\Excel\Concerns\RegistersEventListeners;
-use phpseclib3\Math\PrimeField\Integer;
 
 
-class DeparturesExport implements WithMapping, FromCollection, WithHeadings, WithTitle, WithEvents, ShouldAutoSize, WithColumnFormatting
+class DeparturesExport2 implements WithMapping, FromCollection, WithHeadings, WithTitle, WithEvents, ShouldAutoSize, WithColumnFormatting
 {
     use Exportable;
 
-    private $id;
+    public $departure;
 
-    private $departure;
-
-    public function __construct($id)
+    public function __construct($departure)
     {
-        $this->id = $id;
-        Log::debug(json_encode($this->departure));
-        $d = new DepartureExportResource(Departure::find($this->id));
-        Log::debug(json_encode($d));
-        $this->departure = $d;
+        $this->departure = $departure;
         return $this;
     }
 
-    public function collection()
+
+    /*public function collection()
     {
         $comparacion = 1;
         $contador = 0;
 
-        $blankDeparture = new Departure();
+        $empty = [
+            'id'             => null,
+            'room_number'    => null,
+            'state'          => null,
+            'surname'        => null,
+            'name'           => null,
+            'type_room_id'   => null,
+            'type_room'      => null,
+            'phone'          => null,
+            'email'          => null,
+            'seat'           => null,
+            'rm_observations'=> null,
+            'intolerances'   => null,
+            'dni'            => null,
+            'dni_expiration' => null,
+            'number_passport'=> null,
+            'issue'          => null,
+            'exp'            => null,
+            'place_birth'    => null,
+            'birth'          => null,
+            'nationality'    => null,
+            'dp_observations'=> null,
+        ];
 
-        // TODO: aqui necesitaremos datos de departure y departure client (lo que era el traveler y departure)
+        $departure = new DepartureExportResource(Departure::find($this->departure));
+        $active = $departure->toArray(null)['active'];
+        $waiting =  $departure->toArray(null)['waiting'];
 
-        $value = collect($this->departure->active);
+        $value = $active;
 
-        Log::debug(json_encode($value));
-
-        /*$departure = Departure::find($this->departure);//new DepartureExportResource(Departure::find($this->departure));
-        Log::debug(json_encode($departure));
-
-        // Clientes  que han pagado?
-        $value = $departure->active;
-
-
-        // Clientes en espera (->clientExports() = DepartureClient)
-        $waiting = $departure->waiting;
-
-        // Para crear rows vacias? Eso parece, las mete para separasr los usuarios apuntados de los que estan en espera
-        $value->add(new Departure);
-        $value->add(new Departure);
-        $value->add(new Departure);
-        $value->add(new Departure);
+        $value->add($empty);
+        $value->add($empty);
+        $value->add($empty);
+        $value->add($empty);
 
         // Añade los usuarios en espera (podria ser un array_merge())
         foreach ($waiting as $listuser) {
             $value->push($listuser);
         }
-
-        $indices = array();
 
         // Indices donde debemos insertar una fila en blanco
         foreach ($value as $key => $departure) {
@@ -95,21 +97,100 @@ class DeparturesExport implements WithMapping, FromCollection, WithHeadings, Wit
             }
         }
 
+        $indices = array();
+
         // insertamos la fila en blacno
         foreach ($indices as $ind) {
-            $value->splice($ind + $contador, 0, [$blankDeparture]);
+            $value->splice($ind + $contador, 0, [$empty]);
             $contador = $contador + 1;
-        }*/
+        }
+
+        return $value;
+    }*/
+
+    public function collection()
+    {
+        $comparacion = 1;
+        $contador = 0;
+
+        $empty = [
+            'id'             => null,
+            'room_number'    => null,
+            'state'          => null,
+            'surname'        => null,
+            'name'           => null,
+            'type_room_id'   => null,
+            'type_room'      => null,
+            'phone'          => null,
+            'email'          => null,
+            'seat'           => null,
+            'rm_observations'=> null,
+            'intolerances'   => null,
+            'dni'            => null,
+            'dni_expiration' => null,
+            'number_passport'=> null,
+            'issue'          => null,
+            'exp'            => null,
+            'place_birth'    => null,
+            'birth'          => null,
+            'nationality'    => null,
+            'dp_observations'=> null,
+        ];
+
+        /*$data = new DepartureExportResource(Departure::find($this->departure)->first());
+        $json = json_decode($data->toJson());
+
+        $active = array_values(Arr::sort($json->active, function ($value) {
+            return $value->room_number;
+        }));
+
+        $waiting = array_values(Arr::sort($json->waiting, function ($value) {
+            return $value->room_number;
+        }));*/
+
+        $departure = new DepartureExportResource(Departure::find($this->departure)->first());
+        $departure = json_decode($departure->toJson());
+
+        $active = $departure->active;
+        $waiting = $departure->waiting;
+
+
+        $value = collect($active);
+
+        $value->add($empty);
+        $value->add($empty);
+        $value->add($empty);
+        $value->add($empty);
+
+        // Añade los usuarios en espera (podria ser un array_merge())
+        foreach ($waiting as $listuser) {
+            $value->push($listuser);
+        }
+
+        $indices = array();
+
+        // Indices donde debemos insertar una fila en blanco
+        foreach ($value as $key => $departure) {
+            if (isset($departure->room_number)) {
+                if ($comparacion <= $departure->room_number) {
+                    $comparacion = $comparacion + 1;
+                    array_push($indices, $key);
+                }
+            }
+        }
+
+        // insertamos la fila en blacno
+        foreach ($indices as $ind) {
+            $value->splice($ind + $contador, 0, [$empty]);
+            $contador = $contador + 1;
+        }
 
         return $value;
     }
 
-
     public function map($row): array
     {
-        dd($row);
-
-        if (isset($row->type_room) && $row->type_room == 1) {
+        /*if (isset($row->type_room) && $row->type_room == 1) {
             // $typeroom = "individual";
             $typeroom = "DUI";
         }
@@ -121,14 +202,14 @@ class DeparturesExport implements WithMapping, FromCollection, WithHeadings, Wit
         }
         if (isset($row->type_room) && $row->type_room == 4) {
             $typeroom = "triple";
-        }
+        }*/
 
-        if (isset($row->number_room)) {
-            $numberRoom = $row->number_room;
-        } else if (!isset($row->number_room)  &&  isset($row->type_room)) {
-            $numberRoom = "Lista de espera";
+        if (isset($row->room_number)) {
+            $roomRumber = $row->room_number;
+        } else if (!isset($row->room_number) && isset($row->type_room) ) {
+            $roomRumber = "Llista de espera";
         } else {
-            $numberRoom = "";
+            $roomRumber = "";
         }
 
         if (isset($row->state)) {
@@ -136,7 +217,6 @@ class DeparturesExport implements WithMapping, FromCollection, WithHeadings, Wit
         } else {
             $stado = 0;
         }
-
 
         $Departure = [
             'trip_id'               => 'departures.trip_id',
@@ -164,34 +244,29 @@ class DeparturesExport implements WithMapping, FromCollection, WithHeadings, Wit
             'deleted_at'    => null,
         ];
 
-
         // Las que no viene de row es que las ha calculado antges, ahora lo tenemos todo en DB
         return [
-
-
-            $numberRoom ?? "",                      // Room.room_number
+            $roomRumber ?? "",                      // Room.room_number
             $stado,                                 // ClientDeparture.state
             $row->surname ?? "",                    // Client.surname
             $row->name ?? "",                       // Client.name
-            $typeroom ?? "",                        // El nombre del tipo de  habitacion?
-            $row->type_room ?? "",                  // El ID del tipo de habitacion?
+            $row->type_room ?? "",                  // El nombre del tipo de  habitacion?
+            $row->rm_observations ?? "",            // Room.observations
+            //$row->type_room ?? "",                // El ID del tipo de habitacion?
             $row->phone ?? "",                      // Client.phone
             $row->email ?? "",                      // Client.email
             $row->seat ?? "",                       // ClientDeparture.seat
-            $row->rm_observations ?? "",            // Room.observations
+            $row->dp_observations ?? "",            // Room.observations
             $row->intolerances ?? "",               // Client.intolerances
             $row->dni ?? "",                        // Client.dni
             $row->dni_expiration ?? "",             // Client.dni_expiration
             $row->number_passport ?? "",            // Passport.number_passport
             $row->issue ?? "",                      // Passport.issue
             $row->exp ?? "",                        // Passport.exp
-            $row->place_birth ?? "",                // Client.place_birth
             $row->birth ?? "",                      // Client.birth
-            $row->nacionallity ?? "",              // Passport.nacianallity
+            $row->place_birth ?? "",                // Client.place_birth
+            $row->nationality ?? "",                // Passport.nationality
             $row->observations ?? "",               // DepartureClient.observatrions
-
-
-
         ];
     }
 
@@ -201,73 +276,65 @@ class DeparturesExport implements WithMapping, FromCollection, WithHeadings, Wit
     public function headings(): array
     {
         $departure = new DepartureExportResource(Departure::find($this->departure)->first());
+        $departure = json_decode($departure->toJson());
+
+        $types = $departure->room_types;
+        $arr = array_map(function ($type) {
+            return ['name' => $type->name, 'quantity' => $type->pivot->quantity];
+        }, $types);
+
+        $total = array_sum(array_column($arr, 'quantity'));
+
+        $str = $total . ' HABITACIONS:    ';
+        foreach ($arr as $type) {
+            $str = $str . $type['quantity'] . ' ' . $type['name'] . '    ';
+        }
+        $str = $str . '        PAX TOTAL   ' . count($departure->active);
 
         return [
-
             [
-
-                $departure->title . ' - del ' .  date('d-m-Y', strtotime($departure->start))  . ' al ' .  date('d-m-Y', strtotime($departure->final)),
-
+                $departure->trip_title . ' - del ' .  date('d-m-Y', strtotime($departure->start))  . ' al ' .  date('d-m-Y', strtotime($departure->final)),
+            ],
+            [
+                $str
             ],
 
             [
-
-                $departure->clients()->distinct('room_number')->count('room_number') . ' HABITACIONS: ' .
-
-                    $departure->clients()->distinct('room_number')->where('type_room', 1)->count('room_number') . ' Individuals    ' .
-
-                    $departure->clients()->distinct('room_number')->where('type_room', 2)->count('room_number') . ' Dobles    ' .
-
-                    $departure->clients()->distinct('room_number')->where('type_room', 3)->count('room_number') . ' Twins' .
-
-                    '        PAX TOTAL   ' . $departure->clients()->where('state', '<', 4)->count()
-            ],
-
-            [
-                "Comentarios viaje: " . $departure->description
+                "Comentarios viaje: " //. $departure->description
             ],
             [
                 "Comentarios salida: " . $departure->commentary
             ],
-            [],
-
             [
-                "hab",
-                __('state'),
-                __('Surname'),
-                __('Name'),
-                "Tipo hab",
-                "Observaciones hab",
-                __('Phone'),
-                __('Mail'),
-                __('Seat'),
-                __('Observations Generals'),
-                __('Intolerances'),
-                __('Dni'),
-                __('Dni expiration'),
-                "Pastport N",
-
-                __('Issue'),
-                "EXP",
-                "DOB",
-
-                "POB",
-                __('Nationality'),
-                __('Observations Punctual'),
 
             ],
-
+            [
+                "hab",
+                'Estat',
+                'Cognom',
+                'Nom',
+                "Tipo hab",
+                "Observacions hab",
+                'Telefon',
+                'Email',
+                'Seient',
+                'Observations Generals',
+                'Intolerancies',
+                'Dni',
+                'Data de caducitat',
+                "Numero passaport",
+                'Issue',
+                "EXP",
+                "DOB",
+                "POB",
+                'Nacionalitat',
+                'Observacions Puntuals',
+            ],
         ];
     }
 
-
-
-
-
     public function registerEvents(): array
     {
-
-
         Sheet::macro('styleCells', function (Sheet $sheet, string $cellRange, array $style) {
             $sheet->getDelegate()->getStyle($cellRange)->applyFromArray($style);
         });
@@ -322,20 +389,20 @@ class DeparturesExport implements WithMapping, FromCollection, WithHeadings, Wit
                     foreach ($rows as $k => $v) {
 
 
-                        if ($v[1] == 1.0) {
+                        if ($v[1] == 2.0) {
 
                             $event->sheet->fillCell(
                                 'B' . $index,
 
                                 ['fillType' => Fill::FILL_SOLID, 'color' => array('rgb' => 'e63434')]
                             );
-                        } elseif ($v[1] == 2.0) {
+                        } elseif ($v[1] == 3.0) {
                             $event->sheet->fillCell(
                                 'B' . $index,
 
                                 ['fillType' => Fill::FILL_SOLID, 'color' => array('rgb' => '2de90a')]
                             );
-                        } elseif ($v[1] == 3.0) {
+                        } elseif ($v[1] == 4.0) {
                             $event->sheet->fillCell(
                                 'B' . $index,
 
@@ -365,12 +432,9 @@ class DeparturesExport implements WithMapping, FromCollection, WithHeadings, Wit
                                 'size' => 20,
                                 'bold' => true
                             ],
-
-
                         ]
 
                     );
-
 
                     $event->sheet->setFontSubTitle(
                         'A2',
@@ -386,8 +450,6 @@ class DeparturesExport implements WithMapping, FromCollection, WithHeadings, Wit
 
                     );
 
-
-
                     $event->sheet->setFontHeader(
                         'A3:O3',
                         [
@@ -396,7 +458,6 @@ class DeparturesExport implements WithMapping, FromCollection, WithHeadings, Wit
                                 'bold' => true,
                             ]
                         ]
-
                     );
 
                     $event->sheet->mergeCell(
@@ -422,17 +483,13 @@ class DeparturesExport implements WithMapping, FromCollection, WithHeadings, Wit
 
     public function title(): string
     {
-        $departure = Departure::find($this->departure)->first();
-        // return  $departure->trip->title .' '. $departure->start;
-        return 'EXP' . $departure->expedient;
+        return 'Hola';
     }
 
     public function columnFormats(): array
     {
         return [
             'F' => NumberFormat::FORMAT_NUMBER,
-
-
         ];
     }
 }

@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class Departure extends Model
 {
@@ -67,10 +68,40 @@ class Departure extends Model
             ->using(ClientDepartures::class)
             ->withPivot(
                 'state',
-                //'number_room',
-                //'room_type_id',
+                'seat',
                 'observations')
             ->orderBy('rel_client_departure.updated_at', 'asc')
+            ->withTimestamps();
+    }
+
+    /**
+     * @return BelongsToMany
+     */
+    public function activeClients(): BelongsToMany
+    {
+        return $this->belongsToMany(Client::class,'rel_client_departure')
+            //->using(ClientDepartures::class)
+            ->withPivot(
+                'state',
+                'seat',
+                'observations')
+            //->orderBy('rel_client_departure.updated_at', 'asc')
+            ->wherePivot('state', '<=', 3)
+            ->withTimestamps();
+    }
+
+    /**
+     * @return BelongsToMany
+     */
+    public function waitingClients(): BelongsToMany
+    {
+        return $this->belongsToMany(Client::class,'rel_client_departure')
+            //->using(ClientDepartures::class)
+            ->withPivot(
+                'state',
+                'seat',
+                'observations')
+            ->wherePivot('state', '=', 5)
             ->withTimestamps();
     }
 

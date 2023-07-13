@@ -77,4 +77,68 @@ class Client extends Model
             ->orderBy('rel_client_departure.number_room')
             ->withTimestamps();
     }
+
+    /**
+     * @return BelongsToMany
+     */
+    public function rooms (): BelongsToMany
+    {
+        return $this->belongsToMany(Room::class, 'rel_client_room');
+    }
+
+    public function scopeRoom($query, $departureId)
+    {
+        return $query->with(['rooms' => function ($roomQuery) use ($departureId) {
+            $roomQuery->where('departure_id', $departureId);
+        }]);
+    }
+
+    ///**
+    // *
+    // */
+    //public function scopeRoom ($builder, int $departureId)
+    //{
+    //    if (is_null($builder->getQuery()->columns)) {
+    //        $builder->select('clients.*');
+    //    }
+//
+    //    $builder
+    //        /*->addSelect([
+    //            'rooms.room_type_id',
+    //            'rooms.room_number',
+    //            'rooms.observations',
+    //        ])*/
+    //        ->with(['rooms' => function ($query) use ($departureId) {
+    //            $query->where('departure_id', $departureId);
+    //        }]);
+//
+    //    /*$builder->addSelect([
+    //            'rooms.room_type_id',
+    //            'rooms.room_number',
+    //            'rooms.observations',
+    //        ])
+    //        ->join('rel_client_room as rlp', function ($join) use ($lang) {
+    //            $join->on('rlp.product_id', '=', 'products.id')
+    //                ->where('rlp.language_id', $lang);
+    //        });*/
+    //}
 }
+/*addGlobalScope('translate', function (Builder $builder) {
+
+    $lang = Auth::user()->language_id ?? Session::get('lang') ?? config('app.dafault_lang_id');
+
+    if (is_null($builder->getQuery()->columns)) {
+        $builder->select('products.*');
+    }
+
+    $builder->addSelect([
+        'rlp.name',
+        'rlp.slug',
+        'rlp.description',
+        'rlp.long_description',
+    ])
+        ->join('rel_languages_products as rlp', function ($join) use ($lang) {
+            $join->on('rlp.product_id', '=', 'products.id')
+                ->where('rlp.language_id', $lang);
+        });
+});*/

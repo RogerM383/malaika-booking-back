@@ -6,6 +6,7 @@ use App\Http\Controllers\ClientTypeController;
 use App\Http\Controllers\DBMigrationController;
 use App\Http\Controllers\DepartureController;
 //use App\Http\Controllers\FormController;
+use App\Http\Controllers\ExportController;
 use App\Http\Controllers\FormController;
 use App\Http\Controllers\PassportController;
 use App\Http\Controllers\TripController;
@@ -78,4 +79,8 @@ Route::prefix('forms')->group(function () {
 Route::prefix('db')->group(function () {
     Route::get('/', [DBMigrationController::class, 'migrate'])->middleware(['must.json', 'auth:api']);
     Route::get('/2', [DBMigrationController::class, 'migrate2'])->middleware(['must.json', 'auth:api']);
+});
+
+Route::prefix('exports')->group(function () {
+    Route::get('/departure/{id}', [ExportController::class, 'departure'])->middleware(['must.json'/*, 'auth:api'*/]);
 });

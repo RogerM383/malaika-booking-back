@@ -42,7 +42,7 @@ class TripService extends ResourceService
         }*/
 
         if ($this->isPaginated($per_page, $page)) {
-            return $query->paginate(
+            return $query->orderBy('id', 'desc')->paginate(
                 $per_page ?? $this->defaultPerPage,
                 ['*'],
                 'trips',

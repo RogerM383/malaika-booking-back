@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Exceptions\DeparturePaxCapacityExceededException;
 use App\Exceptions\ModelNotFoundException;
 use App\Http\Resources\Departure\DepartureCollection;
-use App\Http\Resources\Departure\DepartureDetailsResource;
+use App\Http\Resources\Departure\DepartureExportResource;
 use App\Http\Resources\Departure\DepartureResource;
 use App\Services\DepartureService;
 use App\Traits\HasPagination;
@@ -128,7 +128,7 @@ class DepartureController extends Controller
     public function getById(Request $request, $id): JsonResponse
     {
         return $this->sendResponse(
-            new DepartureDetailsResource($this->service->getById($id)),
+            new DepartureExportResource($this->service->getById($id)),
             'Departure retrieved successfully'
         );
     }
@@ -174,7 +174,7 @@ class DepartureController extends Controller
             'start'                 => 'required|string',
             'final'                 => 'required|string',
             'price'                 => 'required|numeric',
-            'pax_capacity'         => 'required|integer',
+            'pax_capacity'          => 'required|integer',
             'individual_supplement' => 'numeric',
             'state_id'              => 'integer|min:1',
             'commentary'            => 'string',
@@ -249,7 +249,7 @@ class DepartureController extends Controller
             'start'                 => 'string',
             'final'                 => 'string',
             'price'                 => 'numeric',
-            'pax_capacity'         => 'integer',
+            'pax_capacity'          => 'integer',
             'individual_supplement' => 'numeric',
             'state_id'              => 'integer|min:1',
             'commentary'            => 'string',
@@ -265,7 +265,7 @@ class DepartureController extends Controller
         $validatedData['final'] = date('Y-m-d', strtotime($validatedData['final']));
 
         return $this->sendResponse(
-            new DepartureDetailsResource($this->service->update($id, $validatedData)),
+            new DepartureExportResource($this->service->update($id, $validatedData)),
             'Departure updated successfully'
         );
     }
