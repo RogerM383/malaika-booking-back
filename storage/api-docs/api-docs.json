@@ -1350,6 +1350,87 @@
                 ]
             }
         },
+        "/api/room-types": {
+            "get": {
+                "tags": [
+                    "RoomTypes"
+                ],
+                "summary": "Lista los tipos de habitacion",
+                "description": "Lista los tipos de habitacion",
+                "operationId": "roomTypeList",
+                "responses": {
+                    "200": {
+                        "description": "RoomType list retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/RoomTypeResource"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
+        },
+        "/api/room-types/{id}": {
+            "get": {
+                "tags": [
+                    "RoomTypes"
+                ],
+                "summary": "Retorna un tipo de habitacion",
+                "description": "Retorna un tipo de habitacion",
+                "operationId": "roomTypeData",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Id de tipo de habitacion",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "RoomType retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/RoomTypeResource"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
+        },
         "/api/trips": {
             "get": {
                 "tags": [
@@ -2168,6 +2249,37 @@
                 "type": "object",
                 "xml": {
                     "name": "RoomTypeAviabilityResource"
+                }
+            },
+            "RoomTypeResource": {
+                "required": [
+                    "id"
+                ],
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "readOnly": "true",
+                        "example": "1"
+                    },
+                    "name": {
+                        "description": "Room type nmame",
+                        "type": "string",
+                        "example": "Dui"
+                    },
+                    "description": {
+                        "description": "Room type description",
+                        "type": "string",
+                        "example": "Habitacion doble de uso individual"
+                    },
+                    "capacity": {
+                        "description": "Room type capacity",
+                        "type": "string",
+                        "example": "1"
+                    }
+                },
+                "type": "object",
+                "xml": {
+                    "name": "RoomTypeResource"
                 }
             },
             "TripListResource": {

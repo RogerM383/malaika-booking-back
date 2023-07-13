@@ -10,6 +10,7 @@ use App\Http\Controllers\ExportController;
 use App\Http\Controllers\FormController;
 use App\Http\Controllers\LanguageController;
 use App\Http\Controllers\PassportController;
+use App\Http\Controllers\RoomTypeController;
 use App\Http\Controllers\TripController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -89,4 +90,9 @@ Route::prefix('exports')->group(function () {
 Route::prefix('languages')->group(function () {
     Route::get('/', [LanguageController::class, 'get'])->middleware(['must.json'/*, 'auth:api'*/]);
     Route::get('/{id}', [LanguageController::class, 'getById'])->middleware(['must.json'/*, 'auth:api'*/]);
+});
+
+Route::prefix('room-types')->group(function () {
+    Route::get('/', [RoomTypeController::class, 'get'])->middleware(['must.json'/*, 'auth:api'*/]);
+    Route::get('/{id}', [RoomTypeController::class, 'getById'])->middleware(['must.json'/*, 'auth:api'*/]);
 });
