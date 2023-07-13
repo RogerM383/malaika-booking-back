@@ -8,6 +8,7 @@ use App\Http\Controllers\DepartureController;
 //use App\Http\Controllers\FormController;
 use App\Http\Controllers\ExportController;
 use App\Http\Controllers\FormController;
+use App\Http\Controllers\LanguageController;
 use App\Http\Controllers\PassportController;
 use App\Http\Controllers\TripController;
 use Illuminate\Http\Request;
@@ -83,4 +84,9 @@ Route::prefix('db')->group(function () {
 
 Route::prefix('exports')->group(function () {
     Route::get('/departure/{id}', [ExportController::class, 'departure'])->middleware(['must.json'/*, 'auth:api'*/]);
+});
+
+Route::prefix('languages')->group(function () {
+    Route::get('/', [LanguageController::class, 'get'])->middleware(['must.json'/*, 'auth:api'*/]);
+    Route::get('/{id}', [LanguageController::class, 'getById'])->middleware(['must.json'/*, 'auth:api'*/]);
 });

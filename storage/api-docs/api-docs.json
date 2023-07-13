@@ -1060,6 +1060,87 @@
                 ]
             }
         },
+        "/api/languages": {
+            "get": {
+                "tags": [
+                    "Languages"
+                ],
+                "summary": "Lista los lenguajes",
+                "description": "Lista los lenguajes",
+                "operationId": "languageList",
+                "responses": {
+                    "200": {
+                        "description": "Departure list retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/LanguageResource"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
+        },
+        "/api/languages/{id}": {
+            "get": {
+                "tags": [
+                    "Languages"
+                ],
+                "summary": "Retorna un lenguaje",
+                "description": "Retorna un lenguaje",
+                "operationId": "languageData",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Id de lenguaje",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Language retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/LanguageResource"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
+        },
         "/api/passports": {
             "post": {
                 "tags": [
@@ -1901,6 +1982,37 @@
                 "type": "object",
                 "xml": {
                     "name": "TripResource"
+                }
+            },
+            "LanguageResource": {
+                "required": [
+                    "id"
+                ],
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "readOnly": "true",
+                        "example": "1"
+                    },
+                    "name": {
+                        "description": "Language name",
+                        "type": "string",
+                        "example": "Catala"
+                    },
+                    "code": {
+                        "description": "Language code",
+                        "type": "string",
+                        "example": "ca"
+                    },
+                    "locale": {
+                        "description": "Language locale",
+                        "type": "string",
+                        "example": "es_ES"
+                    }
+                },
+                "type": "object",
+                "xml": {
+                    "name": "LanguageResource"
                 }
             },
             "PassportDetailResource": {
