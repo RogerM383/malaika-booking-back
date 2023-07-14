@@ -17,6 +17,8 @@ use Illuminate\Support\Carbon;
  *      @OA\Property(property="phone", type="string", description="Client phone", example="648595623"),
  *      @OA\Property(property="email", type="string", description="Client email", example="mariabirgulilla@gmail.com"),
  *      @OA\Property(property="DNI", type="string", description="Client DNI", example="47864512"),
+ *      @OA\Property(property="passport_state", type="integer", readOnly="true", example="3"),
+ *      @OA\Property(property="passport_id", type="integer", readOnly="true", example="2254"),
  * )
  *
  * Class ClientListResource
@@ -33,10 +35,12 @@ class ClientListResource extends JsonResource
     public function toArray($request): array
     {
         // Estados de pasaporte 1 - ok, 2 - caducado, 3 - no esta
+        $passport_id = null;
         $passportState = 3;
         $passport = $this->passport;
         if (!empty($passport)) {
             $passportState = strtotime($passport->exp) >= strtotime(Carbon::now()) ? 1 : 2;
+            $passport_id = $passport->id;
         }
 
         return [
@@ -46,7 +50,8 @@ class ClientListResource extends JsonResource
             'phone'     => $this->phone,
             'email'     => $this->email,
             'dni'       => $this->dni,
-            'passport_state' => $passportState,
+            'passport_state' => $this->when(!empty($passportState), fn () => $passportState),
+            'passport_id' => $this->when(!empty($passport_id), fn () => $passport_id),
         ];
     }
 }
