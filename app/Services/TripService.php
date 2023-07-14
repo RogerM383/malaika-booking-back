@@ -2,13 +2,17 @@
 
 namespace App\Services;
 
+use App\Exceptions\ModelNotFoundException;
 use App\Models\Trip;
+use App\Traits\Slugeable;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection;
 use JetBrains\PhpStorm\Pure;
 
 class TripService extends ResourceService
 {
+    use Slugeable;
+
     /**
      * @param Trip $model
      */
@@ -51,6 +55,40 @@ class TripService extends ResourceService
         } else {
             return $query->get();
         }
+    }
+
+    /**
+     * @param string $slug
+     * @return Trip
+     * @throws ModelNotFoundException
+     */
+    public function getBySlug(string $slug): Trip
+    {
+        return $this->model::where('slug', '=', $slug)->first() ?? throw new ModelNotFoundException($this->model, $slug);
+    }
+
+    /**
+     * @param array $data
+     * @return mixed
+     */
+    public function make(array $data): mixed
+    {
+        if (isset($data['title']) && !isset($data['slug'])) {
+            $data['slug'] = $this->slugify($data['title']);
+        }
+        return $this->model::make($data);
+    }
+
+    /**
+     * @param array $data
+     * @return mixed
+     */
+    public function create(array $data): mixed
+    {
+        if (isset($data['title']) && !isset($data['slug'])) {
+            $data['slug'] = $this->slugify($data['title']);
+        }
+        return $this->model::create($data);
     }
 
     /**

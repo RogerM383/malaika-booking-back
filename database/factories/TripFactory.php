@@ -7,6 +7,7 @@ use App\Models\ClientType;
 use App\Models\Language;
 use App\Models\Trip;
 use App\Models\TripState;
+use App\Traits\Slugeable;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -14,6 +15,8 @@ use Illuminate\Database\Eloquent\Factories\Factory;
  */
 class TripFactory extends Factory
 {
+    use Slugeable;
+
     /**
      * The name of the factory's corresponding model.
      *
@@ -40,10 +43,11 @@ class TripFactory extends Factory
      */
     public function definition()
     {
+        $title = 'Tour por ' . fake()->country();
         return [
-            'title'         => 'Tour por ' . fake()->country(),
+            'title'         => $title,
+            'slug'          => $this->slugify($title),
             'description'   => fake()->paragraph(),
-            //'category',
             'commentary'    => rand(0, 10) >= 6 ? fake()->paragraph() : null,
             'trip_state_id'      => TripState::all()->random()->id,
         ];

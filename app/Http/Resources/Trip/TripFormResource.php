@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources\Trip;
 
+use App\Http\Resources\Images\ImageResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -9,17 +10,19 @@ use Illuminate\Http\Resources\Json\JsonResource;
  *
  * @OA\Schema(
  *      required={"id"},
- *      @OA\Xml(name="TripResource"),
+ *      @OA\Xml(name="TripFormResource"),
  *      @OA\Property(property="id", type="integer", readOnly="true", example="1"),
  *      @OA\Property(property="title", type="string", description="Trip title", example="Antartida desde el mar"),
+ *      @OA\Property(property="slug", type="string", description="Trip slug", example="antartida-desde-el-mar"),
  *      @OA\Property(property="description", type="string", description="Trip description", example="Es un viaje muy chulo"),
- *      @OA\Property(property="commentary", type="string", description="Trip commentary", example="Especial para ciegos")
+ *      @OA\Property(property="commentary", type="string", description="Trip commentary", example="Especial para ciegos"),
+ *      @OA\Property(property="state", type="string", description="Trip state", example="OPEN"),
  * )
  *
- * Class TripListResource
+ * Class TripFormResource
  *
  */
-class TripListResource extends JsonResource
+class TripFormResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -35,6 +38,7 @@ class TripListResource extends JsonResource
             'slug'          => $this->slug,
             'description'   => $this->description,
             'commentary'    => $this->commentary,
+            'state'         => $this->when(!empty($this->state), fn () => $this->state->name),
         ];
     }
 }

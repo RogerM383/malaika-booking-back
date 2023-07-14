@@ -10,19 +10,18 @@ use App\Models\Role;
 use App\Models\Room;
 use App\Models\Trip;
 use App\Models\User;
+use App\Traits\Slugeable;
 use Exception;
-use GuzzleHttp\Psr7\LazyOpenStream;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use JetBrains\PhpStorm\Pure;
 use Illuminate\Support\Facades\Artisan;
-use Mockery\Generator\StringManipulation\Pass\Pass;
-use Throwable;
-use function PHPUnit\Framework\logicalOr;
 
 class DatabaseMigrationService
 {
+    use Slugeable;
+
     private RoomService $roomService;
 
     #[Pure] public function __construct(RoomService $roomService)
@@ -246,6 +245,7 @@ class DatabaseMigrationService
             $newTrip                = Trip::make([]);
             $newTrip->id            = $trip->id;
             $newTrip->title         = $trip->title;
+            $newTrip->slug          = $this->slugify($trip->title);
             $newTrip->description   = $trip->description;
             $newTrip->commentary    = $trip->commentary;
             $newTrip->trip_state_id = $tripStateValues[$trip->state];

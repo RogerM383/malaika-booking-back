@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Traits\Slugeable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -10,7 +11,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Trip extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory, SoftDeletes, Slugeable;
 
     /**
      * The attributes that are mass assignable.
@@ -23,6 +24,7 @@ class Trip extends Model
         //'category',
         'commentary',
         'trip_state_id',
+        'slug'
     ];
 
     /**

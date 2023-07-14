@@ -13,6 +13,7 @@ use Illuminate\Http\Resources\Json\JsonResource;
  *      @OA\Xml(name="TripResource"),
  *      @OA\Property(property="id", type="integer", readOnly="true", example="1"),
  *      @OA\Property(property="title", type="string", description="Trip title", example="Antartida desde el mar"),
+ *      @OA\Property(property="slug", type="string", description="Trip slug", example="antartida-desde-el-mar"),
  *      @OA\Property(property="description", type="string", description="Trip description", example="Es un viaje muy chulo"),
  *      @OA\Property(property="commentary", type="string", description="Trip commentary", example="Especial para ciegos"),
  *      @OA\Property(property="state", type="string", description="Trip state", example="OPEN"),
@@ -34,6 +35,7 @@ class TripResource extends JsonResource
         return [
             'id'            => $this->id,
             'title'         => $this->title,
+            'slug'          => $this->slug,
             'description'   => $this->description,
             'commentary'    => $this->commentary,
             'state'         => $this->when(!empty($this->state), fn () => $this->state->name),

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Exceptions\ModelNotFoundException;
 use App\Http\Resources\Departure\DepartureResource;
+use App\Http\Resources\Trip\TripFormResource;
 use App\Http\Resources\Trip\TripListCollection;
 use App\Http\Resources\Trip\TripListResource;
 use App\Http\Resources\Trip\TripResource;
@@ -136,6 +137,48 @@ class TripController extends Controller
         return $this->sendResponse(
             new TripResource($this->service->getById($validatedData['id'])),
             'Trip retrieved successfully'
+        );
+    }
+
+    /**
+     * @OA\Get(
+     *      path="/api/trips/form/{slug}",
+     *      tags={"Trips"},
+     *      summary="Retorna los datos del formulario de un viaje por slug",
+     *      security={{"bearer_token":{}}},
+     *      description="Retorna los datos del formulario de un viaje por slug",
+     *      operationId="getTripBySlug",
+     *      @OA\Parameter(
+     *          name="slug",
+     *          in="path",
+     *          description="Slug de viaje",
+     *          required=true,
+     *          @OA\Schema(type="string")
+     *      ),
+     *      @OA\Response(
+     *          response="200",
+     *          description="Trip data retrived successfully",
+     *           @OA\JsonContent(
+     *              type="object",
+     *              @OA\Property(
+     *                  property="data",
+     *                  type="object",
+     *                  ref="#/components/schemas/TripFormResource"
+     *              )
+     *          )
+     *      )
+     *  )
+     * @throws ValidationException|ModelNotFoundException
+     */
+    public function getBySlug(Request $request, $slug): JsonResponse
+    {
+        $validatedData = Validator::make(['slug' => $slug], [
+            'slug' => 'required|string',
+        ])->validate();
+
+        return $this->sendResponse(
+            new TripFormResource($this->service->getBySlug($validatedData['slug'])),
+            'Trip data retrieved successfully'
         );
     }
 

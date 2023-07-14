@@ -59,6 +59,7 @@ Route::prefix('trips')->group(function () {
     Route::get('/', [TripController::class, 'get'])->middleware('auth:api');
     Route::post('/', [TripController::class, 'create'])->middleware('auth:api');
     Route::get('/{id}', [TripController::class, 'getById'])->middleware('auth:api');
+    Route::get('/form/{id}', [TripController::class, 'getBySlug'])->middleware('auth:api');
     Route::delete('/{id}', [TripController::class, 'delete'])->middleware('auth:api');
     //Route::post('/', [TripController::class, 'create'])->middleware('auth:api');
     Route::put('/{id}', [TripController::class, 'update'])->middleware(['must.json', 'auth:api']);
@@ -84,15 +85,15 @@ Route::prefix('db')->group(function () {
 });
 
 Route::prefix('exports')->group(function () {
-    Route::get('/departure/{id}', [ExportController::class, 'departure'])->middleware(['must.json'/*, 'auth:api'*/]);
+    Route::get('/departure/{id}', [ExportController::class, 'departure'])->middleware(['must.json', 'auth:api']);
 });
 
 Route::prefix('languages')->group(function () {
-    Route::get('/', [LanguageController::class, 'get'])->middleware(['must.json'/*, 'auth:api'*/]);
-    Route::get('/{id}', [LanguageController::class, 'getById'])->middleware(['must.json'/*, 'auth:api'*/]);
+    Route::get('/', [LanguageController::class, 'get'])->middleware(['must.json', 'auth:api']);
+    Route::get('/{id}', [LanguageController::class, 'getById'])->middleware(['must.json', 'auth:api']);
 });
 
 Route::prefix('room-types')->group(function () {
-    Route::get('/', [RoomTypeController::class, 'get'])->middleware(['must.json'/*, 'auth:api'*/]);
-    Route::get('/{id}', [RoomTypeController::class, 'getById'])->middleware(['must.json'/*, 'auth:api'*/]);
+    Route::get('/', [RoomTypeController::class, 'get'])->middleware(['must.json', 'auth:api']);
+    Route::get('/{id}', [RoomTypeController::class, 'getById'])->middleware(['must.json', 'auth:api']);
 });
