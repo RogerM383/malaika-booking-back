@@ -266,7 +266,7 @@ class DeparturesExport2 implements WithMapping, FromCollection, WithHeadings, Wi
             $row->birth ?? "",                      // Client.birth
             $row->place_birth ?? "",                // Client.place_birth
             $row->nationality ?? "",                // Passport.nationality
-            $row->observations ?? "",               // DepartureClient.observatrions
+            $row->notes ?? "",                      // Client.notes
         ];
     }
 
