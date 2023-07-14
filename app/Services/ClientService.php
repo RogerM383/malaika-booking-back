@@ -36,7 +36,8 @@ class ClientService extends ResourceService
      */
     public function create(array $data): mixed
     {
-        return $this->model->firstOrCreate(
+        $data['updated_at'] = null;
+        return $this->model->withTrashed()->updateOrCreate(
             ['dni' => $data['dni']],
             $data
         );

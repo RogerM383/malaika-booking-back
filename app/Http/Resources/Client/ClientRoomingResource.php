@@ -10,7 +10,7 @@ use Illuminate\Http\Resources\Json\JsonResource;
  *
  * @OA\Schema(
  *      required={"id"},
- *      @OA\Xml(name="ClientListResource"),
+ *      @OA\Xml(name="ClientRoomingResource"),
  *      @OA\Property(property="id", type="integer", readOnly="true", example="1"),
  *      @OA\Property(property="surname", type="string", description="Client surname", example="Birgulilla"),
  *      @OA\Property(property="name", type="string", description="Client name", example="Maria"),
@@ -22,10 +22,10 @@ use Illuminate\Http\Resources\Json\JsonResource;
  *      @OA\Property(property="place_birth", type="string", description="Client place of birtgh", example="Barcelona"),
  * )
  *
- * Class ClientListResource
+ * Class ClientRoomingResource
  *
  */
-class ClientExportResource extends JsonResource
+class ClientRoomingResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -35,9 +35,6 @@ class ClientExportResource extends JsonResource
      */
     public function toArray($request): array
     {
-        // TODO repasar esto, el tipo pueden ser varios? o un cliente solo sera de un tipo? si es de varios que hacemos en el listado?
-       /* $types = $this->clientTypes ?? null;
-        $type = !empty($types) && count($types) >= 0 ? $types[0]->name : null;*/
 
         if ($this->state <= 4) {
             $room = $this->rooms()
@@ -58,19 +55,6 @@ class ClientExportResource extends JsonResource
             'type_room'         => $this->when(!empty($room), fn () => $room->roomType->name),
             'phone'             => $this->phone,
             'email'             => $this->email,
-            'seat'              => $this->pivot->seat,
-            'rm_observations'   => $this->when(!empty($room), fn () => $room->observations), //$room->observations,
-            'intolerances'      => $this->intolerances,
-            'dni'               => $this->dni,
-            'dni_expiration'    => $this->dni_expiration,
-
-            'number_passport'   => $this->when(!empty($this->passport), fn () => $this->passport->number_passport),
-            'issue'             => $this->when(!empty($this->passport), fn () => $this->passport->issue),
-            'exp'               => $this->when(!empty($this->passport), fn () => $this->passport->exp),
-            'place_birth'       => $this->place_birth,
-            'birth'             => $this->when(!empty($this->passport), fn () => $this->passport->birth),
-            'nationality'       => $this->when(!empty($this->passport), fn () => $this->passport->nationality),
-            'dp_observations'   => $this->pivot->observations,
         ];
     }
 }

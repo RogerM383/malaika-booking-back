@@ -86,7 +86,7 @@ class Departure extends Model
                 'seat',
                 'observations')
             //->orderBy('rel_client_departure.updated_at', 'asc')
-            ->wherePivot('state', '<=', 3)
+            ->wherePivot('state', '<=', 4)
             ->withTimestamps();
     }
 
@@ -94,6 +94,21 @@ class Departure extends Model
      * @return BelongsToMany
      */
     public function waitingClients(): BelongsToMany
+    {
+        return $this->belongsToMany(Client::class,'rel_client_departure')
+            //->using(ClientDepartures::class)
+            ->withPivot(
+                'state',
+                'seat',
+                'observations')
+            ->wherePivot('state', '=', 6)
+            ->withTimestamps();
+    }
+
+    /**
+     * @return BelongsToMany
+     */
+    public function canceledClients(): BelongsToMany
     {
         return $this->belongsToMany(Client::class,'rel_client_departure')
             //->using(ClientDepartures::class)

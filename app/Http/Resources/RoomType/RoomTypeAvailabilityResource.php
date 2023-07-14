@@ -31,6 +31,7 @@ class RoomTypeAvailabilityResource extends JsonResource
         return [
             'id'        => $this->id,
             'name'      => $this->name,
+            'capacity'  => $this->capacity,
             'quantity'  => $this->pivot->quantity
         ];
     }

@@ -5,8 +5,10 @@ namespace App\Http\Controllers;
 use App\Exceptions\DeparturePaxCapacityExceededException;
 use App\Exceptions\ModelNotFoundException;
 use App\Http\Resources\Departure\DepartureCollection;
+use App\Http\Resources\Departure\DepartureDetailsResource;
 use App\Http\Resources\Departure\DepartureExportResource;
 use App\Http\Resources\Departure\DepartureResource;
+use App\Http\Resources\Departure\DepartureRoomingResource;
 use App\Services\DepartureService;
 use App\Traits\HasPagination;
 use Illuminate\Http\JsonResponse;
@@ -135,7 +137,7 @@ class DepartureController extends Controller
     public function getById(Request $request, $id): JsonResponse
     {
         return $this->sendResponse(
-            new DepartureExportResource($this->service->getById($id)),
+            new DepartureDetailsResource($this->service->getById($id)),
             'Departure retrieved successfully'
         );
     }
@@ -353,26 +355,26 @@ class DepartureController extends Controller
      * @OA\Get(
      *      path="/api/departures/{id}/rooming",
      *      tags={"Departures"},
-     *      summary="Lista las salidas",
+     *      summary="Retorna los datos de las habitaciones de una salida",
      *      security={{"bearer_token":{}}},
-     *      description="Lista las salidas",
+     *      description="Retorna los datos de las habitaciones de una salida",
      *      operationId="departureRoomingList",
      *      @OA\Parameter(
      *          name="id",
      *          in="path",
-     *          description="Id del viaje",
+     *          description="Id de la salida",
      *          required=false,
      *          @OA\Schema(type="integer")
      *      ),
      *      @OA\Response(
      *          response="200",
-     *          description="Departure list retrieved successfully",
+     *          description="Departure rooming info retrieved successfully",
      *           @OA\JsonContent(
      *              type="object",
      *              @OA\Property(
      *                  property="data",
      *                  type="array",
-     *                  @OA\Items(ref="#/components/schemas/DepartureResource")
+     *                  @OA\Items(ref="#/components/schemas/DepartureRoomingResource")
      *              )
      *          )
      *      )
@@ -383,11 +385,11 @@ class DepartureController extends Controller
      * @return JsonResponse
      * @throws ModelNotFoundException
      */
-    /*public function getDepartureRooming(Request $request, $id): JsonResponse
+    public function getDepartureRooming(Request $request, $id): JsonResponse
     {
         return $this->sendResponse(
-            $this->service->getDepartureRoomingData($id),
-            'Departure updated successfully'
+            new DepartureRoomingResource($this->service->getById($id)),
+            'Departure rooming data retrieved successfully'
         );
-    }*/
+    }
 }

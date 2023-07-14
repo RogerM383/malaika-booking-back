@@ -30,7 +30,8 @@ class PassportService extends ResourceService
     {
         $clientId = $data['client_id'];
         $client = $this->clientService->getById($clientId);
-        return $client->passport()->firstOrCreate(
+        $data['updated_at'] = null;
+        return $client->passport()->withTrashed()->updateOrCreate(
             ['client_id' => $clientId],
             $data,
         );

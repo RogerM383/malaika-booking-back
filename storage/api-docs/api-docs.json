@@ -933,6 +933,52 @@
                 ]
             }
         },
+        "/api/departures/{id}/rooming": {
+            "get": {
+                "tags": [
+                    "Departures"
+                ],
+                "summary": "Retorna los datos de las habitaciones de una salida",
+                "description": "Retorna los datos de las habitaciones de una salida",
+                "operationId": "departureRoomingList",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Id de la salida",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Departure rooming info retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/DepartureRoomingResource"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
+        },
         "/api/exports/departure/{id}": {
             "get": {
                 "tags": [
@@ -2106,6 +2152,42 @@
                 "type": "object",
                 "xml": {
                     "name": "TripResource"
+                }
+            },
+            "DepartureRoomingResource": {
+                "required": [
+                    "id"
+                ],
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "readOnly": "true",
+                        "example": "1"
+                    },
+                    "title": {
+                        "description": "Trip title",
+                        "type": "string",
+                        "example": "Antartida desde el mar"
+                    },
+                    "description": {
+                        "description": "Trip description",
+                        "type": "string",
+                        "example": "Es un viaje muy chulo"
+                    },
+                    "commentary": {
+                        "description": "Trip commentary",
+                        "type": "string",
+                        "example": "Especial para ciegos"
+                    },
+                    "state": {
+                        "description": "Trip state",
+                        "type": "string",
+                        "example": "OPEN"
+                    }
+                },
+                "type": "object",
+                "xml": {
+                    "name": "DepartureRoomingResource"
                 }
             },
             "LanguageResource": {

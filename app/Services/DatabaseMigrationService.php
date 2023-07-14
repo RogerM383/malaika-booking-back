@@ -380,13 +380,16 @@ class DatabaseMigrationService
             $departureRoomsTotals->each(function ($departureRoom) use ($newDeparture, $departure) {
                 // Excluye el tipo 0 que solo se aplica a cancelados y esperando
                 if ($departureRoom->type_room != 0) {
+
+                    $capacity = $departureRoom->type_room === 1 ? 1 : ($departureRoom->type_room === 2 || $departureRoom->type_room === 3 ? 2 : 3);
+
                     // Set connection to local
                     DB::connection('mysql')
                         ->table('rel_departure_room_type')
                         ->insert([
                             'departure_id' => $newDeparture->id,
                             'room_type_id' => $departureRoom->type_room,
-                            'quantity' => $departureRoom->total,
+                            'quantity' => $departureRoom->total / $capacity,
                             'created_at' => now(),
                             'updated_at' => now(),
                         ]);
