@@ -226,7 +226,10 @@ class ClientController extends Controller
             'address'           => 'string',
             'dni_expiration'    => 'string',
             'place_birth'       => 'string',
-
+            'intolerances'      => 'string',
+            'frequent_flyer'    => 'string',
+            'member_number'     => 'string',
+            'notes'             => 'string',
         ])->validate();
 
         return $this->sendResponse(
