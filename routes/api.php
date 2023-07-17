@@ -77,7 +77,7 @@ Route::prefix('departures')->group(function () {
 
 Route::prefix('forms')->group(function () {
     Route::post('/process', [FormController::class, 'process'])->middleware(['must.json', 'auth:api']);
-    Route::get('/trips/{slug}', [FormController::class, 'getFormTripBySlug'])->middleware('auth:api');
+    Route::get('/trips/{slug}', [FormController::class, 'getFormTripBySlug']);
 });
 
 Route::prefix('db')->group(function () {
