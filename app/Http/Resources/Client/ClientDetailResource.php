@@ -56,6 +56,7 @@ class ClientDetailResource extends JsonResource
             'language'          => $this->language->name,
             'client_type'       => $this->when(!empty($this->clientType), fn () => new ClientTypeListResource($this->clientType)),
 
+            'passport_id'       => $this->when(!empty($this->passport), fn () => $this->passport->passport_id),
             'number_passport'   => $this->when(!empty($this->passport), fn () => $this->passport->number_passport),
             'birth'             => $this->when(!empty($this->passport), fn () => $this->passport->birth),
             'issue'             => $this->when(!empty($this->passport), fn () => $this->passport->issue),
