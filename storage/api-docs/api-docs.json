@@ -1106,6 +1106,49 @@
                 ]
             }
         },
+        "/api/forms/trips/{slug}": {
+            "get": {
+                "tags": [
+                    "Forms"
+                ],
+                "summary": "Retorna los datos del formulario de un viaje por slug",
+                "description": "Retorna los datos del formulario de un viaje por slug",
+                "operationId": "getFormTripBySlug",
+                "parameters": [
+                    {
+                        "name": "slug",
+                        "in": "path",
+                        "description": "Slug de viaje",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Trip data retrived successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/TripFormResource"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
+        },
         "/api/languages": {
             "get": {
                 "tags": [
@@ -1922,6 +1965,16 @@
                         "description": "Client DNI",
                         "type": "string",
                         "example": "47864512"
+                    },
+                    "passport_state": {
+                        "type": "integer",
+                        "readOnly": "true",
+                        "example": "3"
+                    },
+                    "passport_id": {
+                        "type": "integer",
+                        "readOnly": "true",
+                        "example": "2254"
                     }
                 },
                 "type": "object",
@@ -1983,6 +2036,62 @@
                 "type": "object",
                 "xml": {
                     "name": "ClientListResource"
+                }
+            },
+            "ClientRoomingResource": {
+                "required": [
+                    "id"
+                ],
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "readOnly": "true",
+                        "example": "1"
+                    },
+                    "surname": {
+                        "description": "Client surname",
+                        "type": "string",
+                        "example": "Birgulilla"
+                    },
+                    "name": {
+                        "description": "Client name",
+                        "type": "string",
+                        "example": "Maria"
+                    },
+                    "phone": {
+                        "description": "Client phone",
+                        "type": "string",
+                        "example": "648595623"
+                    },
+                    "email": {
+                        "description": "Client email",
+                        "type": "string",
+                        "example": "mariabirgulilla@gmail.com"
+                    },
+                    "DNI": {
+                        "description": "Client DNI",
+                        "type": "string",
+                        "example": "47864512"
+                    },
+                    "address": {
+                        "description": "Client address",
+                        "type": "string",
+                        "example": "Calle falsa 123, 08167, Barcelona"
+                    },
+                    "dni_expiration": {
+                        "description": "Client DNI expiration date",
+                        "type": "string",
+                        "example": "2025-12-01"
+                    },
+                    "place_birth": {
+                        "description": "Client place of birtgh",
+                        "type": "string",
+                        "example": "Barcelona"
+                    }
+                },
+                "type": "object",
+                "xml": {
+                    "name": "ClientRoomingResource"
                 }
             },
             "ClientTypeListResource": {
@@ -2164,25 +2273,83 @@
                         "readOnly": "true",
                         "example": "1"
                     },
-                    "title": {
+                    "trip_title": {
                         "description": "Trip title",
-                        "type": "string",
-                        "example": "Antartida desde el mar"
+                        "type": "integer",
+                        "example": "Tour por Italia"
                     },
-                    "description": {
-                        "description": "Trip description",
+                    "start": {
+                        "description": "Departure starting date",
                         "type": "string",
-                        "example": "Es un viaje muy chulo"
+                        "example": "22/02/2022"
+                    },
+                    "final": {
+                        "description": "Departure end date",
+                        "type": "string",
+                        "example": "02/03/2022"
                     },
                     "commentary": {
-                        "description": "Trip commentary",
+                        "description": "Departure comment",
                         "type": "string",
-                        "example": "Especial para ciegos"
+                        "example": "LLega 30 segundos tarde"
                     },
-                    "state": {
-                        "description": "Trip state",
+                    "price": {
+                        "description": "Departure price",
+                        "type": "number",
+                        "format": "float",
+                        "example": "1866.98"
+                    },
+                    "pax_capacity": {
+                        "description": "Departure pax capacity",
+                        "type": "integer",
+                        "example": "25"
+                    },
+                    "pax_available": {
+                        "description": "Departure pax available",
+                        "type": "integer",
+                        "example": "0"
+                    },
+                    "individual_supplement": {
+                        "description": "Departure supplement",
+                        "type": "number",
+                        "format": "float",
+                        "example": "550.50"
+                    },
+                    "taxes": {
+                        "description": "Departure taxes",
+                        "type": "number",
+                        "format": "float",
+                        "example": "155.89"
+                    },
+                    "expedient": {
+                        "description": "Trip expedient",
                         "type": "string",
-                        "example": "OPEN"
+                        "example": "4564845"
+                    },
+                    "active": {
+                        "description": "List of clients with assigend room",
+                        "type": "integer",
+                        "example": "{}"
+                    },
+                    "waiting": {
+                        "description": "List of clients waiting for a room",
+                        "type": "string",
+                        "example": "{}"
+                    },
+                    "canceled": {
+                        "description": "List of canceled clients",
+                        "type": "string",
+                        "example": "{}"
+                    },
+                    "rooms_total": {
+                        "description": "Departure rooms total",
+                        "type": "integer",
+                        "example": "13"
+                    },
+                    "room_availability": {
+                        "description": "Departure aviable number",
+                        "type": "integer",
+                        "example": "0"
                     }
                 },
                 "type": "object",

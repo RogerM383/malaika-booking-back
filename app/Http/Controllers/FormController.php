@@ -4,11 +4,13 @@ namespace App\Http\Controllers;
 
 use App\Exceptions\DeparturePaxCapacityExceededException;
 use App\Exceptions\ModelNotFoundException;
+use App\Http\Resources\Trip\TripFormResource;
 use App\Services\ClientService;
 use App\Services\ClientTypeService;
 use App\Services\DepartureService;
 use App\Services\RoomService;
 use App\Services\RoomTypeService;
+use App\Services\TripService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
@@ -23,13 +25,15 @@ class FormController extends Controller
     private DepartureService $departureService;
     private RoomService $roomService;
     private RoomTypeService $roomTypeService;
+    private TripService $tripService;
 
     public function __construct(
         ClientService $clientService,
         DepartureService $departureService,
         RoomService $roomService,
         ClientTypeService $clientTypeService,
-        RoomTypeService $roomTypeService
+        RoomTypeService $roomTypeService,
+        TripService $tripService,
     )
     {
         $this->clientService        = $clientService;
@@ -37,6 +41,7 @@ class FormController extends Controller
         $this->roomService          = $roomService;
         $this->clientTypeService    = $clientTypeService;
         $this->roomTypeService      = $roomTypeService;
+        $this->tripService          = $tripService;
     }
 
     /**
@@ -202,6 +207,48 @@ class FormController extends Controller
         return $this->sendResponse(
             ['message' => 'OK'],
             'Form processed successfully'
+        );
+    }
+
+    /**
+     * @OA\Get(
+     *      path="/api/forms/trips/{slug}",
+     *      tags={"Forms"},
+     *      summary="Retorna los datos del formulario de un viaje por slug",
+     *      security={{"bearer_token":{}}},
+     *      description="Retorna los datos del formulario de un viaje por slug",
+     *      operationId="getFormTripBySlug",
+     *      @OA\Parameter(
+     *          name="slug",
+     *          in="path",
+     *          description="Slug de viaje",
+     *          required=true,
+     *          @OA\Schema(type="string")
+     *      ),
+     *      @OA\Response(
+     *          response="200",
+     *          description="Trip data retrived successfully",
+     *           @OA\JsonContent(
+     *              type="object",
+     *              @OA\Property(
+     *                  property="data",
+     *                  type="object",
+     *                  ref="#/components/schemas/TripFormResource"
+     *              )
+     *          )
+     *      )
+     *  )
+     * @throws ValidationException|ModelNotFoundException
+     */
+    public function getFormTripBySlug(Request $request, $slug): JsonResponse
+    {
+        $validatedData = Validator::make(['slug' => $slug], [
+            'slug' => 'required|string',
+        ])->validate();
+
+        return $this->sendResponse(
+            new TripFormResource($this->tripService->getBySlug($validatedData['slug'])),
+            'Trip data retrieved successfully'
         );
     }
 }

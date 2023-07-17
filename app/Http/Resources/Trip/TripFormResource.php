@@ -38,6 +38,7 @@ class TripFormResource extends JsonResource
             'slug'          => $this->slug,
             'description'   => $this->description,
             'commentary'    => $this->commentary,
+            'departures'    => $this->departures,
             'state'         => $this->when(!empty($this->state), fn () => $this->state->name),
         ];
     }

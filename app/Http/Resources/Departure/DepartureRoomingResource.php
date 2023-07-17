@@ -2,23 +2,31 @@
 
 namespace App\Http\Resources\Departure;
 
-use App\Http\Resources\Client\ClientExportResource;
 use App\Http\Resources\Client\ClientRoomingResource;
 use App\Http\Resources\RoomType\RoomTypeAvailabilityResource;
-use App\Http\Resources\RoomType\RoomTypeResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
-use Illuminate\Support\Facades\Log;
 
 /**
  * @OA\Schema(
  *      required={"id"},
  *      @OA\Xml(name="DepartureRoomingResource"),
  *      @OA\Property(property="id", type="integer", readOnly="true", example="1"),
- *      @OA\Property(property="title", type="string", description="Trip title", example="Antartida desde el mar"),
- *      @OA\Property(property="description", type="string", description="Trip description", example="Es un viaje muy chulo"),
- *      @OA\Property(property="commentary", type="string", description="Trip commentary", example="Especial para ciegos"),
- *      @OA\Property(property="state", type="string", description="Trip state", example="OPEN"),
+ *      @OA\Property(property="trip_title", type="integer", description="Trip title", example="Tour por Italia"),
+ *      @OA\Property(property="start", type="string", description="Departure starting date", example="22/02/2022"),
+ *      @OA\Property(property="final", type="string", description="Departure end date", example="02/03/2022"),
+ *      @OA\Property(property="commentary", type="string", description="Departure comment", example="LLega 30 segundos tarde"),
+ *      @OA\Property(property="price", type="float", description="Departure price", example="1866.98"),
+ *      @OA\Property(property="pax_capacity", type="integer", description="Departure pax capacity", example="25"),
+ *      @OA\Property(property="pax_available", type="integer", description="Departure pax available", example="0"),
+ *      @OA\Property(property="individual_supplement", type="float", description="Departure supplement", example="550.50"),
+ *      @OA\Property(property="taxes", type="float", description="Departure taxes", example="155.89"),
+ *      @OA\Property(property="expedient", type="string", description="Trip expedient", example="4564845"),
+ *      @OA\Property(property="active", type="integer", description="List of clients with assigend room", example="{}"),
+ *      @OA\Property(property="waiting", type="string", description="List of clients waiting for a room", example="{}"),
+ *      @OA\Property(property="canceled", type="string", description="List of canceled clients", example="{}"),
+ *      @OA\Property(property="rooms_total", type="integer", description="Departure rooms total", example="13"),
+ *      @OA\Property(property="room_availability", type="integer", description="Departure aviable number", example="0"),
  * )
  *
  * Class DepartureRoomingResource
