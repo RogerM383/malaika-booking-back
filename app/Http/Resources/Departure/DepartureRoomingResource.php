@@ -48,6 +48,8 @@ class DepartureRoomingResource extends JsonResource
 
         $waiting = ClientRoomingResource::collection($this->waitingClients);
 
+        $canceled = ClientRoomingResource::collection($this->canceledClients);
+
         $room_availability = RoomTypeAvailabilityResource::collection($this->roomTypes)->resolve();
 
         foreach ($room_availability as $key => $room) {
@@ -74,6 +76,7 @@ class DepartureRoomingResource extends JsonResource
             'expedient'             => $this->expedient,
             'active'                => $this->when(!empty($clients), fn () => $clients),
             'waiting'               => $this->when(!empty($waiting), fn () => $waiting),
+            'canceled'              => $this->when(!empty($canceled), fn () => $canceled),
             //'room_types'            => RoomTypeResource::collection($this->roomTypes),
             'rooms_total'           => $total,
             'room_availability'     => $room_availability,
