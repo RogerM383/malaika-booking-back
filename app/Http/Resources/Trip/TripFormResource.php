@@ -36,6 +36,8 @@ class TripFormResource extends JsonResource
         return [
             'id'            => $this->id,
             'title'         => $this->title,
+            'image'         => $this->image,
+            'pdf'           => $this->pdf,
             'slug'          => $this->slug,
             'description'   => $this->description,
             'commentary'    => $this->commentary,
