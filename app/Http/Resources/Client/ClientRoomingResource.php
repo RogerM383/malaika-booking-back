@@ -5,6 +5,7 @@ namespace App\Http\Resources\Client;
 use App\Http\Resources\ClientType\ClientTypeListResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Carbon;
 
 /**
  *
@@ -36,6 +37,15 @@ class ClientRoomingResource extends JsonResource
     public function toArray($request): array
     {
 
+        // Estados de pasaporte 1 - ok, 2 - caducado, 3 - no esta
+        $passport_id = null;
+        $passportState = 3;
+        $passport = $this->passport;
+        if (!empty($passport)) {
+            $passportState = strtotime($passport->exp) >= strtotime(Carbon::now()) ? 1 : 2;
+            $passport_id = $passport->id;
+        }
+
         if ($this->state <= 4) {
             $room = $this->rooms()
                 ->where('departure_id', $this->pivot->departure_id)
@@ -55,6 +65,8 @@ class ClientRoomingResource extends JsonResource
             'type_room'         => $this->when(!empty($room), fn () => $room->roomType->name),
             'phone'             => $this->phone,
             'email'             => $this->email,
+            'passport_state'    => $this->when(!empty($passportState), fn () => $passportState),
+            'passport_id'       => $this->when(!empty($passport_id), fn () => $passport_id),
         ];
     }
 }

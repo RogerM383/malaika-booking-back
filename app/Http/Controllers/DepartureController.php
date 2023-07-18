@@ -298,8 +298,9 @@ class DepartureController extends Controller
      *          description="Add client to departure",
      *          required=true,
      *          @OA\JsonContent(
-     *              required={"client_id"},
+     *              required={"client_id", "room_type_id"},
      *              @OA\Property(property="client_id", type="integer", example="1"),
+     *              @OA\Property(property="room_type_id", type="integer", example="1"),
      *          )
      *      ),
      *      @OA\Response(
@@ -311,13 +312,16 @@ class DepartureController extends Controller
      */
     public function addClient(Request $request, $id)
     {
-        $params = array_merge($request->only('client_id'), ['id' => $id]);
+        $params = array_merge($request->only('client_id', 'room_type_id' ), ['id' => $id]);
         $validatedData = Validator::make($params, [
             'id'        => 'required|integer',
-            'client_id' => 'required@integer',
+            'client_id' => 'required|integer',
+            'room_type_id' => 'required|integer',
         ])->validate();
 
         $this->service->addClient(...$validatedData);
+
+        return $this->sendResponse([], 'Client added succesfully successfully');
     }
 
     /**
