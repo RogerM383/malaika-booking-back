@@ -24,7 +24,9 @@ class Trip extends Model
         //'category',
         'commentary',
         'trip_state_id',
-        'slug'
+        'slug',
+        'image',
+        'pdf'
     ];
 
     /**
