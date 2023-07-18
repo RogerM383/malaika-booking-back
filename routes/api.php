@@ -42,6 +42,7 @@ Route::prefix('client-types')->group(function () {
 Route::prefix('clients')->group(function () {
     Route::get('/', [ClientController::class, 'get']);//->middleware('auth:api');
     Route::get('/{id}', [ClientController::class, 'getById'])->middleware('auth:api');
+    Route::get('/{id}/departures', [ClientController::class, 'getClientDepartures'])->middleware('auth:api');
     Route::post('/', [ClientController::class, 'create'])->middleware('auth:api');
     Route::put('/{id}', [ClientController::class, 'update'])->middleware(['must.json', 'auth:api']);
     Route::delete('/{id}', [ClientController::class, 'delete'])->middleware('auth:api');

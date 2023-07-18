@@ -7,6 +7,8 @@ use App\Http\Resources\Client\ClientDetailResource;
 use App\Http\Resources\Client\ClientListCollection;
 use App\Http\Resources\Client\ClientListResource;
 use App\Http\Resources\Client\ClientResource;
+use App\Http\Resources\Departure\DepartureListResource;
+use App\Http\Resources\Departure\DepartureResource;
 use App\Services\ClientService;
 use App\Services\DatabaseMigrationService;
 use App\Traits\HasPagination;
@@ -178,6 +180,48 @@ class ClientController extends Controller
         return $this->sendResponse(
             new ClientDetailResource($this->service->getById($validatedData['id'])),
             'Client retrieved successfully'
+        );
+    }
+
+    /**
+     * @OA\Get(
+     *      path="/api/clients/{id}/departures",
+     *      tags={"Clients"},
+     *      summary="Retorna las salidas de un cliente",
+     *      security={{"bearer_token":{}}},
+     *      description="Retorna las salidas un cliente",
+     *      operationId="getClientDepartures",
+     *      @OA\Parameter(
+     *          name="id",
+     *          in="path",
+     *          description="Id de cliente",
+     *          required=true,
+     *          @OA\Schema(type="integer")
+     *      ),
+     *      @OA\Response(
+     *          response="200",
+     *          description="Client retrived successfully",
+     *           @OA\JsonContent(
+     *              type="object",
+     *              @OA\Property(
+     *                  property="data",
+     *                  type="array",
+     *                  @OA\Items(ref="#/components/schemas/DepartureResource")
+     *              )
+     *          )
+     *      )
+     *  )
+     * @throws ValidationException|ModelNotFoundException
+     */
+    public function getClientDepartures(Request $request, $id): JsonResponse
+    {
+        $validatedData = Validator::make(['id' => $id], [
+            'id' => 'required|integer',
+        ])->validate();
+
+        return $this->sendResponse(
+            DepartureResource::collection($this->service->getClientDepartures($validatedData['id'])),
+            'Client departures retrieved successfully'
         );
     }
 

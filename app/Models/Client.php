@@ -69,12 +69,12 @@ class Client extends Model
             ->using(ClientDepartures::class)
             ->withPivot(
                 'state',
-                'number_room',
-                'type_room',
+                /*'number_room',*/
+                'room_type_id',
                 'seat',
                 'observations')
                 //'room_observations')
-            ->orderBy('rel_client_departure.number_room')
+            //->orderBy('rel_client_departure.number_room')
             ->withTimestamps();
     }
 

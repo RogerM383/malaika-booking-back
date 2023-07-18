@@ -38,7 +38,7 @@ class DepartureListResource extends JsonResource
             'id'                    => $this->id,
             'start'                 => $this->start,
             'final'                 => $this->final,
-            'pax_capacity'         => $this->pax_capacity,
+            'pax_capacity'          => $this->pax_capacity,
             'expedient'             => $this->expedient,
         ];
     }

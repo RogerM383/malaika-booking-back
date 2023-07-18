@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources\Trip;
 
+use App\Http\Resources\Departure\DepartureResource;
 use App\Http\Resources\Images\ImageResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -38,7 +39,7 @@ class TripFormResource extends JsonResource
             'slug'          => $this->slug,
             'description'   => $this->description,
             'commentary'    => $this->commentary,
-            'departures'    => $this->departures,
+            'departures'    => DepartureResource::collection($this->departures),
             'state'         => $this->when(!empty($this->state), fn () => $this->state->name),
         ];
     }

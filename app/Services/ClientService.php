@@ -152,4 +152,9 @@ class ClientService extends ResourceService
             $q->where('passports.number_passport', $number);
         });
     }
+
+    public function getClientDepartures(int $id)
+    {
+        return $this->getById($id)->departures()->get();
+    }
 }

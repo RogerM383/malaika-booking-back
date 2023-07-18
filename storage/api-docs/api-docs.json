@@ -464,6 +464,52 @@
                 ]
             }
         },
+        "/api/clients/{id}/departures": {
+            "get": {
+                "tags": [
+                    "Clients"
+                ],
+                "summary": "Retorna las salidas de un cliente",
+                "description": "Retorna las salidas un cliente",
+                "operationId": "getClientDepartures",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Id de cliente",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Client retrived successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/DepartureResource"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
+        },
         "/api/client-types": {
             "get": {
                 "tags": [
