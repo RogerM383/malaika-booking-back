@@ -33,6 +33,7 @@ class DepartureDetailsResource extends JsonResource
     {
         return [
             'id'                    => $this->id,
+            'trip_title'            => $this->trip->title,
             'start'                 => $this->start,
             'final'                 => $this->final,
             'price'                 => $this->price,
