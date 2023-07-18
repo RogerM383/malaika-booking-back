@@ -22,7 +22,7 @@ return new class extends Migration
 
             $table->foreignId('trip_state_id')->default(1)->constrained('trip_states');
 
-            $table->string('image')->nullable()->default('https://www.idsplus.net/wp-content/uploads/default-placeholder.png');
+            $table->string('image')->nullable()->default(null);
             $table->string('pdf')->nullable()->default(null);
 
             $table->timestamps();
