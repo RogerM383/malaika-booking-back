@@ -57,6 +57,7 @@ class ClientRoomingResource extends JsonResource
 
         return [
             'id'                => $this->id,
+            'room_id'           => $this->when(!empty($room), fn () => $room->id),
             'room_number'       => $this->when(!empty($room), fn () => $room->room_number),
             'state'             => $this->pivot->state,
             'surname'           => $this->surname,

@@ -201,7 +201,9 @@ class DepartureService extends ResourceService
     public function addClient($id, $data): Builder
     {
         $departure = $this->getById($id);
-        $departure->clients()->attach($data['client_id'],  Arr::except($data, ['id']));
+        $departure->clients()->attach($data['client_id'],  Arr::except($data, ['id', 'room_id']));
+        // Si viene room_id crear habiatacion
+        // Si state es 5 o 6 limpiar habiatacion
         return $departure->with('clients');
     }
 

@@ -365,6 +365,7 @@ class DepartureController extends Controller
      *              required={"client_id", "room_type_id"},
      *              @OA\Property(property="client_id", type="integer", example="1"),
      *              @OA\Property(property="room_type_id", type="integer", example="1"),
+     *              @OA\Property(property="room_id", type="integer", example="1"),
      *              @OA\Property(property="seat", type="string", example="FINESTRA"),
      *              @OA\Property(property="state", type="integer", example="3"),
      *              @OA\Property(property="observations", type="string", example="GUIA-VACUNADA"),
@@ -382,6 +383,7 @@ class DepartureController extends Controller
         $params = array_merge($request->only(
             'client_id',
             'room_type_id',
+            'room_id',
             'seat',
             'state',
             'observations',
@@ -390,6 +392,7 @@ class DepartureController extends Controller
             'id'            => 'required|integer|min:1',
             'client_id'     => 'required|integer|min:1',
             'room_type_id'  => 'required|integer|min:1',
+            'room_id'       => 'integer|min:1',
             'seat'          => 'string',
             'state'         => 'integer|min:1',
             'observations'  => 'string',
