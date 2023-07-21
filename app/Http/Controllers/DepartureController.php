@@ -333,9 +333,9 @@ class DepartureController extends Controller
         $validatedData = Validator::make($params, [
             'id'            => 'required|integer|min:1',
             'client_id'     => 'required|integer|min:1',
-            'seat'          => 'string|min:1',
+            'seat'          => 'string',
             'state'         => 'integer|min:1',
-            'observations'  => 'string|min:1',
+            'observations'  => 'string',
         ])->validate();
 
         $this->service->updateDepartureClient($id, $client_id, $validatedData);
@@ -383,16 +383,16 @@ class DepartureController extends Controller
             'client_id',
             'room_type_id',
             'seat',
-            'state_id',
+            'state',
             'observations',
         ), ['id' => $id]);
         $validatedData = Validator::make($params, [
             'id'            => 'required|integer|min:1',
             'client_id'     => 'required|integer|min:1',
             'room_type_id'  => 'required|integer|min:1',
-            'seat'          => 'string|min:1',
+            'seat'          => 'string',
             'state'         => 'integer|min:1',
-            'observations'  => 'string|min:1',
+            'observations'  => 'string',
         ])->validate();
 
         $this->service->addClient($id, $validatedData);
