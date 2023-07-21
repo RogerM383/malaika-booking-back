@@ -62,7 +62,7 @@ class DepartureRoomingResource extends JsonResource
 
         foreach ($room_availability as $key => $room) {
             $occupied = collect($clients)->filter(function($client, $key) use ($room) {
-                return $client->resolve()['type_room_id'] === $room['id'];
+                return $client->resolve()['room_type_id'] === $room['id'];
             })->count();
 
             $occupied = $occupied / $room['capacity'];

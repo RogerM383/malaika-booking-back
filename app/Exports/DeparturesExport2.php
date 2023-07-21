@@ -119,7 +119,7 @@ class DeparturesExport2 implements WithMapping, FromCollection, WithHeadings, Wi
             'state'          => null,
             'surname'        => null,
             'name'           => null,
-            'type_room_id'   => null,
+            'room_type_id'   => null,
             'type_room'      => null,
             'phone'          => null,
             'email'          => null,

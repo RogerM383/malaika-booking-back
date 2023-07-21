@@ -283,9 +283,9 @@ class DepartureController extends Controller
      * @OA\Put(
      *      path="/api/departures/{id}/client/{client_id}",
      *      tags={"Departures"},
-     *      summary="Actualiza los datos del cxliente en una salida",
+     *      summary="Actualiza los datos del cliente en una salida",
      *      security={{"bearer_token":{}}},
-     *      description="Actualiza los datos del cxliente en una salida",
+     *      description="Actualiza los datos del cliente en una salida",
      *      operationId="updateClientDeparture",
      *      @OA\Parameter(
      *          name="id",
