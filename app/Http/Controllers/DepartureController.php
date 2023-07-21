@@ -280,6 +280,70 @@ class DepartureController extends Controller
     }
 
     /**
+     * @OA\Put(
+     *      path="/api/departures/{id}/client/{client_id}",
+     *      tags={"Departures"},
+     *      summary="Actualiza los datos del cxliente en una salida",
+     *      security={{"bearer_token":{}}},
+     *      description="Actualiza los datos del cxliente en una salida",
+     *      operationId="updateClientDeparture",
+     *      @OA\Parameter(
+     *          name="id",
+     *          in="path",
+     *          description="Id de departure",
+     *          required=true,
+     *          @OA\Schema(type="integer")
+     *      ),
+     *      @OA\Parameter(
+     *          name="client_id",
+     *          in="path",
+     *          description="Id del cliente",
+     *          required=true,
+     *          @OA\Schema(type="integer")
+     *      ),
+     *     @OA\RequestBody(
+     *          description="Update client departure data",
+     *          required=true,
+     *          @OA\JsonContent(
+     *              required={},
+     *              @OA\Property(property="seat", type="string", example="FINESTRA"),
+     *              @OA\Property(property="state", type="integer", example="3"),
+     *              @OA\Property(property="observations", type="string", example="GUIA-VACUNADA"),
+     *          )
+     *      ),
+     *      @OA\Response(
+     *          response="200",
+     *          description="Client departure updated successfully",
+     *      ),
+     *  )
+     * @throws ValidationException
+     */
+    public function updateDepartureClient (Request $request, $id, $client_id)
+    {
+        $params = array_merge(
+            $request->only(
+                'seat',
+                'state',
+                'observations'
+            ), [
+                'id' => $id,
+                'client_id' => $client_id
+            ]
+        );
+        $validatedData = Validator::make($params, [
+            'id'            => 'required|integer|min:1',
+            'client_id'     => 'required|integer|min:1',
+            'seat'          => 'string|min:1',
+            'state'         => 'integer|min:1',
+            'observations'  => 'string|min:1',
+        ])->validate();
+
+        $this->service->updateDepartureClient($id, $client_id, $validatedData);
+
+        return $this->sendResponse([], 'Client updated successfully');
+    }
+
+    /**
      * @OA\Post(
      *      path="/api/departures/{id}/add-client",
      *      tags={"Departures"},
@@ -301,6 +365,9 @@ class DepartureController extends Controller
      *              required={"client_id", "room_type_id"},
      *              @OA\Property(property="client_id", type="integer", example="1"),
      *              @OA\Property(property="room_type_id", type="integer", example="1"),
+     *              @OA\Property(property="seat", type="string", example="FINESTRA"),
+     *              @OA\Property(property="state", type="integer", example="3"),
+     *              @OA\Property(property="observations", type="string", example="GUIA-VACUNADA"),
      *          )
      *      ),
      *      @OA\Response(
@@ -310,18 +377,27 @@ class DepartureController extends Controller
      *  )
      * @throws ValidationException|ModelNotFoundException
      */
-    public function addClient(Request $request, $id)
+    public function addClient(Request $request, $id): JsonResponse
     {
-        $params = array_merge($request->only('client_id', 'room_type_id' ), ['id' => $id]);
+        $params = array_merge($request->only(
+            'client_id',
+            'room_type_id',
+            'seat',
+            'state_id',
+            'observations',
+        ), ['id' => $id]);
         $validatedData = Validator::make($params, [
-            'id'        => 'required|integer',
-            'client_id' => 'required|integer',
-            'room_type_id' => 'required|integer',
+            'id'            => 'required|integer|min:1',
+            'client_id'     => 'required|integer|min:1',
+            'room_type_id'  => 'required|integer|min:1',
+            'seat'          => 'string|min:1',
+            'state'         => 'integer|min:1',
+            'observations'  => 'string|min:1',
         ])->validate();
 
-        $this->service->addClient(...$validatedData);
+        $this->service->addClient($id, $validatedData);
 
-        return $this->sendResponse([], 'Client added succesfully successfully');
+        return $this->sendResponse([], 'Client added successfully');
     }
 
     /**

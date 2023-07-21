@@ -17,13 +17,16 @@ return new class extends Migration
             $table->foreignId('client_id')->constrained('clients');
 
             $table->string('seat')->nullable(true);
-            $table->unsignedTinyInteger('state')->default(0);
+            $table->unsignedTinyInteger('state')->default(1);
             $table->text('observations')->nullable(true);
 
             // Designa el tipo de habitacion solicitada.
             $table->foreignId('room_type_id')->constrained('room_types');
 
             $table->timestamps();
+
+            // Agregar índice único compuesto para departure_id y client_id
+            $table->unique(['departure_id', 'client_id']);
         });
     }
 

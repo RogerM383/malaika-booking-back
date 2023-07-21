@@ -73,6 +73,9 @@ Route::prefix('departures')->group(function () {
     Route::put('/{id}', [DepartureController::class, 'update'])->middleware(['must.json', 'auth:api']);
     Route::delete('/{id}', [DepartureController::class, 'delete'])->middleware('auth:api');
 
+    Route::post('/{id}/add-client', [DepartureController::class, 'addClient'])->middleware('auth:api');
+    Route::put('/{id}/client/{client_id}', [DepartureController::class, 'updateDepartureClient'])->middleware('auth:api');
+
     Route::get('/{id}/rooming', [DepartureController::class, 'getDepartureRooming'])->middleware('auth:api');
 });
 

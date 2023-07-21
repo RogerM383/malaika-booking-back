@@ -10,6 +10,7 @@ use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Arr;
 use JetBrains\PhpStorm\Pure;
 
 class DepartureService extends ResourceService
@@ -149,6 +150,12 @@ class DepartureService extends ResourceService
         return $departure;
     }
 
+    public function updateDepartureClient($id, $client_id, $data)
+    {
+        $departure = $this->getById($id);
+        return $departure->clients()->updateExistingPivot($client_id, $data);
+    }
+
     /**
      * Check if departure available slots is equal or more than required slots
      *
@@ -187,15 +194,14 @@ class DepartureService extends ResourceService
 
     /**
      * @param $id
-     * @param $client_id
-     * @param $room_type_id
+     * @param $data
      * @return Builder
      * @throws ModelNotFoundException
      */
-    public function addClient($id, $client_id, $room_type_id): Builder
+    public function addClient($id, $data): Builder
     {
         $departure = $this->getById($id);
-        $departure->clients()->attach($client_id, ['room_type_id' => $room_type_id]);
+        $departure->clients()->attach($data['client_id'],  Arr::except($data, ['id']));
         return $departure->with('clients');
     }
 
