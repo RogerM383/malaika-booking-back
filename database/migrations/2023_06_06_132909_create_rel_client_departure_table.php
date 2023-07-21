@@ -17,7 +17,7 @@ return new class extends Migration
             $table->foreignId('client_id')->constrained('clients');
 
             $table->string('seat')->nullable(true);
-            $table->unsignedTinyInteger('state')->default(1);
+            $table->unsignedTinyInteger('state')->default(6);
             $table->text('observations')->nullable(true);
 
             // Designa el tipo de habitacion solicitada.
