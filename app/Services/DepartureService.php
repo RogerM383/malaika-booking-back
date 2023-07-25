@@ -167,8 +167,8 @@ class DepartureService extends ResourceService
     {
         $departure = $this->getById($id);
         $client = $departure->clients()->updateExistingPivot($client_id, Arr::except($data, ['id', 'client_id']));
-        if (isset($data['state']) && $data['state'] >= 5) {
-            $this->manageRoom($id, ['client_id' => $client_id, ...$data]);
+        if (isset($data['state'])) {
+            $this->manageRoom($id, ...Arr::except($data, ['id']));
         }
         return $client;
     }
@@ -277,7 +277,7 @@ class DepartureService extends ResourceService
             // Si state es waiting o cancelado, nos aseguramos de que no esten en una habitacion
             // si lo esta la eliminamos
             $client = $this->clientService->getById($client_id);
-            $client->rooms()->dettach($room_id);
+            $client->rooms()->detach($room_id);
         }
 
         $departure = $this->getById($departure_id);
