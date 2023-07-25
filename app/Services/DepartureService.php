@@ -167,8 +167,10 @@ class DepartureService extends ResourceService
     {
         $departure = $this->getById($id);
         $client = $departure->clients()->updateExistingPivot($client_id, Arr::except($data, ['id', 'client_id']));
-        $this->manageRoom($id, ['client_id' => $client_id, ...$data]);
-        RETURN $client;
+        if (isset($data['state']) && $data['state'] >= 5) {
+            $this->manageRoom($id, ['client_id' => $client_id, ...$data]);
+        }
+        return $client;
     }
 
     /**
