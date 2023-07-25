@@ -156,10 +156,17 @@ class DepartureService extends ResourceService
         return $departure;
     }
 
-    public function updateDepartureClient($id, $client_id, $data)
+    /**
+     * @param $id
+     * @param $client_id
+     * @param $data
+     * @return mixed
+     * @throws ModelNotFoundException
+     */
+    public function updateDepartureClient($id, $client_id, $data): mixed
     {
         $departure = $this->getById($id);
-        $client = $departure->clients()->updateExistingPivot($client_id, $data);
+        $client = $departure->clients()->updateExistingPivot($client_id, Arr::except($data, ['id', 'client_id']));
         $this->manageRoom($id, ['client_id' => $client_id, ...$data]);
         RETURN $client;
     }
