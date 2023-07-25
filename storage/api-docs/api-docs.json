@@ -933,8 +933,8 @@
                 "tags": [
                     "Departures"
                 ],
-                "summary": "Actualiza los datos del cxliente en una salida",
-                "description": "Actualiza los datos del cxliente en una salida",
+                "summary": "Actualiza los datos del cliente en una salida",
+                "description": "Actualiza los datos del cliente en una salida",
                 "operationId": "updateClientDeparture",
                 "parameters": [
                     {
@@ -992,16 +992,54 @@
                         "bearer_token": []
                     }
                 ]
+            },
+            "delete": {
+                "tags": [
+                    "Departures"
+                ],
+                "summary": "Elimina un usuario de la salida",
+                "description": "Elimina un usuario de la salida",
+                "operationId": "removeDeportureClient",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Id de salida",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "client_id",
+                        "in": "path",
+                        "description": "Id del cliente",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Client removed successfully"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
             }
         },
-        "/api/departures/{id}/add-client": {
+        "/api/departures/{id}/add-clients": {
             "post": {
                 "tags": [
                     "Departures"
                 ],
-                "summary": "Añade un cliente a una salida",
-                "description": "Añade un cliente a una salida",
-                "operationId": "addClientToDeparture",
+                "summary": "Añade una array clientes a una salida",
+                "description": "Añade una clientes a una salida",
+                "operationId": "addClientsToDeparture",
                 "parameters": [
                     {
                         "name": "id",
@@ -1020,29 +1058,40 @@
                         "application/json": {
                             "schema": {
                                 "required": [
-                                    "client_id",
-                                    "room_type_id"
+                                    "clients"
                                 ],
                                 "properties": {
-                                    "client_id": {
-                                        "type": "integer",
-                                        "example": "1"
-                                    },
-                                    "room_type_id": {
-                                        "type": "integer",
-                                        "example": "1"
-                                    },
-                                    "seat": {
-                                        "type": "string",
-                                        "example": "FINESTRA"
-                                    },
-                                    "state": {
-                                        "type": "integer",
-                                        "example": "3"
-                                    },
-                                    "observations": {
-                                        "type": "string",
-                                        "example": "GUIA-VACUNADA"
+                                    "clients": {
+                                        "type": "array",
+                                        "items": {
+                                            "properties": {
+                                                "client_id": {
+                                                    "type": "integer",
+                                                    "example": "1"
+                                                },
+                                                "room_type_id": {
+                                                    "type": "integer",
+                                                    "example": "1"
+                                                },
+                                                "room_id": {
+                                                    "type": "integer",
+                                                    "example": "1"
+                                                },
+                                                "seat": {
+                                                    "type": "string",
+                                                    "example": "FINESTRA"
+                                                },
+                                                "state": {
+                                                    "type": "integer",
+                                                    "example": "3"
+                                                },
+                                                "observations": {
+                                                    "type": "string",
+                                                    "example": "GUIA-VACUNADA"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
                                     }
                                 },
                                 "type": "object"

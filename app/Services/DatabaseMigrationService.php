@@ -428,8 +428,9 @@ class DatabaseMigrationService
                     $newRoom = Room::make([]);
                     $newRoom->room_type_id = $departureRoom->type_room;
                     $newRoom->departure_id = $newDeparture->id;
+                    // SWi es null es que estan en espera comprobar
                     $newRoom->room_number = !empty($departureRoom->number_room) ? $departureRoom->number_room : $this->roomService->getNextRoomNumber($newDeparture->id);
-                    $newRoom->observations = $departureRoom->observations;
+                    // eliminar aixo $newRoom->observations = $departureRoom->observations;
                     $newRoom->created_at = $departureRoom->created_at;
                     $newRoom->updated_at = $departureRoom->updated_at;
                     $newRoom->deleted_at = null;
@@ -473,6 +474,7 @@ class DatabaseMigrationService
                     $newClientDeparture->seat = $traveler->seat;
                     $newClientDeparture->state = $departureRoom->state + 1;
                     $newClientDeparture->observations = $traveler->observations;
+                    // Si type_room es 0 estan cancedlats
                     $newClientDeparture->room_type_id = $departureRoom->type_room !== 0 ? $departureRoom->type_room : 1;
                     $newClientDeparture->created_at = $traveler->created_at;
                     $newClientDeparture->updated_at = $traveler->updated_at;

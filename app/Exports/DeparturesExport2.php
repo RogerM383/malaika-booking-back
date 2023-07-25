@@ -238,7 +238,7 @@ class DeparturesExport2 implements WithMapping, FromCollection, WithHeadings, Wi
             'room_type_id'  => 'rooms.type_room',
             'departure_id'  => 'rooms.departure_id',
             'room_number'   => 'rooms.number_room',
-            'observations'  => 'rooms.observations',
+            //'observations'  => 'rooms.observations',
             'created_at'    => 'rooms.created_at',
             'updated_at'    => 'rooms.updated_at',
             'deleted_at'    => null,
@@ -256,7 +256,7 @@ class DeparturesExport2 implements WithMapping, FromCollection, WithHeadings, Wi
             $row->phone ?? "",                      // Client.phone
             $row->email ?? "",                      // Client.email
             $row->seat ?? "",                       // ClientDeparture.seat
-            $row->dp_observations ?? "",            // Room.observations
+            $row->dp_observations ?? "",            // Deparrtreu observations  ---  Room.observations
             $row->intolerances ?? "",               // Client.intolerances
             $row->dni ?? "",                        // Client.dni
             $row->dni_expiration ?? "",             // Client.dni_expiration

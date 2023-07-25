@@ -68,6 +68,7 @@ class ClientRoomingResource extends JsonResource
             'email'             => $this->email,
             'passport_state'    => $this->when(!empty($passportState), fn () => $passportState),
             'passport_id'       => $this->when(!empty($passport_id), fn () => $passport_id),
+            'observations'      => $this->observations,
         ];
     }
 }

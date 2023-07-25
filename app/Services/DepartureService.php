@@ -6,11 +6,13 @@ use App\Exceptions\DeparturePaxCapacityExceededException;
 use App\Exceptions\ModelNotFoundException;
 use App\Models\Departure;
 use App\Models\Room;
+use GuzzleHttp\Psr7\LazyOpenStream;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Log;
 use JetBrains\PhpStorm\Pure;
 
 class DepartureService extends ResourceService
@@ -18,6 +20,7 @@ class DepartureService extends ResourceService
     private TripService $tripService;
     private RoomTypeService $roomTypeService;
     private RoomService $roomService;
+    private ClientService $clientService;
 
     /**
      * @param Departure $model
@@ -29,16 +32,19 @@ class DepartureService extends ResourceService
         Departure $model,
         TripService $tripService,
         RoomTypeService $romTypeService,
-        RoomService $roomService)
+        RoomService $roomService,
+        ClientService $clientService)
     {
         parent::__construct($model);
         $this->tripService = $tripService;
         $this->roomTypeService = $romTypeService;
         $this->roomService = $roomService;
+        $this->clientService = $clientService;
     }
 
     /**
      * @param null $trip_id
+     * @param null $state
      * @param null $per_page
      * @param null $page
      * @return Collection|LengthAwarePaginator
@@ -153,7 +159,9 @@ class DepartureService extends ResourceService
     public function updateDepartureClient($id, $client_id, $data)
     {
         $departure = $this->getById($id);
-        return $departure->clients()->updateExistingPivot($client_id, $data);
+        $client = $departure->clients()->updateExistingPivot($client_id, $data);
+        $this->manageRoom($id, ['client_id' => $client_id, ...$data]);
+        RETURN $client;
     }
 
     /**
@@ -194,37 +202,100 @@ class DepartureService extends ResourceService
 
     /**
      * @param $id
-     * @param $data
+     * @param $client_id
+     * @return void
+     * @throws ModelNotFoundException
+     */
+    public function removeClient($id, $client_id)
+    {
+        $departure = $this->getById($id);
+        $departure->clients()->detach($client_id);
+    }
+
+    /**
+     * @param $id
+     * @param $clients
      * @return Builder
      * @throws ModelNotFoundException
      */
-    public function addClient($id, $data): Builder
+    public function addClients($id, $clients): Builder
     {
+        foreach ($clients as $client) {
+            $this->addClient($id, $client);
+        }
         $departure = $this->getById($id);
-        $departure->clients()->attach($data['client_id'],  Arr::except($data, ['id', 'room_id']));
-        // Si viene room_id crear habiatacion
-        // Si state es 5 o 6 limpiar habiatacion
         return $departure->with('clients');
     }
 
     /**
      * @param $id
+     * @param $client
+     * @return Room|Model|null
+     * @throws ModelNotFoundException
+     */
+    public function addClient($id, $client): Model|Room|null
+    {
+        $departure = $this->getById($id);
+        $departure->clients()->attach($client['client_id'],  Arr::except($client, ['id', 'room_id']));
+        return $this->manageRoom($id, ...Arr::except($client, ['id', 'room_id', 'seat']));
+    }
+
+    /**
+     * @param $departure_id
      * @param $client_id
+     * @param $state
+     * @param $room_id
+     * @param $room_type_id
+     * @param $observations
+     * @return Model|Room|null
+     * @throws ModelNotFoundException
+     */
+    private function manageRoom ($departure_id, $client_id = null, $state = null, $room_id = null, $room_type_id = null, $observations = null): Model|Room|null
+    {
+        $room = null;
+
+        if (!isset($room_id) && $state <= 4) {
+            // Si state es uno de los activos y no tenemos room_id crea habitacion
+            $room   = $this->addRoom($departure_id, $room_type_id, $observations);
+            $client = $this->clientService->getById($client_id);
+            $client->rooms()->attach($room->id);
+        } else if ($room_id && $state <= 4) {
+            // Si state es uno de los activos y tenemos room_id añadimos a la habitacion
+            $room = $this->roomService->getById($room_id);
+            $client = $this->clientService->getById($client_id);
+            $client->rooms()->attach($room_id);
+        } else if ($state >= 5) {
+            // Si state es waiting o cancelado, nos aseguramos de que no esten en una habitacion
+            // si lo esta la eliminamos
+            $client = $this->clientService->getById($client_id);
+            $client->rooms()->dettach($room_id);
+        }
+
+        $departure = $this->getById($departure_id);
+        // Si hay habitaciojnes vacias las elimina
+        $departure->rooms()->doesntHave('clients')->delete();
+
+        return $room;
+    }
+
+    /**
+     * @param $id
      * @param $room_type_id
      * @param $observations
      * @return Room
      * @throws ModelNotFoundException
      */
-    public function addRoom($id, $client_id, $room_type_id, $observations): Room
+    public function addRoom($departure_id, $room_type_id, $observations): Room
     {
-        $departure = $this->getById($id);
+        //$departure = $this->getById($id);
         $room = $this->roomService->make([
+            'departure_id'  => $departure_id,
             'room_type_id'  => $room_type_id,
-            'room_number'   => $this->roomService->getNextRoomNumber($departure->id),
+            'room_number'   => $this->roomService->getNextRoomNumber($departure_id),
             'observations'  => $observations
         ]);
-        //$room->cliets()->
-        //return $this->roomService->createInDeparture($departure, $client_id, $room_type_id, $observations);
+        $room->save();
+        return $room;
     }
 
     /**
@@ -241,7 +312,7 @@ class DepartureService extends ResourceService
 
     /**
      * @param $query
-     * @param $trip_id
+     * @param $state
      * @return void
      */
     private function addStateFilter(&$query, $state)
