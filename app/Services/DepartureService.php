@@ -246,7 +246,7 @@ class DepartureService extends ResourceService
     {
         $departure = $this->getById($id);
         $departure->clients()->attach($client['client_id'],  Arr::except($client, ['id', 'room_id']));
-        return $this->manageRoom($id, ...Arr::except($client, ['id', 'room_id', 'seat']));
+        return $this->manageRoom($id, ...Arr::except($client, ['id', 'seat']));
     }
 
     /**
@@ -288,11 +288,10 @@ class DepartureService extends ResourceService
     }
 
     /**
-     * @param $id
+     * @param $departure_id
      * @param $room_type_id
      * @param $observations
      * @return Room
-     * @throws ModelNotFoundException
      */
     public function addRoom($departure_id, $room_type_id, $observations): Room
     {
