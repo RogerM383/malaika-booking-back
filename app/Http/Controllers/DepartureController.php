@@ -324,7 +324,8 @@ class DepartureController extends Controller
             $request->only(
                 'seat',
                 'state',
-                'observations'
+                'observations',
+                'room_id',
             ), [
                 'id' => $id,
                 'client_id' => $client_id
@@ -336,6 +337,7 @@ class DepartureController extends Controller
             'seat'          => 'string',
             'state'         => 'integer|min:1',
             'observations'  => 'string',
+            'room_id'       => 'integer|min:1',
         ])->validate();
 
         $this->service->updateDepartureClient($id, $client_id, $validatedData);
