@@ -309,6 +309,7 @@ class DepartureController extends Controller
      *              @OA\Property(property="seat", type="string", example="FINESTRA"),
      *              @OA\Property(property="state", type="integer", example="3"),
      *              @OA\Property(property="observations", type="string", example="GUIA-VACUNADA"),
+     *              @OA\Property(property="room_id", type="integer", example="3"),
      *          )
      *      ),
      *      @OA\Response(
