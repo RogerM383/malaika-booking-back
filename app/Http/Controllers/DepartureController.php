@@ -387,9 +387,7 @@ class DepartureController extends Controller
      */
     public function addClients(Request $request, $id): JsonResponse
     {
-        $params = array_merge($request->only(
-            'clients',
-        ), ['id' => $id]);
+        $params = array_merge($request->all(), ['id' => $id]);
         $validatedData = Validator::make($params, [
             'id'                        => 'required|integer|min:1',
             'clients.*'                 => 'required|array',
