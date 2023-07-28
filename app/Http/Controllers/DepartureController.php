@@ -270,8 +270,11 @@ class DepartureController extends Controller
         ])->validate();
 
         // TODO: Mirar maneras mejores de formatear las fechas, sobretodo ver comop vienen del front
-        $validatedData['start'] = date('Y-m-d', strtotime($validatedData['start']));
-        $validatedData['final'] = date('Y-m-d', strtotime($validatedData['final']));
+        if (isset($validatedData['start']))
+            $validatedData['start'] = date('Y-m-d', strtotime($validatedData['start']));
+
+        if (isset($validatedData['final']))
+            $validatedData['final'] = date('Y-m-d', strtotime($validatedData['final']));
 
         return $this->sendResponse(
             new DepartureExportResource($this->service->update($id, $validatedData)),
