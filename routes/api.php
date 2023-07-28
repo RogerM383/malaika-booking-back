@@ -70,7 +70,7 @@ Route::prefix('departures')->group(function () {
     Route::get('/', [DepartureController::class, 'get'])->middleware('auth:api');
     Route::get('/{id}', [DepartureController::class, 'getById'])->middleware('auth:api');
     Route::post('/', [DepartureController::class, 'create'])->middleware('auth:api');
-    Route::put('/{id}', [DepartureController::class, 'update'])->middleware(['auth:api']);
+    Route::put('/{id}', [DepartureController::class, 'update'])->middleware('auth:api');
     Route::delete('/{id}', [DepartureController::class, 'delete'])->middleware('auth:api');
 
     Route::post('/{id}/add-clients', [DepartureController::class, 'addClients'])->middleware('auth:api');

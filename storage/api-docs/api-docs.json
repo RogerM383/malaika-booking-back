@@ -962,7 +962,6 @@
                     "content": {
                         "application/json": {
                             "schema": {
-                                "required": [],
                                 "properties": {
                                     "seat": {
                                         "type": "string",
@@ -975,6 +974,14 @@
                                     "observations": {
                                         "type": "string",
                                         "example": "GUIA-VACUNADA"
+                                    },
+                                    "room_id": {
+                                        "type": "integer",
+                                        "example": "3"
+                                    },
+                                    "room_type_id": {
+                                        "type": "integer",
+                                        "example": "1"
                                     }
                                 },
                                 "type": "object"
