@@ -28,7 +28,7 @@ class Room extends Model
      */
     public function clients(): BelongsToMany
     {
-        return $this->belongsToMany(Client::class, 'rel_client_room');
+        return $this->belongsToMany(Client::class, 'rel_client_room')->withTimestamps();
     }
 
     /**

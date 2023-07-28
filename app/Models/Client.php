@@ -83,7 +83,7 @@ class Client extends Model
      */
     public function rooms (): BelongsToMany
     {
-        return $this->belongsToMany(Room::class, 'rel_client_room');
+        return $this->belongsToMany(Room::class, 'rel_client_room')->withTimestamps();
     }
 
     public function scopeRoom($query, $departureId)

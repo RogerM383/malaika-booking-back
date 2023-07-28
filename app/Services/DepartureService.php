@@ -166,9 +166,10 @@ class DepartureService extends ResourceService
     public function updateDepartureClient($id, $client_id, $data): mixed
     {
         $departure = $this->getById($id);
-        $client = $departure->clients()->updateExistingPivot($client_id, Arr::except($data, ['id', 'client_id', 'room_id']));
-        if (isset($data['state'])) {
-            $this->manageRoom($id, ...Arr::except($data, ['id']));
+        // room_type_id no se actualiza en la relacion ahi se guarda lo que pidio al entrar en el viaje
+        $client = $departure->clients()->updateExistingPivot($client_id, Arr::except($data, ['id', 'client_id', 'room_id', 'room_type_id']));
+        if (isset($data['state']) || isset($data['room_type_id'])) {
+            $this->manageRoom($id, ...Arr::except($data, ['id', 'seat']));
         }
         return $client;
     }
@@ -263,7 +264,7 @@ class DepartureService extends ResourceService
     {
         $room = null;
 
-        if (!isset($room_id) && $state <= 4) {
+        if (!isset($room_id) && isset($room_type_id) && $state <= 4) {
             // Si state es uno de los activos y no tenemos room_id crea habitacion
             $room   = $this->addRoom($departure_id, $room_type_id, $observations);
             $client = $this->clientService->getById($client_id);

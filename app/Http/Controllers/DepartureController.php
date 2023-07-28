@@ -313,6 +313,7 @@ class DepartureController extends Controller
      *              @OA\Property(property="state", type="integer", example="3"),
      *              @OA\Property(property="observations", type="string", example="GUIA-VACUNADA"),
      *              @OA\Property(property="room_id", type="integer", example="3"),
+     *              @OA\Property(property="room_type_id", type="integer", example="1"),
      *          )
      *      ),
      *      @OA\Response(
@@ -343,7 +344,7 @@ class DepartureController extends Controller
             'state'         => 'nullable|integer|min:1',
             'observations'  => 'nullable|string|min:1',
             'room_id'       => 'nullable|integer|min:1',
-            'room_type_id'  => 'nullable|integer@min:1',
+            'room_type_id'  => 'nullable|integer|min:1',
         ])->validate();
 
         $this->service->updateDepartureClient($id, $client_id, $validatedData);
