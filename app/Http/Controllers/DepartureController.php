@@ -255,17 +255,17 @@ class DepartureController extends Controller
         );
         $validatedData = Validator::make($params, [
             'id'                    => 'required|integer',
-            'start'                 => 'string',
-            'final'                 => 'string',
-            'price'                 => 'numeric',
-            'pax_capacity'          => 'integer',
-            'individual_supplement' => 'numeric',
-            'state_id'              => 'integer|min:1',
-            'commentary'            => 'string',
-            'expedient'             => 'integer',
-            'taxes'                 => 'numeric',
+            'start'                 => 'nullable|string|min:1',
+            'final'                 => 'nullable|string|min:1',
+            'price'                 => 'nullable|numeric',
+            'pax_capacity'          => 'nullable|integer',
+            'individual_supplement' => 'nullable|numeric',
+            'state_id'              => 'nullable|integer|min:1',
+            'commentary'            => 'nullable|string',
+            'expedient'             => 'nullable|integer',
+            'taxes'                 => 'nullable|numeric',
 
-            'rooms'                 => 'array',
+            'rooms'                 => 'nullable|array',
             'rooms.*'               => 'integer'
         ])->validate();
 
@@ -317,7 +317,7 @@ class DepartureController extends Controller
      *          description="Client departure updated successfully",
      *      ),
      *  )
-     * @throws ValidationException
+     * @throws ValidationException|ModelNotFoundException
      */
     public function updateDepartureClient (Request $request, $id, $client_id): JsonResponse
     {
@@ -327,6 +327,7 @@ class DepartureController extends Controller
                 'state',
                 'observations',
                 'room_id',
+                'room_type_id',
             ), [
                 'id' => $id,
                 'client_id' => $client_id
@@ -335,10 +336,11 @@ class DepartureController extends Controller
         $validatedData = Validator::make($params, [
             'id'            => 'required|integer|min:1',
             'client_id'     => 'required|integer|min:1',
-            'seat'          => 'string',
-            'state'         => 'integer|min:1',
-            'observations'  => 'string',
-            'room_id'       => 'integer|min:1',
+            'seat'          => 'nullable|string|min:1',
+            'state'         => 'nullable|integer|min:1',
+            'observations'  => 'nullable|string|min:1',
+            'room_id'       => 'nullable|integer|min:1',
+            'room_type_id'  => 'nullable|integer@min:1',
         ])->validate();
 
         $this->service->updateDepartureClient($id, $client_id, $validatedData);

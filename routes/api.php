@@ -44,7 +44,7 @@ Route::prefix('clients')->group(function () {
     Route::get('/{id}', [ClientController::class, 'getById'])->middleware('auth:api');
     Route::get('/{id}/departures', [ClientController::class, 'getClientDepartures'])->middleware('auth:api');
     Route::post('/', [ClientController::class, 'create'])->middleware('auth:api');
-    Route::put('/{id}', [ClientController::class, 'update'])->middleware(['must.json', 'auth:api']);
+    Route::put('/{id}', [ClientController::class, 'update'])->middleware(['auth:api']);
     Route::delete('/{id}', [ClientController::class, 'delete'])->middleware('auth:api');
 });
 
@@ -52,7 +52,7 @@ Route::prefix('passports')->group(function () {
     //Route::get('/', [PassportController::class, 'get'])->middleware('auth:api');
     Route::get('/{id}', [PassportController::class, 'getById'])->middleware('auth:api');
     Route::post('/', [PassportController::class, 'create'])->middleware('auth:api');
-    Route::put('/{id}', [PassportController::class, 'update'])->middleware(['must.json', 'auth:api']);
+    Route::put('/{id}', [PassportController::class, 'update'])->middleware(['auth:api']);
     Route::delete('/{id}', [PassportController::class, 'delete'])->middleware('auth:api');
 });
 
@@ -63,14 +63,14 @@ Route::prefix('trips')->group(function () {
     Route::get('/form/{id}', [TripController::class, 'getBySlug'])->middleware('auth:api');
     Route::delete('/{id}', [TripController::class, 'delete'])->middleware('auth:api');
     //Route::post('/', [TripController::class, 'create'])->middleware('auth:api');
-    Route::put('/{id}', [TripController::class, 'update'])->middleware(['must.json', 'auth:api']);
+    Route::put('/{id}', [TripController::class, 'update'])->middleware(['auth:api']);
 });
 
 Route::prefix('departures')->group(function () {
     Route::get('/', [DepartureController::class, 'get'])->middleware('auth:api');
     Route::get('/{id}', [DepartureController::class, 'getById'])->middleware('auth:api');
     Route::post('/', [DepartureController::class, 'create'])->middleware('auth:api');
-    Route::put('/{id}', [DepartureController::class, 'update'])->middleware(['must.json', 'auth:api']);
+    Route::put('/{id}', [DepartureController::class, 'update'])->middleware(['auth:api']);
     Route::delete('/{id}', [DepartureController::class, 'delete'])->middleware('auth:api');
 
     Route::post('/{id}/add-clients', [DepartureController::class, 'addClients'])->middleware('auth:api');
@@ -82,25 +82,25 @@ Route::prefix('departures')->group(function () {
 });
 
 Route::prefix('forms')->group(function () {
-    Route::post('/process', [FormController::class, 'process'])->middleware(['must.json', 'auth:api']);
+    Route::post('/process', [FormController::class, 'process'])->middleware(['auth:api']);
     Route::get('/trips/{slug}', [FormController::class, 'getFormTripBySlug']);
 });
 
 Route::prefix('db')->group(function () {
-    Route::get('/', [DBMigrationController::class, 'migrate'])->middleware(['must.json', 'auth:api']);
-    Route::get('/2', [DBMigrationController::class, 'migrate2'])->middleware(['must.json', 'auth:api']);
+    Route::get('/', [DBMigrationController::class, 'migrate'])->middleware(['auth:api']);
+    Route::get('/2', [DBMigrationController::class, 'migrate2'])->middleware(['auth:api']);
 });
 
 Route::prefix('exports')->group(function () {
-    Route::get('/departure/{id}', [ExportController::class, 'departure'])->middleware(['must.json', 'auth:api']);
+    Route::get('/departure/{id}', [ExportController::class, 'departure'])->middleware(['auth:api']);
 });
 
 Route::prefix('languages')->group(function () {
-    Route::get('/', [LanguageController::class, 'get'])->middleware(['must.json', 'auth:api']);
-    Route::get('/{id}', [LanguageController::class, 'getById'])->middleware(['must.json', 'auth:api']);
+    Route::get('/', [LanguageController::class, 'get'])->middleware(['auth:api']);
+    Route::get('/{id}', [LanguageController::class, 'getById'])->middleware(['auth:api']);
 });
 
 Route::prefix('room-types')->group(function () {
-    Route::get('/', [RoomTypeController::class, 'get'])->middleware(['must.json', 'auth:api']);
-    Route::get('/{id}', [RoomTypeController::class, 'getById'])->middleware(['must.json', 'auth:api']);
+    Route::get('/', [RoomTypeController::class, 'get'])->middleware(['auth:api']);
+    Route::get('/{id}', [RoomTypeController::class, 'getById'])->middleware(['auth:api']);
 });
