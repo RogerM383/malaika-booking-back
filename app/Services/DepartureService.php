@@ -166,7 +166,6 @@ class DepartureService extends ResourceService
     public function updateDepartureClient($id, $client_id, $data): mixed
     {
         $departure = $this->getById($id);
-        Log::debug(json_encode(Arr::except($data, ['id', 'client_id', 'room_id', 'room_type_id'])));
         // room_type_id no se actualiza en la relacion ahi se guarda lo que pidio al entrar en el viaje
         $client = $departure->clients()->updateExistingPivot($client_id, Arr::except($data, ['id', 'client_id', 'room_id', 'room_type_id']));
         if (isset($data['state']) || isset($data['room_type_id'])) {
