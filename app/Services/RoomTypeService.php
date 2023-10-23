@@ -2,7 +2,6 @@
 
 namespace App\Services;
 
-use App\Exceptions\AppModelNotFoundException;
 use App\Models\RoomType;
 use JetBrains\PhpStorm\Pure;
 

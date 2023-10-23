@@ -55,7 +55,7 @@ class RoomTypeController extends Controller
     public function get(Request $request): JsonResponse
     {
         $data = RoomTypeResource::collection($this->service->get());
-        return $this->sendResponse($data, 'Room type retrieved successfully');
+        return $this->sendResponse($data, 'Room types retrieved successfully');
     }
 
     /**

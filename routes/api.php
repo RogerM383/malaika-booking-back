@@ -101,6 +101,6 @@ Route::prefix('languages')->group(function () {
 });
 
 Route::prefix('room-types')->group(function () {
-    Route::get('/', [RoomTypeController::class, 'get'])->middleware(['auth:api']);
-    Route::get('/{id}', [RoomTypeController::class, 'getById'])->middleware(['auth:api']);
+    Route::get('/', [RoomTypeController::class, 'get']);
+    Route::get('/{id}', [RoomTypeController::class, 'getById']);
 });
