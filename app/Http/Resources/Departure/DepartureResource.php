@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources\Departure;
 
+use App\Http\Resources\Client\ClientRoomingResource;
 use App\Http\Resources\RoomType\RoomTypeAvailabilityResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -31,6 +32,22 @@ class DepartureResource extends JsonResource
      */
     public function toArray($request): array
     {
+        $clients = ClientRoomingResource::collection($this->activeClients()->with(['rooms' => function ($query) {
+            return $query->where('departure_id', $this->id);
+        }])->get());
+
+        $room_availability = RoomTypeAvailabilityResource::collection($this->roomTypes)->resolve();
+
+        foreach ($room_availability as $key => $room) {
+            $occupied = collect($clients)->filter(function($client, $key) use ($room) {
+                return $client->resolve()['room_type_id'] === $room['id'];
+            })->count();
+
+            $occupied = $occupied / $room['capacity'];
+
+            $room_availability[$key]['available'] = $room['quantity'] - $occupied;
+        }
+
         return [
             'id'                    => $this->id,
             'start'                 => $this->start,
@@ -44,7 +61,7 @@ class DepartureResource extends JsonResource
             'expedient'             => $this->expedient,
             'title'                 => $this->trip->title,
             //'room_availability'     => RoomTypeAvailabilityResource::collection($this->whenLoaded('roomTypes'))
-            'room_availability'     => RoomTypeAvailabilityResource::collection($this->roomTypes)
+            'room_availability'     => $room_availability, //RoomTypeAvailabilityResource::collection($this->roomTypes)
         ];
     }
 }
