@@ -82,7 +82,7 @@ Route::prefix('departures')->group(function () {
 });
 
 Route::prefix('forms')->group(function () {
-    Route::post('/process', [FormController::class, 'process'])->middleware(['auth:api']);
+    Route::post('/process', [FormController::class, 'process']);
     Route::get('/trips/{slug}', [FormController::class, 'getFormTripBySlug']);
 });
 
