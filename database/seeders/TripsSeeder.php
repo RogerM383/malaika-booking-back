@@ -18,12 +18,14 @@ class TripsSeeder extends Seeder
             ->create()
             ->each(function ($trip) {
                 $numberOfDepartures = rand(1, 4);
-                $date1 = fake()->dateTimeBetween('+1 week', '+5 week' );
-                $date2 = fake()->dateTimeBetween('+5 week', '+8 week' );
 
                 $pax_capacity = fake()->numberBetween(10, 50);
 
                 for ($i = 0; $i < $numberOfDepartures; $i++) {
+
+                    $date1 = fake()->dateTimeBetween('+1 week', '+5 week' );
+                    $date2 = fake()->dateTimeBetween('+5 week', '+8 week' );
+
                     $trip->departures()->create([
                         'start' => $date1,
                         'final' => $date2,

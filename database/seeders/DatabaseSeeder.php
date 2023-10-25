@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Models\DepartureState;
 use App\Models\TripState;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Artisan;
 
 class DatabaseSeeder extends Seeder
 {
@@ -29,5 +30,8 @@ class DatabaseSeeder extends Seeder
             ClientTypesSeeder::class,
             ClientsSeeder::class,
         ]);
+
+        // Prepara clients para el login
+        Artisan::call('passport:install');
     }
 }
