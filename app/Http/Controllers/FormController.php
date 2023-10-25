@@ -98,6 +98,7 @@ class FormController extends Controller
      */
     public function process(Request $request): JsonResponse
     {
+        Log::debug(json_encode($request->all()));
         $validatedData = Validator::make($request->all(), [
             'departure_id'          => 'required|integer|min:1',
             'clients'               => 'required|array',
