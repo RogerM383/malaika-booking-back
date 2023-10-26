@@ -172,7 +172,7 @@ class FormController extends Controller
                 'dni'       => $client['dni'],
                 'MNAC'      => $client['MNAC']
             ];
-            if (!empty($request->MNAC)) {
+            if (!empty($client['MNAC'])) {
                 $data['client_type_id'] = 2;
             }
             $clients[] = $this->clientService->create($data);
