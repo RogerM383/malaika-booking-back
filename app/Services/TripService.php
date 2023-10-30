@@ -7,6 +7,7 @@ use App\Models\Trip;
 use App\Traits\Slugeable;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Facades\Log;
 use JetBrains\PhpStorm\Pure;
 
 class TripService extends ResourceService
@@ -88,6 +89,14 @@ class TripService extends ResourceService
         if (isset($data['title']) && !isset($data['slug'])) {
             $data['slug'] = $this->slugify($data['title']);
         }
+
+        if (isset($data['image'])) {
+            $extension = $data['image']->getClientOriginalExtension();
+            $filename = $data['slug'] . '.' . $extension;
+            $image = $data['image']->move('images/', $filename);
+            $data['image'] = asset($image);
+        }
+
         return $this->model::create($data);
     }
 

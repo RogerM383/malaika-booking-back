@@ -183,41 +183,56 @@ class TripController extends Controller
     }
 
 
+    //*         @OA\MediaType(
+    //*             mediaType="multipart/form-data",
+    //*             @OA\Schema(
+    //*                 type="object",
+    //*                 required={"image"},
+    //*                 @OA\Property(
+    //*                     property="image",
+    //*                     description="Imagen del viaje",
+    //*                     type="string",
+    //*                     format="binary",
+    //*                 ),
+    //*             ),
+    //*         ),
+
     /**
- *      @OA\Post(
-     *      path="/api/trips",
-     *      tags={"Trips"},
-     *      summary="Crea un nuevo viaje",
-     *      security={{"bearer_token":{}}},
-     *      description="Crea un nuevo viaje",
-     *      operationId="createTrip",
+     * @OA\Post(
+     *     path="/api/trips",
+     *     tags={"Trips"},
+     *     summary="Crea un nuevo viaje",
+     *     security={{"bearer_token":{}}},
+     *     description="Crea un nuevo viaje. Asegúrate de que todos los campos obligatorios estén incluidos en la solicitud JSON. También puedes cargar una imagen adjunta en el formulario de carga de archivos.",
+     *     operationId="createTrip",
      *     @OA\RequestBody(
-     *          description="Create trip",
-     *          required=true,
-     *          @OA\JsonContent(
-     *              required={"title"},
-     *              @OA\Property(property="title", type="string", example="Tour por Italia"),
-     *              @OA\Property(property="description", type="string", example="Tour por Italia"),
-     *              @OA\Property(property="commentary", type="string", example="Es un viaje muy chulo, comes pasta y pizza"),
-     *              @OA\Property(property="trip_state_id", type="integer", example="1"),
-     *          )
-     *      ),
-     *      @OA\Response(
-     *          response="200",
-     *          description="Trip created successfully",
-     *      ),
-     *  )
-     * @param Request $request
-     * @return JsonResponse
-     * @throws ValidationException
+     *         description="Datos del viaje",
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"title", "description", "commentary", "trip_state_id"},
+     *             @OA\Property(property="title", type="string", example="Tour por Italia"),
+     *             @OA\Property(property="description", type="string", example="Tour por Italia"),
+     *             @OA\Property(property="commentary", type="string", example="Es un viaje muy chulo, comes pasta y pizza"),
+     *             @OA\Property(property="trip_state_id", type="integer", example="1"),
+     *         ),
+
+     *     ),
+
+     *     @OA\Response(
+     *         response="200",
+     *         description="Viaje creado con éxito",
+     *     ),
+     * )
      */
+
     public function create(Request $request)
     {
         $validatedData = Validator::make($request->all(), [
-            'title'         => 'required|string',
+            'title'         => 'nullable|string',
             'description'   => 'string',
             'commentary'    => 'string',
             'trip_state_id' => 'integer',
+            'image'         => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ])->validate();
 
         return $this->sendResponse(
