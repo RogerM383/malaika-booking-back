@@ -87,8 +87,12 @@ Route::prefix('forms')->group(function () {
 });
 
 Route::prefix('db')->group(function () {
-    Route::get('/', [DBMigrationController::class, 'migrate'])->middleware(['auth:api']);
-    Route::get('/2', [DBMigrationController::class, 'migrate2'])->middleware(['auth:api']);
+    Route::get('/', [DBMigrationController::class, 'migrate']);
+    Route::get('/2', [DBMigrationController::class, 'migrate2']);
+    Route::get('/3', [DBMigrationController::class, 'migrate3']);
+    Route::get('/4', [DBMigrationController::class, 'migrate4']);
+    Route::get('/5', [DBMigrationController::class, 'migrate5']);
+    Route::get('/6', [DBMigrationController::class, 'migrate6']);
 });
 
 Route::prefix('exports')->group(function () {

@@ -6,6 +6,7 @@ use App\Models\Client;
 use App\Traits\HasPagination;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Facades\Log;
 use JetBrains\PhpStorm\Pure;
 
 class ClientService extends ResourceService
@@ -37,10 +38,11 @@ class ClientService extends ResourceService
     public function create(array $data): mixed
     {
         $data['updated_at'] = null;
-        return $this->model->withTrashed()->updateOrCreate(
+        $client =  $this->model->withTrashed()->updateOrCreate(
             ['dni' => $data['dni']],
             $data
         );
+        return $client;
     }
 
     /**

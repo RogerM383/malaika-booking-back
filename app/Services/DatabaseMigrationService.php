@@ -47,8 +47,37 @@ class DatabaseMigrationService
 
     function migrate2 ()
     {
-        $this->migrateDepartures();
+        $this->migrateDepartures(0, 50);
+
+        Log::debug('MIGRATE 2 FINISHED');
+    }
+
+    function migrate3 ()
+    {
+        $this->migrateDepartures(50, 50);
+
+        Log::debug('MIGRATE 3 FINISHED');
+    }
+
+    function migrate4 ()
+    {
+        $this->migrateDepartures(100, 50);
+
+        Log::debug('MIGRATE 4 FINISHED');
+    }
+
+    function migrate5 ()
+    {
+        $this->migrateDepartures(150, 50);
+
+        Log::debug('MIGRATE 5 FINISHED');
+    }
+
+    function migrate6 ()
+    {
         $this->migrateRoles();
+
+        Log::debug('MIGRATE 6 FINISHED');
     }
 
     function migrateUsers (): void
@@ -191,8 +220,6 @@ class DatabaseMigrationService
 
     function formatDate ($dateString): ?string
     {
-        Log::debug('entra'.$dateString);
-
         if (empty($dateString) || $dateString === "PERMANENT" || $dateString === "indefinit" || $dateString === "NIE NO TE CADUCITAT" || $dateString ===  "685008759") {
             return null;
         }
@@ -214,7 +241,6 @@ class DatabaseMigrationService
         $dateToParse = str_replace( "/", "-", $dateToParse);
         $dateToParse = str_replace( ".", "-", $dateToParse);
 
-        Log::debug('sale '.Carbon::parse( $dateToParse));
          return Carbon::parse( $dateToParse);
     }
 
@@ -256,7 +282,7 @@ class DatabaseMigrationService
         });
     }
 
-    function migrateDepartures ()
+    function migrateDepartures ($skip, $take)
     {
         $columns = [
             'trip_id'               => 'departures.trip_id',
@@ -280,7 +306,7 @@ class DatabaseMigrationService
         ];
 
         // Get original clients data
-        $departures = DB::connection('db2')->table('departures')->get();
+        $departures = DB::connection('db2')->table('departures')->skip($skip)->take($take)->get();
         // Set connection to local
         DB::connection('mysql');
 

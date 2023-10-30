@@ -42,9 +42,7 @@ class DeparturesExport implements WithMapping, FromCollection, WithHeadings, Wit
     public function __construct($id)
     {
         $this->id = $id;
-        Log::debug(json_encode($this->departure));
         $d = new DepartureExportResource(Departure::find($this->id));
-        Log::debug(json_encode($d));
         $this->departure = $d;
         return $this;
     }
@@ -59,8 +57,6 @@ class DeparturesExport implements WithMapping, FromCollection, WithHeadings, Wit
         // TODO: aqui necesitaremos datos de departure y departure client (lo que era el traveler y departure)
 
         $value = collect($this->departure->active);
-
-        Log::debug(json_encode($value));
 
         /*$departure = Departure::find($this->departure);//new DepartureExportResource(Departure::find($this->departure));
         Log::debug(json_encode($departure));

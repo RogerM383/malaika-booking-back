@@ -6,6 +6,7 @@ use App\Http\Resources\Client\ClientRoomingResource;
 use App\Http\Resources\RoomType\RoomTypeAvailabilityResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\Log;
 
 /**
  *TODO update data
@@ -32,12 +33,14 @@ class DepartureResource extends JsonResource
      */
     public function toArray($request): array
     {
+        // --- Pilla los clientes de activos apuntados a la Departure --------------------------------------------------
         $clients = ClientRoomingResource::collection($this->activeClients()->with(['rooms' => function ($query) {
             return $query->where('departure_id', $this->id);
         }])->get());
-
+        // --- Calcula las habitaciones de cada tipo de que dispone la Departure ---------------------------------------
         $room_availability = RoomTypeAvailabilityResource::collection($this->roomTypes)->resolve();
 
+        // --- Calcula las habitaciones disponibles de cada tipo -------------------------------------------------------
         foreach ($room_availability as $key => $room) {
             $occupied = collect($clients)->filter(function($client, $key) use ($room) {
                 return $client->resolve()['room_type_id'] === $room['id'];

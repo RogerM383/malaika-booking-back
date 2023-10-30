@@ -611,6 +611,138 @@
                 ]
             }
         },
+        "/api/db/3": {
+            "get": {
+                "tags": [
+                    "Database"
+                ],
+                "summary": "Migra la base de datos",
+                "description": "Migra la base de datos",
+                "operationId": "dbMigrate3",
+                "responses": {
+                    "200": {
+                        "description": "DB migrated successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {}
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
+        },
+        "/api/db/4": {
+            "get": {
+                "tags": [
+                    "Database"
+                ],
+                "summary": "Migra la base de datos",
+                "description": "Migra la base de datos",
+                "operationId": "dbMigrate4",
+                "responses": {
+                    "200": {
+                        "description": "DB migrated successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {}
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
+        },
+        "/api/db/5": {
+            "get": {
+                "tags": [
+                    "Database"
+                ],
+                "summary": "Migra la base de datos",
+                "description": "Migra la base de datos",
+                "operationId": "dbMigrate5",
+                "responses": {
+                    "200": {
+                        "description": "DB migrated successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {}
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
+        },
+        "/api/db/6": {
+            "get": {
+                "tags": [
+                    "Database"
+                ],
+                "summary": "Migra la base de datos",
+                "description": "Migra la base de datos",
+                "operationId": "dbMigrate6",
+                "responses": {
+                    "200": {
+                        "description": "DB migrated successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {}
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
+        },
         "/api/departures": {
             "get": {
                 "tags": [
@@ -962,6 +1094,7 @@
                     "content": {
                         "application/json": {
                             "schema": {
+                                "required": [],
                                 "properties": {
                                     "seat": {
                                         "type": "string",

@@ -57,13 +57,9 @@ class AuthController extends Controller
                 'password'      => 'required|string|min:6',
             ]);
 
-            Log::debug('TU VIEHE');
-
             if ($validator->fails()) {
                 return $this->sendError('Validation Error.', $validator->errors(), 409);
             }
-
-            Log::debug('FILES');
 
             $user = $this->userService->create($data);
 

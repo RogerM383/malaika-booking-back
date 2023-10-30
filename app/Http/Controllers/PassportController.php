@@ -106,7 +106,7 @@ class PassportController extends Controller
     public function update(Request $request, $id): JsonResponse
     {
         $params = array_merge($request->only($this->service->getFillable()), ['id' => $id]);
-        Log::debug(json_encode($params));
+
         $validatedData = Validator::make($params, [
             'id'                => 'required',
             'number_passport'   => 'required|string',

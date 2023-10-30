@@ -98,7 +98,6 @@ class FormController extends Controller
      */
     public function process(Request $request): JsonResponse
     {
-        Log::debug(json_encode($request->all()));
         $validatedData = Validator::make($request->all(), [
             'departure_id'          => 'required|integer|min:1',
             'clients'               => 'required|array',
@@ -127,10 +126,12 @@ class FormController extends Controller
         $departureRoomTypes = $departure->roomTypes->mapWithKeys(function ($item, int $key) {
                 return [$item['id'] => $item['pivot']['quantity']];
             });
+
         // Get departure assigned room types count
         $assignedRoomTypes = $departure->assignedRoomsCount()->mapWithKeys(function ($room, $key) {
             return [$room['room_type_id'] => $room['quantity']];
         });
+
         // Get departure available room types
         $availableRoomTypes = [];
         foreach ($assignedRoomTypes as $key => $value) {
@@ -140,6 +141,7 @@ class FormController extends Controller
                 $availableRoomTypes[$key] = $departureRoomTypes[$key] - $value;
             }
         }
+
         // Check si hay suficientes habitaciones de cada tipos solicitado
         $requestedRooms = collect($validatedData['rooms'])->mapWithKeys(function ($room, $key) {
             return [$room['room_type_id'] => $room['quantity']];
@@ -170,13 +172,14 @@ class FormController extends Controller
                 'name'      => $client['name'],
                 'surname'   => $client['surname'],
                 'dni'       => $client['dni'],
-                'MNAC'      => $client['MNAC']
+                'MNAC'      => $client['MNAC'] ?? null
             ];
             if (!empty($client['MNAC'])) {
                 $data['client_type_id'] = 2;
             }
             $clients[] = $this->clientService->create($data);
         }
+
         $clientsCollection = collect($clients);
 
         // Creamos las habitaciones

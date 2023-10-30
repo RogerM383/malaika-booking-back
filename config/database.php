@@ -63,6 +63,21 @@ return [
             ]) : [],
         ],
 
+        'db2' => [
+            'driver' => 'mysql',
+            'url' => env('DATABASE_URL'),
+            'host' => env('DB_HOST_ORIGINAL', '127.0.0.1'),
+            'port' => env('DB_PORT_ORIGINAL', '3306'),
+            'database' => env('DB_DATABASE_ORIGINAL', 'forge'),
+            'username' => env('DB_USERNAME_ORIGINAL', 'forge'),
+            'password' => env('DB_PASSWORD_ORIGINAL', ''),
+            'charset' => 'utf8mb4',
+            'collation' => 'utf8mb4_unicode_ci',
+            'prefix' => '',
+            'strict' => true,
+            'engine' => null,
+        ],
+
         'pgsql' => [
             'driver' => 'pgsql',
             'url' => env('DATABASE_URL'),
@@ -91,21 +106,6 @@ return [
             'prefix_indexes' => true,
             // 'encrypt' => env('DB_ENCRYPT', 'yes'),
             // 'trust_server_certificate' => env('DB_TRUST_SERVER_CERTIFICATE', 'false'),
-        ],
-
-        'db2' => [
-            'driver' => 'mysql',
-            'url' => env('DATABASE_URL'),
-            'host' => env('DB_HOST_ORIGINAL', '127.0.0.1'),
-            'port' => env('DB_PORT_ORIGINAL', '3306'),
-            'database' => env('DB_DATABASE_ORIGINAL', 'forge'),
-            'username' => env('DB_USERNAME_ORIGINAL', 'forge'),
-            'password' => env('DB_PASSWORD_ORIGINAL', ''),
-            'charset' => 'utf8mb4',
-            'collation' => 'utf8mb4_unicode_ci',
-            'prefix' => '',
-            'strict' => true,
-            'engine' => null,
         ],
     ],
 
