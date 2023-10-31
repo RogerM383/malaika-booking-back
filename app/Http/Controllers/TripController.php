@@ -10,8 +10,10 @@ use App\Http\Resources\Trip\TripListResource;
 use App\Http\Resources\Trip\TripResource;
 use App\Services\TripService;
 use App\Traits\HasPagination;
+use Illuminate\Foundation\Bootstrap\LoadConfiguration;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 
@@ -227,14 +229,15 @@ class TripController extends Controller
 
     public function create(Request $request)
     {
-        $validatedData = Validator::make($request->all(), [
+        $image = $request->file('image');
+
+        $validatedData = Validator::make([...$request->all(), 'image' => $image], [
             'title'         => 'nullable|string',
             'description'   => 'string',
             'commentary'    => 'string',
             'trip_state_id' => 'integer',
-            'image'         => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'image'         => 'nullable|sometimes|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ])->validate();
-
         return $this->sendResponse(
             new TripResource($this->service->create($validatedData)),
             'Trip created successfully'

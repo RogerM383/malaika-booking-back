@@ -90,6 +90,8 @@ class TripService extends ResourceService
             $data['slug'] = $this->slugify($data['title']);
         }
 
+        Log::debug($data['slug']);
+
         if (isset($data['image'])) {
             $extension = $data['image']->getClientOriginalExtension();
             $filename = $data['slug'] . '.' . $extension;
