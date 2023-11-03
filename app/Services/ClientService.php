@@ -71,7 +71,7 @@ class ClientService extends ResourceService
     {
         $query = $this->model::query();
 
-        if ($client_type) {
+        if (!empty($client_type)) {
             $this->addClientTypeFilter($query, $client_type);
         }
 
@@ -90,7 +90,6 @@ class ClientService extends ResourceService
         if (!empty($email)) {
             $this->addEmailFilter($query, $email);
         }
-
         if (!empty($dni)) {
             $this->addDniFilter($query, $dni);
         }
@@ -99,8 +98,10 @@ class ClientService extends ResourceService
             $this->addPassportFilter($query, $passport);
         }
 
+        $query = $query->orderBy('surname', 'asc');
+
         if ($this->isPaginated($per_page, $page)) {
-            return $query->orderBy('id', 'desc')->paginate(
+            return $query->paginate(
                 $per_page ?? $this->defaultPerPage,
                 ['*'],
                 'clients',
@@ -118,34 +119,35 @@ class ClientService extends ResourceService
      */
     public function addClientTypeFilter(&$query, $id)
     {
-        $query->whereHas('traveler', function ($q) use ($id) {
-            $q->where('travelers.client_type_id', $id);
-        });
+        $query->where('clients.client_type_id', '=', $id);
+        /*$query->whereHas('traveler', function ($q) use ($id) {
+            $q->where('travelers.client_type_id', '=', $id);
+        });*/
     }
 
     public function addNameFilter(&$query, $name)
     {
-        $query->orWhere('clients.name', 'LIKE', '%'.$name.'%');
+        $query->where('clients.name', 'LIKE', '%'.$name.'%');
     }
 
     public function addSurnameFilter(&$query, $surname)
     {
-        $query->orWhere('clients.surname', 'LIKE', '%'.$surname.'%');
+        $query->where('clients.surname', 'LIKE', '%'.$surname.'%');
     }
 
     public function addPhoneFilter(&$query, $phone)
     {
-        $query->orWhere('clients.phone', 'LIKE', '%'.$phone.'%');
+        $query->where('clients.phone', 'LIKE', '%'.$phone.'%');
     }
 
     public function addEmailFilter(&$query, $email)
     {
-        $query->orWhere('clients.email', 'LIKE', '%'.$email.'%');
+        $query->where('clients.email', 'LIKE', '%'.$email.'%');
     }
 
     public function addDniFilter(&$query, $dni)
     {
-        $query->orWhere('clients.dni', 'LIKE', '%'.$dni.'%');
+        $query->where('clients.dni', 'LIKE', '%'.$dni.'%');
     }
 
     public function addPassportFilter(&$query, $number)
