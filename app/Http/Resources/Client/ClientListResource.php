@@ -60,6 +60,7 @@ class ClientListResource extends JsonResource
             'dni'       => $this->dni,
             'passport_state' => $this->when(!empty($passportState), fn () => $passportState),
             'passport_id' => $this->when(!empty($passport_id), fn () => $passport_id),
+            'departures_count' => $this->departures()->count()
         ];
     }
 }

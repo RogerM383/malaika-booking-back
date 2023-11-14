@@ -27,6 +27,7 @@ class DepartureService extends ResourceService
      * @param TripService $tripService
      * @param RoomTypeService $romTypeService
      * @param RoomService $roomService
+     * @param ClientService $clientService
      */
     #[Pure] public function __construct(
         Departure $model,
@@ -142,7 +143,7 @@ class DepartureService extends ResourceService
                 return $roomTypes->has($key) ? $roomTypes[$key] * $room : 0;
             })->sum();
 
-            if ($total > $departure->pax_capacity) {
+            if ($total > $data['pax_capacity']) {
                 throw new DeparturePaxCapacityExceededException();
             }
 
