@@ -1915,16 +1915,19 @@
                     "Trips"
                 ],
                 "summary": "Crea un nuevo viaje",
-                "description": "Crea un nuevo viaje",
+                "description": "Crea un nuevo viaje. Asegúrate de que todos los campos obligatorios estén incluidos en la solicitud JSON. También puedes cargar una imagen adjunta en el formulario de carga de archivos.",
                 "operationId": "createTrip",
                 "requestBody": {
-                    "description": "Create trip",
+                    "description": "Datos del viaje",
                     "required": true,
                     "content": {
                         "application/json": {
                             "schema": {
                                 "required": [
-                                    "title"
+                                    "title",
+                                    "description",
+                                    "commentary",
+                                    "trip_state_id"
                                 ],
                                 "properties": {
                                     "title": {
@@ -1951,7 +1954,7 @@
                 },
                 "responses": {
                     "200": {
-                        "description": "Trip created successfully"
+                        "description": "Viaje creado con éxito"
                     }
                 },
                 "security": [
