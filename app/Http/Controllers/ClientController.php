@@ -324,7 +324,8 @@ class ClientController extends Controller
         $params = array_merge($request->only($this->service->getFillable()), ['id' => $id]);
 
         $validatedData = Validator::make($params, [
-            'id'                => 'required',
+            'client_type_id'    => 'required|integer|min:1',
+            'language_id'       => 'required|integer|min:1',
             'name'              => 'required|string',
             'surname'           => 'string',
             'phone'             => 'string',
@@ -332,7 +333,12 @@ class ClientController extends Controller
             'dni'               => 'string',
             'address'           => 'string',
             'dni_expiration'    => 'string',
-            'place_birth'       => 'string'
+            'place_birth'       => 'string',
+            'intolerances'      => 'string',
+            'frequent_flyer'    => 'string',
+            'member_number'     => 'string',
+            'notes'             => 'string',
+
         ])->validate();
 
         return $this->sendResponse(

@@ -38,7 +38,7 @@ class TripResource extends JsonResource
             'slug'          => $this->slug,
             'description'   => $this->description,
             'commentary'    => $this->commentary,
-            'state'         => $this->when(!empty($this->state), fn () => $this->state->name),
+            'state'         => $this->when(!empty($this->state), fn () => $this->state->name)
         ];
     }
 }

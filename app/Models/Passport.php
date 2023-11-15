@@ -21,7 +21,8 @@ class Passport extends Model
         'birth',
         'issue',
         'exp',
-        'nationality'
+        'nationality',
+        'updated_at'
     ];
 
     /**

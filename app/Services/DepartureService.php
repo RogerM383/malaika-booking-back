@@ -131,6 +131,8 @@ class DepartureService extends ResourceService
      */
     public function update(int $id, array $data): Model
     {
+        Log::debug(json_encode($data));
+
         $departure = $this->getById($id);
 
         // TODO: falta checkear si hay habitacione ya asignadas a la salida con clientres dentro

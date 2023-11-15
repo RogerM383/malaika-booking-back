@@ -44,6 +44,8 @@ class ClientRoomingResource extends JsonResource
         if (!empty($passport)) {
             $passportState = strtotime($passport->exp) >= strtotime(Carbon::now()) ? 1 : 2;
             $passport_id = $passport->id;
+        } else {
+            $passportState = null;
         }
 
         if ($this->state <= 4) {
