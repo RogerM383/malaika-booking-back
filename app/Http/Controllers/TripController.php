@@ -232,11 +232,13 @@ class TripController extends Controller
         $image = $request->file('image');
 
         $validatedData = Validator::make([...$request->all(), 'image' => $image], [
-            'title'         => 'nullable|string',
-            'description'   => 'string',
-            'commentary'    => 'string',
-            'trip_state_id' => 'integer',
-            'image'         => 'nullable|sometimes|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'title'             => 'nullable|string',
+            'description'       => 'string',
+            'commentary'        => 'nullable|string',
+            'trip_state_id'     => 'integer',
+            'image'             => 'nullable|sometimes|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'before_open_text'  => 'nullable|string',
+            'after_close_text'  => 'nullable|string',
         ])->validate();
         return $this->sendResponse(
             new TripResource($this->service->create($validatedData)),
@@ -280,14 +282,19 @@ class TripController extends Controller
     {
         $params = array_merge($request->only($this->service->getFillable()), ['id' => $id]);
         $validatedData = Validator::make($params, [
-            'id'            => 'required',
-            'title'         => 'string',
+            'id'                => 'required',
+            'title'             => 'string',
 
-            'description'   => 'string',
+            'description'       => 'nullable|string',
             //'category',
-            'commentary'    => 'string',
-            'trip_state_id'      => 'integer|min:1',
+            'commentary'        => 'nullable|string',
+            'trip_state_id'     => 'integer|min:1',
+            'image'             => 'nullable|sometimes|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'before_open_text'  => 'nullable|string',
+            'after_close_text'  => 'nullable|string',
         ])->validate();
+
+        Log::debug($validatedData);
 
         return $this->sendResponse(
             new TripResource($this->service->update($id, $validatedData)),

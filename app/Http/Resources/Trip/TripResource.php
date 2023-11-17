@@ -33,12 +33,16 @@ class TripResource extends JsonResource
     public function toArray($request): array
     {
         return [
-            'id'            => $this->id,
-            'title'         => $this->title,
-            'slug'          => $this->slug,
-            'description'   => $this->description,
-            'commentary'    => $this->commentary,
-            'state'         => $this->when(!empty($this->state), fn () => $this->state->name)
+            'id'                => $this->id,
+            'title'             => $this->title,
+            'slug'              => $this->slug,
+            'description'       => $this->description,
+            'commentary'        => $this->commentary,
+            'state'             => $this->when(!empty($this->state), fn () => $this->state->name),
+            'open_date'         => $this->open_date,
+            'before_open_text'  => $this->before_open_text,
+            'after_close_text'  => $this->after_close_text,
+            'closed'            => $this->closed,
         ];
     }
 }

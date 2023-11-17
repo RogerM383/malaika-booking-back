@@ -7,6 +7,7 @@ use App\Models\Trip;
 use App\Traits\Slugeable;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Log;
 use JetBrains\PhpStorm\Pure;
 
@@ -90,8 +91,6 @@ class TripService extends ResourceService
             $data['slug'] = $this->slugify($data['title']);
         }
 
-        Log::debug($data['slug']);
-
         if (isset($data['image'])) {
             $extension = $data['image']->getClientOriginalExtension();
             $filename = $data['slug'] . '.' . $extension;
@@ -100,6 +99,31 @@ class TripService extends ResourceService
         }
 
         return $this->model::create($data);
+    }
+
+    /**
+     * @param int $id
+     * @param array $data
+     * @return Model
+     * @throws ModelNotFoundException
+     */
+    public function update(int $id, array $data): Model
+    {
+        $model = $this->getById($id);
+
+        if (isset($data['title']) && !isset($data['slug'])) {
+            $data['slug'] = $this->slugify($data['title']);
+        }
+
+        if (isset($data['image'])) {
+            $extension = $data['image']->getClientOriginalExtension();
+            $filename = $data['slug'] . '.' . $extension;
+            $image = $data['image']->move('images/', $filename);
+            $data['image'] = asset($image);
+        }
+
+        $model->update($data);
+        return $model;
     }
 
     /**

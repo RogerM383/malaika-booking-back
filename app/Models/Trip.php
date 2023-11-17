@@ -25,6 +25,10 @@ class Trip extends Model
         'commentary',
         'trip_state_id',
         'slug',
+        'open_date',
+        'before_open_text',
+        'after_close_text',
+        'closed',
         'image',
         'pdf'
     ];

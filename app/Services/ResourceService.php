@@ -69,10 +69,10 @@ abstract class ResourceService
     /**
      * @param int $id
      * @param array $data
-     * @return Model
+     * @return mixed
      * @throws ModelNotFoundException
      */
-    public function update(int $id, array $data): Model
+    public function update(int $id, array $data): mixed
     {
         $model = $this->getById($id);
         $model->update($data);

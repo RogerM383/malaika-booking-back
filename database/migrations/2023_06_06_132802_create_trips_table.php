@@ -22,6 +22,13 @@ return new class extends Migration
 
             $table->foreignId('trip_state_id')->default(1)->constrained('trip_states');
 
+            $table->timestamp('open_date')->nullable()->default(null);
+
+            $table->longText('before_open_text')->nullable()->default(null);
+            $table->longText('after_close_text')->nullable()->default(null);
+
+            $table->boolean('closed')->default(false);
+
             $table->string('image')->nullable()->default(null);
             $table->string('pdf')->nullable()->default(null);
 
