@@ -125,7 +125,7 @@ class TripService extends ResourceService
             $filename = $data['slug'] . '.' . $extension;
             $image = $file->move('images/', $filename);
             // TODO SOLUCIONAR APAÑO PARA METER LA RUTA, SACRLA DEL .env COMO MINIMO
-            $data['image'] = 'http://back.test/images/'.$filename;//asset($image);
+            $data['image'] = 'https://api.malaika-clients.fruntera.dev/images/'.$filename;//asset($image);
         }
 
         return $this->model::create($data);
@@ -179,7 +179,7 @@ class TripService extends ResourceService
             $filename = $data['slug'] . '.' . $extension;
             $image = $file->move('images/', $filename);
             // TODO SOLUCIONAR APAÑO PARA METER LA RUTA, SACRLA DEL .env COMO MINIMO
-            $data['image'] = 'http://back.test/images/'.$filename;//asset($image);
+            $data['image'] = 'https://api.malaika-clients.fruntera.dev/images/'.$filename;//asset($image);
 
         }
 
