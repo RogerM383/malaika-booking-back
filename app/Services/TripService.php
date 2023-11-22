@@ -95,32 +95,37 @@ class TripService extends ResourceService
             $data['slug'] = $this->slugify($data['title']);
         }
 
-        if (isset($data['image'])) {
+        if (isset($data['image']) && $this->isBase64Image($data['image'], true)) {
             /*$extension = $data['image']->getClientOriginalExtension();
             $filename = $data['slug'] . '.' . $extension;
             $image = $data['image']->move('images/', $filename);
             $data['image'] = asset($image);*/
 
-            /*$img = preg_replace('/^data:image\/\w+;base64,/', '', $data['image']);
-            $type = explode(';', $img[0]);
-            $type = explode('/', $type)[1]; // png or jpg etc*/
+            $base64File = $data['image'];
 
-            $mime = mime_content_type($data['image']);
-            $extension = image_type_to_extension(exif_imagetype($data['image']));
+            // decode the base64 file
+            $fileData = base64_decode(preg_replace('#^data:image/\w+;base64,#i', '', $base64File));
 
-            // Generar un nombre de archivo único
-            $filename = $data['slug'] . '_' . time() . $extension;
+            // save it to temporary dir first.
+            $tmpFilePath = sys_get_temp_dir() . '/' . Str::uuid()->toString();
+            file_put_contents($tmpFilePath, $fileData);
 
-            // Decodificar y guardar la imagen
-            $imageData = base64_decode(preg_replace('#^data:image/\w+;base64,#i', '', $data['image']));
+            // this just to help us get file info.
+            $tmpFile = new File($tmpFilePath);
 
-            Log::debug('EDXTENSION');
-            Log::debug($extension);
+            $file = new UploadedFile(
+                $tmpFile->getPathname(),
+                $tmpFile->getFilename(),
+                $tmpFile->getMimeType(),
+                0,
+                true // Mark it as test, since the file isn't from real HTTP POST.
+            );
 
-            /*file_put_contents('images/' . $filename, $imageData);
-
-            // Actualizar la ruta de la imagen en los datos
-            $data['image'] = asset('images/' . $filename);*/
+            $extension = explode('/', $file->getMimeType() )[1];
+            $filename = $data['slug'] . '.' . $extension;
+            $image = $file->move('images/', $filename);
+            // TODO SOLUCIONAR APAÑO PARA METER LA RUTA, SACRLA DEL .env COMO MINIMO
+            $data['image'] = 'http://back.test/images/'.$filename;//asset($image);
         }
 
         return $this->model::create($data);
@@ -141,7 +146,10 @@ class TripService extends ResourceService
             $data['slug'] = $this->slugify($data['title']);
         }
 
-        if (isset($data['image']) /*&& !is_string($data['image'])*/) {
+        Log::debug($data['image']);
+        Log::debug(json_encode(base64_decode($data['image'], true)));
+
+        if (isset($data['image']) && $this->isBase64Image($data['image'])) {
             /*$extension = $data['image']->getClientOriginalExtension();
             $filename = $data['slug'] . '.' . $extension;
             $image = $data['image']->move('images/', $filename);
@@ -178,6 +186,15 @@ class TripService extends ResourceService
         $model->update($data);
         return $model;
     }
+
+    private function isBase64Image($base64String)
+    {
+        $imageData = base64_decode(preg_replace('#^data:image/\w+;base64,#i', '', $base64String));
+
+        // Verifica si la decodificación fue exitosa y comienza con el marcador de imagen
+        return ($imageData !== false) && (strpos($imageData, "\xFF\xD8") === 0 || strpos($imageData, "\x89\x50\x4E\x47\x0D\x0A\x1A\x0A") === 0);
+    }
+
 
     /**
      * @param $query
