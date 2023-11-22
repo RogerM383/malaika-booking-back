@@ -8,8 +8,12 @@ use App\Traits\Slugeable;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Log;
 use JetBrains\PhpStorm\Pure;
+
+use Illuminate\Support\Str;
+use Symfony\Component\HttpFoundation\File\File;
 
 class TripService extends ResourceService
 {
@@ -92,10 +96,31 @@ class TripService extends ResourceService
         }
 
         if (isset($data['image'])) {
-            $extension = $data['image']->getClientOriginalExtension();
+            /*$extension = $data['image']->getClientOriginalExtension();
             $filename = $data['slug'] . '.' . $extension;
             $image = $data['image']->move('images/', $filename);
-            $data['image'] = asset($image);
+            $data['image'] = asset($image);*/
+
+            /*$img = preg_replace('/^data:image\/\w+;base64,/', '', $data['image']);
+            $type = explode(';', $img[0]);
+            $type = explode('/', $type)[1]; // png or jpg etc*/
+
+            $mime = mime_content_type($data['image']);
+            $extension = image_type_to_extension(exif_imagetype($data['image']));
+
+            // Generar un nombre de archivo único
+            $filename = $data['slug'] . '_' . time() . $extension;
+
+            // Decodificar y guardar la imagen
+            $imageData = base64_decode(preg_replace('#^data:image/\w+;base64,#i', '', $data['image']));
+
+            Log::debug('EDXTENSION');
+            Log::debug($extension);
+
+            /*file_put_contents('images/' . $filename, $imageData);
+
+            // Actualizar la ruta de la imagen en los datos
+            $data['image'] = asset('images/' . $filename);*/
         }
 
         return $this->model::create($data);
@@ -109,17 +134,45 @@ class TripService extends ResourceService
      */
     public function update(int $id, array $data): Model
     {
+
         $model = $this->getById($id);
 
         if (isset($data['title']) && !isset($data['slug'])) {
             $data['slug'] = $this->slugify($data['title']);
         }
 
-        if (isset($data['image'])) {
-            $extension = $data['image']->getClientOriginalExtension();
+        if (isset($data['image']) /*&& !is_string($data['image'])*/) {
+            /*$extension = $data['image']->getClientOriginalExtension();
             $filename = $data['slug'] . '.' . $extension;
             $image = $data['image']->move('images/', $filename);
-            $data['image'] = asset($image);
+            $data['image'] = asset($image);*/
+
+            $base64File = $data['image'];
+
+            // decode the base64 file
+            $fileData = base64_decode(preg_replace('#^data:image/\w+;base64,#i', '', $base64File));
+
+            // save it to temporary dir first.
+            $tmpFilePath = sys_get_temp_dir() . '/' . Str::uuid()->toString();
+            file_put_contents($tmpFilePath, $fileData);
+
+            // this just to help us get file info.
+            $tmpFile = new File($tmpFilePath);
+
+            $file = new UploadedFile(
+                $tmpFile->getPathname(),
+                $tmpFile->getFilename(),
+                $tmpFile->getMimeType(),
+                0,
+                true // Mark it as test, since the file isn't from real HTTP POST.
+            );
+
+            $extension = explode('/', $file->getMimeType() )[1];
+            $filename = $data['slug'] . '.' . $extension;
+            $image = $file->move('images/', $filename);
+            // TODO SOLUCIONAR APAÑO PARA METER LA RUTA, SACRLA DEL .env COMO MINIMO
+            $data['image'] = 'http://back.test/images/'.$filename;//asset($image);
+
         }
 
         $model->update($data);

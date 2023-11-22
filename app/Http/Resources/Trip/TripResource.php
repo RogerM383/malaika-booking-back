@@ -43,6 +43,7 @@ class TripResource extends JsonResource
             'before_open_text'  => $this->before_open_text,
             'after_close_text'  => $this->after_close_text,
             'closed'            => $this->closed,
+            'image'             => $this->image
         ];
     }
 }

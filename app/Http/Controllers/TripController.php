@@ -31,7 +31,7 @@ class TripController extends Controller
     /**
      * @OA\Get(
      *      path="/api/trips",
-     *      tags={"Trips"},
+     *      tags={"Trips"},revalidateTag(`tripPage/1`);
      *      summary="Lista de viajes",
      *      security={{"bearer_token":{}}},
      *      description="Lista los viajes",
@@ -239,6 +239,9 @@ class TripController extends Controller
             'image'             => 'nullable|sometimes|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'before_open_text'  => 'nullable|string',
             'after_close_text'  => 'nullable|string',
+            'open_date'         => 'nullable|string',
+            'closed'            => 'nullable|boolean',
+            'pdf'               => 'nullable'
         ])->validate();
         return $this->sendResponse(
             new TripResource($this->service->create($validatedData)),
@@ -284,17 +287,16 @@ class TripController extends Controller
         $validatedData = Validator::make($params, [
             'id'                => 'required',
             'title'             => 'string',
-
             'description'       => 'nullable|string',
-            //'category',
             'commentary'        => 'nullable|string',
             'trip_state_id'     => 'integer|min:1',
-            'image'             => 'nullable|sometimes|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'image'             => 'nullable',//'nullable|sometimes|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'before_open_text'  => 'nullable|string',
             'after_close_text'  => 'nullable|string',
+            'open_date'         => 'nullable|string',
+            'closed'            => 'nullable',
+            'pdf'               => 'nullable'
         ])->validate();
-
-        Log::debug($validatedData);
 
         return $this->sendResponse(
             new TripResource($this->service->update($id, $validatedData)),

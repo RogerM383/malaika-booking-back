@@ -21,7 +21,6 @@ class Trip extends Model
     protected $fillable = [
         'title',
         'description',
-        //'category',
         'commentary',
         'trip_state_id',
         'slug',
