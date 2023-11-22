@@ -31,7 +31,7 @@ class TripController extends Controller
     /**
      * @OA\Get(
      *      path="/api/trips",
-     *      tags={"Trips"},revalidateTag(`tripPage/1`);
+     *      tags={"Trips"},
      *      summary="Lista de viajes",
      *      security={{"bearer_token":{}}},
      *      description="Lista los viajes",
