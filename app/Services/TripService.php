@@ -146,8 +146,8 @@ class TripService extends ResourceService
             $data['slug'] = $this->slugify($data['title']);
         }
 
-        Log::debug($data['image']);
-        Log::debug(json_encode(base64_decode($data['image'], true)));
+        /*Log::debug($data['image']);
+        Log::debug(json_encode(base64_decode($data['image'], true)));*/
 
         if (isset($data['image']) && $this->isBase64Image($data['image'])) {
             /*$extension = $data['image']->getClientOriginalExtension();

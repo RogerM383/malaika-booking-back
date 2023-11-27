@@ -286,10 +286,10 @@ class TripController extends Controller
         $params = array_merge($request->only($this->service->getFillable()), ['id' => $id]);
         $validatedData = Validator::make($params, [
             'id'                => 'required',
-            'title'             => 'string',
+            'title'             => 'nullable|string',
             'description'       => 'nullable|string',
             'commentary'        => 'nullable|string',
-            'trip_state_id'     => 'integer|min:1',
+            'trip_state_id'     => 'nullable|integer|min:1',
             'image'             => 'nullable',//'nullable|sometimes|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'before_open_text'  => 'nullable|string',
             'after_close_text'  => 'nullable|string',
