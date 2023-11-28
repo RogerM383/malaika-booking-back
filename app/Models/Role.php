@@ -27,7 +27,7 @@ class Role extends Model
     public function users(): BelongsToMany
     {
         return $this
-            ->belongsToMany(User::class,'rel_role_user')
+            ->belongsToMany(User::class,'rel_roles_users')
             ->withTimestamps();
     }
 }
