@@ -127,7 +127,7 @@ class DatabaseMigrationService
             'language_id'       => 'travelers.lang', // Esta en texto hay que mirar como pasarlo
             'created_at'        => 'clients.created_at',
             'updated_at'        => 'clients.updated_at',
-            'deleted_at'        => null
+            //'deleted_at'        => null
         ];
 
         $clientTypesValues = [
@@ -459,7 +459,7 @@ class DatabaseMigrationService
                     // eliminar aixo $newRoom->observations = $departureRoom->observations;
                     $newRoom->created_at = $departureRoom->created_at;
                     $newRoom->updated_at = $departureRoom->updated_at;
-                    $newRoom->deleted_at = null;
+                    //$newRoom->deleted_at = null;
                     $newRoom->save();
                 } else {
                     $newRoom = $existingRoom;

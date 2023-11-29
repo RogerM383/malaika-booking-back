@@ -402,12 +402,14 @@ class DepartureController extends Controller
             'id'                        => 'required|integer|min:1',
             'clients.*'                 => 'required|array',
             'clients.*.client_id'       => 'required|integer|min:1',
-            'clients.*.room_type_id'    => 'required|integer|min:1',
+            'clients.*.room_type_id'    => 'integer|min:1',
             'clients.*.room_id'         => 'integer|min:1',
             'clients.*.seat'            => 'string',
             'clients.*.state'           => 'integer|min:1',
             'clients.*.observations'    => 'string',
         ])->validate();
+
+        Log::debug(json_encode($validatedData));
 
         $this->service->addClients($id, $validatedData['clients']);
 

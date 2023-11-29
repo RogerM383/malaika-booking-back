@@ -131,8 +131,6 @@ class DepartureService extends ResourceService
      */
     public function update(int $id, array $data): Model
     {
-        Log::debug(json_encode($data));
-
         $departure = $this->getById($id);
 
         // TODO: falta checkear si hay habitacione ya asignadas a la salida con clientres dentro
@@ -233,9 +231,11 @@ class DepartureService extends ResourceService
      */
     public function addClients($id, $clients): Builder
     {
+        Log::debug('POLLAS1');
         foreach ($clients as $client) {
             $this->addClient($id, $client);
         }
+        Log::debug('POLLAS');
         $departure = $this->getById($id);
         return $departure->with('clients');
     }
@@ -249,7 +249,10 @@ class DepartureService extends ResourceService
     public function addClient($id, $client): Model|Room|null
     {
         $departure = $this->getById($id);
-        $departure->clients()->attach($client['client_id'],  Arr::except($client, ['id', 'room_id']));
+        Log::debug(json_encode($client));
+        Log::debug(json_encode(Arr::except($client, ['id', 'room_id', 'client_id'])));
+        $departure->clients()->attach($client['client_id'],  Arr::except($client, ['id', 'room_id', 'client_id']));
+        Log::debug('json_encode($client)');
         return $this->manageRoom($id, ...Arr::except($client, ['id', 'seat']));
     }
 
@@ -272,7 +275,14 @@ class DepartureService extends ResourceService
             $room   = $this->addRoom($departure_id, $room_type_id, $observations);
             $client = $this->clientService->getById($client_id);
             $client->rooms()->attach($room->id);
+
+            // --- Habitacion nueva ----------------------------------------------------- 29/11/23
+            // TODO hacerlo mejor, quitar apaño
+            $departure = $this->getById($departure_id);
+            $departure->roomTypes()->newPivotQuery()->where('room_type_id',$room_type_id)->increment('quantity');
+
         } else if ($room_id && $state <= 4) {
+            Log::debug('PUTTTATATATTAT '.$client_id.'---'.$state.'---'.$room_type_id.'----'.$room_id);
             // Si state es uno de los activos y tenemos room_id añadimos a la habitacion
             $room = $this->roomService->getById($room_id);
             $client = $this->clientService->getById($client_id);
@@ -282,11 +292,36 @@ class DepartureService extends ResourceService
             // si lo esta la eliminamos
             $client = $this->clientService->getById($client_id);
             $client->rooms()->detach($room_id);
+
+            // Si no tengo room ID es que he de petarla
+            // TODO:: Pasar rom_type por param para evitar tener que buscar la room con el service
+            /*if ($room_id) {
+                $room = $this->roomService->getById($room_id);
+                $departure = $this->getById($departure_id);
+                $departure->roomTypes()->newPivotQuery()->where('room_type_id',$room->room_type_id)->decrement('quantity',1);
+            }*/
         }
 
-        $departure = $this->getById($departure_id);
-        // Si hay habitaciojnes vacias las elimina
-        $departure->rooms()->doesntHave('clients')->delete();
+        $departure  = $this->getById($departure_id);
+        $emptyRooms = $departure->rooms()->doesntHave('clients')->get();
+
+        if ($emptyRooms->count() >= 1) {
+            // Si hay habitaciojnes vacias las elimina
+            foreach ($emptyRooms as $r)  {
+
+                Log::debug(json_encode($r));
+
+                $departure->roomTypes()->newPivotQuery()->where('room_type_id',$r->room_type_id)->decrement('quantity',1);
+                $r->delete();
+            }
+
+            //$departure->rooms()->doesntHave('clients')->delete();
+
+            foreach ($departure->rooms()->get() as $key => $r) {
+                $r->room_number = $key + 1;
+                $r->save();
+            }
+        }
 
         return $room;
     }
