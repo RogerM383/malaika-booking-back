@@ -42,13 +42,15 @@ class DepartureResource extends JsonResource
 
         // --- Calcula las habitaciones disponibles de cada tipo -------------------------------------------------------
         foreach ($room_availability as $key => $room) {
-            $occupied = collect($clients)->filter(function($client, $key) use ($room) {
+            /*$travelers = collect($clients)->filter(function($client, $key) use ($room) {
                 return $client->resolve()['room_type_id'] === $room['id'];
             })->count();
 
-            $occupied = $occupied / $room['capacity'];
+            $occupied = ceil($travelers / $room['capacity']);
 
-            $room_availability[$key]['available'] = $room['quantity'] - $occupied;
+            $room_availability[$key]['available'] = $room['quantity'] - $occupied;*/
+
+            $room_availability[$key]['available'] = $room['capacity'] <= $this->pax_capacity;
         }
 
         return [

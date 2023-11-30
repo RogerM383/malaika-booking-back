@@ -167,7 +167,7 @@ class Departure extends Model
      */
     public function availableSlots(): mixed
     {
-        return $this->pax_capacity - $this->clients()->count();
+        return $this->pax_capacity - $this->clients()->wherePivot('state', '<=', 4)->count();
     }
 
     /**

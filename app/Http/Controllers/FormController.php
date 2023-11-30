@@ -17,6 +17,7 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
+use function PHPUnit\Framework\logicalOr;
 
 class FormController extends Controller
 {
@@ -122,7 +123,7 @@ class FormController extends Controller
             throw new DeparturePaxCapacityExceededException();
         }
 
-        // Get departure room types
+        /*// Get departure room types
         $departureRoomTypes = $departure->roomTypes->mapWithKeys(function ($item, int $key) {
                 return [$item['id'] => $item['pivot']['quantity']];
             });
@@ -140,12 +141,12 @@ class FormController extends Controller
             } else {
                 $availableRoomTypes[$key] = $departureRoomTypes[$key] - $value;
             }
-        }
+        }*/
 
         // Check si hay suficientes habitaciones de cada tipos solicitado
-        $requestedRooms = collect($validatedData['rooms'])->mapWithKeys(function ($room, $key) {
+        /*$requestedRooms = collect($validatedData['rooms'])->mapWithKeys(function ($room, $key) {
             return [$room['room_type_id'] => $room['quantity']];
-        });
+        });*/
 
         /*Log::debug('DEPARTURE ROOM TYPES');
         Log::debug(json_encode($departureRoomTypes));
@@ -156,14 +157,14 @@ class FormController extends Controller
         Log::debug('REQUESTED ROOM TYPES');
         Log::debug(json_encode($requestedRooms));*/
 
-        $enoughRooms = $requestedRooms->every(function (int $value, int $key) use ($availableRoomTypes) {
+        /*$enoughRooms = $requestedRooms->every(function (int $value, int $key) use ($availableRoomTypes) {
             return !isset($availableRoomTypes[$key]) || $availableRoomTypes[$key] >= $value;
-        });
+        });*/
 
-        if (!$enoughRooms) {
+        /*if (!$enoughRooms) {
             // TODO: Cambiar esto por un throw new RequiredRoomType o alguna historia asi
             Log::error('Not enough rooms of required types');
-        }
+        }*/
 
         // Creamos clientes
         $clients = [];
@@ -189,6 +190,7 @@ class FormController extends Controller
             $capacity       = $this->roomTypeService->getById($roomTypeId)->capacity;
 
             for ($i = 1; $i <= $roomQuantity; $i++) {
+
                 $room = $this->roomService->create([
                     'room_type_id'  => $roomTypeId,
                     'room_number'   => $this->roomService->getNextRoomNumber($departureId),
@@ -205,6 +207,8 @@ class FormController extends Controller
                         return [$client['id'] => ['room_type_id' => $roomTypeId]];
                     })
                 );
+
+                $departure->roomTypes()->newPivotQuery()->where('room_type_id', $roomTypeId)->increment('quantity');
             }
         }
 

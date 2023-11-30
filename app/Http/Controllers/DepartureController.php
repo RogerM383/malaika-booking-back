@@ -409,7 +409,7 @@ class DepartureController extends Controller
             'clients.*.observations'    => 'string',
         ])->validate();
 
-        Log::debug(json_encode($validatedData));
+        //Log::debug(json_encode($validatedData));
 
         $this->service->addClients($id, $validatedData['clients']);
 

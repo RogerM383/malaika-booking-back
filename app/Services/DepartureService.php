@@ -106,7 +106,7 @@ class DepartureService extends ResourceService
         // Obtenemos todos los RoomType con su ID y capaciodad
         $roomTypes = $this->roomTypeService->get()->pluck('capacity', 'id');
         // Obtenemos los tipos pasados en la request o genera una array con todos los tipos de la DB con valor null
-        $requestRooms = !empty($rooms) ? collect($rooms) : $roomTypes->map(fn($room, $key) => null);
+        $requestRooms = !empty($rooms) ? collect($rooms) : [];//$roomTypes->map(fn($room, $key) => null);
         // Obtenemos el totasl de plazas
         $total = collect($requestRooms)->map(function ($room, $key) use ($roomTypes) {
             return $roomTypes->has($key) ? $roomTypes[$key] * $room : 0;
@@ -116,9 +116,14 @@ class DepartureService extends ResourceService
             throw new DeparturePaxCapacityExceededException();
         }
         // Genera la relación entre Departure y RoomType
-        foreach ($requestRooms as $key => $value) {
+        /*foreach ($requestRooms as $key => $value) {
             $departure->roomTypes()->attach($key, ["quantity" => $value]);
+        }*/
+
+        foreach ($requestRooms as $value) {
+            $departure->roomTypes()->attach($value, ["quantity" => 0]);
         }
+
         // Retorna resultado
         return $departure;
     }
@@ -147,8 +152,30 @@ class DepartureService extends ResourceService
                 throw new DeparturePaxCapacityExceededException();
             }
 
-            foreach ($data['rooms'] as $key => $value) {
+            /*foreach ($data['rooms'] as $key => $value) {
                 $departure->roomTypes()->updateExistingPivot($key, ["quantity" => $value]);
+            }*/
+
+            // TODO: mejorar todo esto
+            $depRoomTypes = $departure->roomTypes()->get();
+            $rels  = $depRoomTypes->pluck('id')->toArray();
+            $rooms = array_map('intval', $data['rooms']);
+
+            //$included = array_intersect($rooms, $rels);
+            $excluded = array_diff($rels, $rooms);
+
+            foreach ($excluded as $ex) {
+                $roomType = $depRoomTypes->pluck('pivot')->where('room_type_id', $ex)->first();
+                if ($roomType->quantity === 0) {
+                    $departure->roomTypes()->detach($ex);
+                }
+            }
+
+            foreach ($rooms as $id) {
+                $roomType = $depRoomTypes->pluck('pivot')->where('room_type_id', $id)->first();
+                if (!$roomType) {
+                    $departure->roomTypes()->attach($id, ['quantity' => 0]);
+                }
             }
         }
 
@@ -231,11 +258,11 @@ class DepartureService extends ResourceService
      */
     public function addClients($id, $clients): Builder
     {
-        Log::debug('POLLAS1');
+
         foreach ($clients as $client) {
             $this->addClient($id, $client);
         }
-        Log::debug('POLLAS');
+
         $departure = $this->getById($id);
         return $departure->with('clients');
     }
@@ -249,10 +276,7 @@ class DepartureService extends ResourceService
     public function addClient($id, $client): Model|Room|null
     {
         $departure = $this->getById($id);
-        Log::debug(json_encode($client));
-        Log::debug(json_encode(Arr::except($client, ['id', 'room_id', 'client_id'])));
         $departure->clients()->attach($client['client_id'],  Arr::except($client, ['id', 'room_id', 'client_id']));
-        Log::debug('json_encode($client)');
         return $this->manageRoom($id, ...Arr::except($client, ['id', 'seat']));
     }
 
@@ -282,7 +306,7 @@ class DepartureService extends ResourceService
             $departure->roomTypes()->newPivotQuery()->where('room_type_id',$room_type_id)->increment('quantity');
 
         } else if ($room_id && $state <= 4) {
-            Log::debug('PUTTTATATATTAT '.$client_id.'---'.$state.'---'.$room_type_id.'----'.$room_id);
+
             // Si state es uno de los activos y tenemos room_id añadimos a la habitacion
             $room = $this->roomService->getById($room_id);
             $client = $this->clientService->getById($client_id);
@@ -293,6 +317,7 @@ class DepartureService extends ResourceService
             $client = $this->clientService->getById($client_id);
             $client->rooms()->detach($room_id);
 
+            $room = $this->roomService->getById($room_id);
             // Si no tengo room ID es que he de petarla
             // TODO:: Pasar rom_type por param para evitar tener que buscar la room con el service
             /*if ($room_id) {
@@ -308,10 +333,7 @@ class DepartureService extends ResourceService
         if ($emptyRooms->count() >= 1) {
             // Si hay habitaciojnes vacias las elimina
             foreach ($emptyRooms as $r)  {
-
-                Log::debug(json_encode($r));
-
-                $departure->roomTypes()->newPivotQuery()->where('room_type_id',$r->room_type_id)->decrement('quantity',1);
+                $departure->roomTypes()->newPivotQuery()->where('room_type_id', $r->room_type_id)->decrement('quantity',1);
                 $r->delete();
             }
 

@@ -41,7 +41,7 @@ class TripFormResource extends JsonResource
             'slug'          => $this->slug,
             'description'   => $this->description,
             'commentary'    => $this->commentary,
-            'departures'    => DepartureResource::collection($this->departures),
+            'departures'    => DepartureResource::collection($this->departures->where('state_id', 1)),
             'state'         => $this->when(!empty($this->state), fn () => $this->state->name),
             'before_open_text' => $this->before_open_text,
             'after_close_text' => $this->after_close_text,
