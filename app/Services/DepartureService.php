@@ -165,9 +165,10 @@ class DepartureService extends ResourceService
             // --- Obtiene IDs de las relaciones (tabla intermedia) ----------------------------------------------------
             $rels  = $depRoomTypes->pluck('id')->toArray();
 
-            $formRooms = collect($formRooms);
-            $rooms = $formRooms->map(function ($room) {
-                return [ intval($room['id']) => ['quantity' => intval($room['quantity'])] ];
+            $rooms = collect($formRooms)->mapWithKeys(function ($room) {
+                return [
+                    $room['id'] => [ 'quantity' => intval($room['quantity']) ]
+                ];
             });
 
             $departure->formRoomTypes()->sync($rooms);
