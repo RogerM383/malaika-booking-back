@@ -22,9 +22,11 @@ return new class extends Migration
             $table->float('price', 8, 2)->nullable(true);
             $table->float('taxes', 8, 2)->default(0)->nullable(true);
             $table->float('individual_supplement', 8, 2)->nullable(true);
+            $table->float('booking_price', 8, 2)->default(0)->nullable(true);
             $table->string('pax_capacity')->nullable(true);
             $table->text('commentary')->nullable(true);
             $table->integer('expedient')->nullable(true);
+            $table->boolean('hidden')->default(false);
 
             $table->timestamps();
             $table->softDeletes();

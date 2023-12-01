@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('rel_departure_room_type', function (Blueprint $table) {
+        Schema::create('form_departure_room_type', function (Blueprint $table) {
             $table->id();
             $table->foreignId('departure_id')->constrained('departures');
             $table->foreignId('room_type_id')->constrained('room_types');
