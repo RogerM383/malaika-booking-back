@@ -47,36 +47,36 @@ class DatabaseMigrationService
 
     function migrate2 ()
     {
+        Log::debug('MIGRATE 2 START');
         $this->migrateDepartures(0, 50);
-
         Log::debug('MIGRATE 2 FINISHED');
     }
 
     function migrate3 ()
     {
+        Log::debug('MIGRATE 3 START');
         $this->migrateDepartures(50, 50);
-
         Log::debug('MIGRATE 3 FINISHED');
     }
 
     function migrate4 ()
     {
+        Log::debug('MIGRATE 4 START');
         $this->migrateDepartures(100, 50);
-
         Log::debug('MIGRATE 4 FINISHED');
     }
 
     function migrate5 ()
     {
+        Log::debug('MIGRATE 5 START');
         $this->migrateDepartures(150, 50);
-
         Log::debug('MIGRATE 5 FINISHED');
     }
 
     function migrate6 ()
     {
+        Log::debug('MIGRATE 6 START');
         $this->migrateRoles();
-
         Log::debug('MIGRATE 6 FINISHED');
     }
 
