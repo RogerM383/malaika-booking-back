@@ -198,7 +198,7 @@ class DepartureController extends Controller
             'expedient'             => 'integer',
             'taxes'                 => 'numeric',
 
-            'hidden'                => 'nullable|boolean',
+            'hidden'                => 'nullable',
             'booking_price'         => 'nullable|numeric',
 
             'form_rooms'            => 'nullable|array'
@@ -284,7 +284,7 @@ class DepartureController extends Controller
             'expedient'             => 'nullable|integer',
             'taxes'                 => 'nullable|numeric',
 
-            'hidden'                => 'nullable|boolean',
+            'hidden'                => 'nullable',
             'booking_price'         => 'nullable|numeric',
 
             'form_rooms'             => 'nullable|array',
