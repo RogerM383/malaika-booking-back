@@ -167,7 +167,7 @@ class DepartureService extends ResourceService
 
             $formRooms = collect($formRooms);
             $rooms = $formRooms->map(function ($room) {
-                return [ 'id' => intval($room['id']), 'quantity' => intval($room['quantity']) ];
+                return [ intval($room['id']) => ['quantity' => intval($room['quantity'])] ];
             });
 
             $departure->formRoomTypes()->sync($rooms);
