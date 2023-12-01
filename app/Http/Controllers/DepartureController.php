@@ -165,7 +165,14 @@ class DepartureController extends Controller
      *              @OA\Property(property="commentary", type="string", example="Salimos muy temprano"),
      *              @OA\Property(property="expedient", type="integer", example="55688"),
      *              @OA\Property(property="taxes", type="numeric", example="157.65"),
-     *              @OA\Property(property="rooms", type="object", example={"1": 10, "2": 10, "3": 0})
+     *              @OA\Property(
+     *                  property="form_rooms",
+     *                  type="array",
+     *                  @OA\Items(
+     *                      @OA\Property(property="id", type="integer", example=1),
+     *                      @OA\Property(property="quantity", type="integer", example=10)
+     *                  )
+     *              ),
      *          )
      *      ),
      *      @OA\Response(
@@ -190,8 +197,10 @@ class DepartureController extends Controller
             'expedient'             => 'integer',
             'taxes'                 => 'numeric',
 
-            'rooms'                 => 'array',
-            'rooms.*'               => 'integer'
+            'hidden'                => 'nullable|boolean',
+            'booking_price'         => 'nullable|numeric',
+
+            'form_rooms'            => 'nullable|array'
         ])->validate();
 
         // TODO: Mirar maneras mejores de formatear las fechas, sobretodo ver comop vienen del front
@@ -227,13 +236,22 @@ class DepartureController extends Controller
      *              @OA\Property(property="start", type="string", example="12/20/2023"),
      *              @OA\Property(property="final", type="string", example="12/28/2023"),
      *              @OA\Property(property="price", type="numeric", example="7800.55"),
+     *              @OA\Property(property="booking_price", type="numeric", example="7800.55"),
      *              @OA\Property(property="pax_capacity", type="integer", example="20"),
      *              @OA\Property(property="individual_supplement", type="numeric", example="550.00"),
      *              @OA\Property(property="state_id", type="integer", example="1"),
      *              @OA\Property(property="commentary", type="string", example="Salimos muy temprano"),
      *              @OA\Property(property="expedient", type="integer", example="55688"),
      *              @OA\Property(property="taxes", type="numeric", example="157.65"),
-     *              @OA\Property(property="rooms", type="object", example={"1": 10, "2": 10, "3": 0})
+     *              @OA\Property(property="hidden", type="boolean", example="0"),
+     *              @OA\Property(
+     *                  property="form_rooms",
+     *                  type="array",
+     *                  @OA\Items(
+     *                      @OA\Property(property="id", type="integer", example=1),
+     *                      @OA\Property(property="quantity", type="integer", example=10)
+     *                  )
+     *              ),
      *          )
      *      ),
      *      @OA\Response(
@@ -250,7 +268,7 @@ class DepartureController extends Controller
             $request->only($this->service->getFillable()),
             [
                 'id' => $id,
-                'rooms' => $request->rooms
+                'form_rooms' => $request->form_rooms
             ]
         );
         $validatedData = Validator::make($params, [
@@ -265,8 +283,10 @@ class DepartureController extends Controller
             'expedient'             => 'nullable|integer',
             'taxes'                 => 'nullable|numeric',
 
-            'rooms'                 => 'nullable|array',
-            'rooms.*'               => 'integer'
+            'hidden'                => 'nullable|boolean',
+            'booking_price'         => 'nullable|numeric',
+
+            'form_rooms'             => 'nullable|array',
         ])->validate();
 
         // TODO: Mirar maneras mejores de formatear las fechas, sobretodo ver comop vienen del front

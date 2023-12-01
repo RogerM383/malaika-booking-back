@@ -31,6 +31,8 @@ class Departure extends Model
         'commentary',
         'expedient',
         'taxes',
+        'hidden',
+        'booking_price'
     ];
 
     /*public function setFinalAttribute($value)
@@ -145,6 +147,18 @@ class Departure extends Model
     public function roomTypes(): BelongsToMany
     {
         return $this->belongsToMany(RoomType::class, 'rel_departure_room_type')
+            ->withPivot(
+                'quantity'
+            )
+            ->withTimestamps();
+    }
+
+    /**
+     * @return BelongsToMany
+     */
+    public function formRoomTypes(): BelongsToMany
+    {
+        return $this->belongsToMany(RoomType::class, 'form_departure_room_type', 'departure_id', 'room_type_id')
             ->withPivot(
                 'quantity'
             )

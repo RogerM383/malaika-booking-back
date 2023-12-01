@@ -58,6 +58,7 @@ class DepartureResource extends JsonResource
             'start'                 => $this->start,
             'final'                 => $this->final,
             'price'                 => $this->price,
+            'booking_price'         => $this->booking_price,
             'pax_capacity'          => $this->pax_capacity,
             'individual_supplement' => $this->individual_supplement,
             'state'                 => $this->state->name,
@@ -67,7 +68,8 @@ class DepartureResource extends JsonResource
             'title'                 => $this->trip->title,
             //'room_availability'     => RoomTypeAvailabilityResource::collection($this->whenLoaded('roomTypes'))
             'room_availability'     => $room_availability, //RoomTypeAvailabilityResource::collection($this->roomTypes)
-            'clients_count'         => $clients->count()
+            'clients_count'         => $clients->count(),
+            'hidden'                => $this->hidden
         ];
     }
 }

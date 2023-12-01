@@ -872,12 +872,20 @@
                                         "type": "numeric",
                                         "example": "157.65"
                                     },
-                                    "rooms": {
-                                        "type": "object",
-                                        "example": {
-                                            "1": 10,
-                                            "2": 10,
-                                            "3": 0
+                                    "form_rooms": {
+                                        "type": "array",
+                                        "items": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "quantity": {
+                                                    "type": "integer",
+                                                    "example": 10
+                                                }
+                                            },
+                                            "type": "object"
                                         }
                                     }
                                 },
@@ -981,6 +989,10 @@
                                         "type": "numeric",
                                         "example": "7800.55"
                                     },
+                                    "booking_price": {
+                                        "type": "numeric",
+                                        "example": "7800.55"
+                                    },
                                     "pax_capacity": {
                                         "type": "integer",
                                         "example": "20"
@@ -1005,12 +1017,24 @@
                                         "type": "numeric",
                                         "example": "157.65"
                                     },
-                                    "rooms": {
-                                        "type": "object",
-                                        "example": {
-                                            "1": 10,
-                                            "2": 10,
-                                            "3": 0
+                                    "hidden": {
+                                        "type": "boolean",
+                                        "example": "0"
+                                    },
+                                    "form_rooms": {
+                                        "type": "array",
+                                        "items": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "quantity": {
+                                                    "type": "integer",
+                                                    "example": 10
+                                                }
+                                            },
+                                            "type": "object"
                                         }
                                     }
                                 },

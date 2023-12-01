@@ -38,6 +38,18 @@ class RoomType extends Model
     }
 
     /**
+     * @return BelongsToMany
+     */
+    public function formRoomTypes(): BelongsToMany
+    {
+        return $this->belongsToMany(RoomType::class, 'form_departure_room_type', 'room_type_id', 'departure_id')
+            ->withPivot(
+                'quantity'
+            )
+            ->withTimestamps();
+    }
+
+    /**
      * @return HasMany
      */
     public function rooms(): HasMany

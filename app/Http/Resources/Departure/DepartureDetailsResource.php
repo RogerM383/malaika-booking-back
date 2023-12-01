@@ -37,13 +37,15 @@ class DepartureDetailsResource extends JsonResource
             'start'                 => $this->start,
             'final'                 => $this->final,
             'price'                 => $this->price,
+            'booking_price'         => $this->booking_price,
             'pax_capacity'          => $this->pax_capacity,
             'individual_supplement' => $this->individual_supplement,
             'state'                 => $this->state->name,
             'commentary'            => $this->commentary,
             'taxes'                 => $this->taxes,
             'expedient'             => $this->expedient,
-            'room_availability'     => RoomTypeAvailabilityResource::collection($this->roomTypes)
+            'room_availability'     => RoomTypeAvailabilityResource::collection($this->roomTypes),
+            'hidden'                => $this->hidden
         ];
     }
 }

@@ -98,30 +98,36 @@ class DepartureService extends ResourceService
      */
     public function create($data): mixed
     {
-        $rooms = $data['rooms'] ?? null;
+        $formRooms = $data['form_rooms'] ?? [];
+        // Obtenemos todos los RoomType con su ID y capaciodad
+        $roomTypes = $this->roomTypeService->get()->pluck('capacity', 'id');
+
+        // Calcula el maximo de slots
+        $total = collect($formRooms)->map(function ($room) use ($roomTypes) {
+            return $roomTypes->has($room['id']) ? $roomTypes[$room['id']] * $room['quantity'] : 0;
+        })->sum();
+
+        // Check que no nos pasemos de plazas (puede haber menos xo no más)
+        if ($total > $data['pax_capacity']) {
+            throw new DeparturePaxCapacityExceededException();
+        }
+
         // Obtenemos el Trip
         $trip = $this->tripService->getById($data['trip_id']);
         // Le creamos una nueva Departure
         $departure = $trip->departures()->create($data);
-        // Obtenemos todos los RoomType con su ID y capaciodad
-        $roomTypes = $this->roomTypeService->get()->pluck('capacity', 'id');
-        // Obtenemos los tipos pasados en la request o genera una array con todos los tipos de la DB con valor null
-        $requestRooms = !empty($rooms) ? collect($rooms) : [];//$roomTypes->map(fn($room, $key) => null);
-        // Obtenemos el totasl de plazas
-        $total = collect($requestRooms)->map(function ($room, $key) use ($roomTypes) {
-            return $roomTypes->has($key) ? $roomTypes[$key] * $room : 0;
-        })->sum();
-        // Check que no nos pasemos de plazas (puede haber menos xo no más)
-        if ($total > $departure->pax_capacity) {
-            throw new DeparturePaxCapacityExceededException();
-        }
-        // Genera la relación entre Departure y RoomType
-        /*foreach ($requestRooms as $key => $value) {
-            $departure->roomTypes()->attach($key, ["quantity" => $value]);
-        }*/
 
-        foreach ($requestRooms as $value) {
-            $departure->roomTypes()->attach($value, ["quantity" => 0]);
+
+        // --- ROOMS (controla numero asociado a la departure) ---------------------------------------------------------
+        // Genera la relación entre Departure y RoomType
+        foreach ($roomTypes as $key => $value) {
+            $departure->roomTypes()->attach($key, ["quantity" => 0]);
+        }
+
+        // --- FORM ROOMS (controla numero y maximos asociados al formulario inscripcion) ------------------------------
+        $formRooms = !empty($formRooms) ? collect($formRooms) : [];
+        foreach ($formRooms as $value) {
+            $departure->formRoomTypes()->attach($value['id'], ['quantity' => $value['quantity']]);
         }
 
         // Retorna resultado
@@ -138,45 +144,33 @@ class DepartureService extends ResourceService
     {
         $departure = $this->getById($id);
 
-        // TODO: falta checkear si hay habitacione ya asignadas a la salida con clientres dentro
-        // Que pasa si las eliminamos? perdemos  ala agente asignada? Quedan sin asignar?
+        // --- CONTROL ROOMS DE FORMULARIO -----------------------------------------------------------------------------
+        if (isset($data['form_rooms'])) {
 
-        if (isset($data['rooms'])) {
+            $formRooms = $data['form_rooms'];
             $roomTypes = $this->roomTypeService->get()->pluck('capacity', 'id');
 
-            $total = collect($data['rooms'])->map(function ($room, $key) use ($roomTypes) {
-                return $roomTypes->has($key) ? $roomTypes[$key] * $room : 0;
+            // Calcula el maximo de slots
+            $total = collect($formRooms)->map(function ($room) use ($roomTypes) {
+                return $roomTypes->has($room['id']) ? $roomTypes[$room['id']] * $room['quantity'] : 0;
             })->sum();
-
-            if ($total > $data['pax_capacity']) {
+            $capacity = $data['pax_capacity'] ?? $departure->pax_capacity;
+            if ($total > $capacity) {
                 throw new DeparturePaxCapacityExceededException();
             }
 
-            /*foreach ($data['rooms'] as $key => $value) {
-                $departure->roomTypes()->updateExistingPivot($key, ["quantity" => $value]);
-            }*/
-
             // TODO: mejorar todo esto
-            $depRoomTypes = $departure->roomTypes()->get();
+            // --- Pilla tipos de habitacion permitidas en el form -----------------------------------------------------
+            $depRoomTypes = $departure->formRoomTypes()->get();
+            // --- Obtiene IDs de las relaciones (tabla intermedia) ----------------------------------------------------
             $rels  = $depRoomTypes->pluck('id')->toArray();
-            $rooms = array_map('intval', $data['rooms']);
 
-            //$included = array_intersect($rooms, $rels);
-            $excluded = array_diff($rels, $rooms);
+            $formRooms = collect($formRooms);
+            $rooms = $formRooms->map(function ($room) {
+                return [ 'id' => intval($room['id']), 'quantity' => intval($room['quantity']) ];
+            });
 
-            foreach ($excluded as $ex) {
-                $roomType = $depRoomTypes->pluck('pivot')->where('room_type_id', $ex)->first();
-                if ($roomType->quantity === 0) {
-                    $departure->roomTypes()->detach($ex);
-                }
-            }
-
-            foreach ($rooms as $id) {
-                $roomType = $depRoomTypes->pluck('pivot')->where('room_type_id', $id)->first();
-                if (!$roomType) {
-                    $departure->roomTypes()->attach($id, ['quantity' => 0]);
-                }
-            }
+            $departure->formRoomTypes()->sync($rooms);
         }
 
         $departure->update($data);
