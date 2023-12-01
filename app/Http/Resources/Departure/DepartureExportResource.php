@@ -47,6 +47,7 @@ class DepartureExportResource extends JsonResource
             'active'        => $this->when(!empty($clients), fn () => $clients),
             'waiting'       => $this->when(!empty($waiting), fn () => $waiting),
             'room_types'    => $this->roomTypes,
+            'hidden'        => $this->hidden,
 
             //'rooms'         => $this->rooms()->clients()->get()
 
