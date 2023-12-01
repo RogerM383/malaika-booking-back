@@ -164,6 +164,7 @@ class DepartureController extends Controller
      *              @OA\Property(property="state_id", type="integer", example="1"),
      *              @OA\Property(property="commentary", type="string", example="Salimos muy temprano"),
      *              @OA\Property(property="expedient", type="integer", example="55688"),
+     *              @OA\Property(property="hidden", type="boolean", example="0"),
      *              @OA\Property(property="taxes", type="numeric", example="157.65"),
      *              @OA\Property(
      *                  property="form_rooms",
