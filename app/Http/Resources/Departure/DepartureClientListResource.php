@@ -39,15 +39,7 @@ class DepartureClientListResource extends JsonResource
         }])->get());
 
         // --- Calcula las habitaciones de cada tipo de que dispone la Departure ---------------------------------------
-        $room_availability = RoomTypeAvailabilityResource::collection($this->roomTypes)->resolve();
-
-        // --- Calcula las habitaciones disponibles de cada tipo -------------------------------------------------------
-        /*foreach ($room_availability as $key => $room) {
-            $room_availability[$key]['available'] = $room['capacity'] <= $this->pax_capacity;
-        }*/
-
-        Log::debug('CLIENTLIST DEPS');
-        Log::debug(json_encode($this->pivot->state));
+        $roomAvailability = RoomTypeAvailabilityResource::collection($this->roomTypes)->resolve();
 
         return [
             'id'                    => $this->id,
@@ -56,9 +48,9 @@ class DepartureClientListResource extends JsonResource
             'final'                 => $this->final,
             'pax_capacity'          => $this->pax_capacity,
             'expedient'             => $this->expedient,
-            'room_availability'     => $room_availability,
+            'room_availability'     => $roomAvailability,
             'clients_count'         => $clients->count(),
-            'state'                 => $this->pivot->state
+            'state'                 => !in_array($this->pivot->state, [5,6]) // Estado en espera o cancelado
         ];
     }
 }
