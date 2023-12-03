@@ -45,7 +45,7 @@ class DepartureResource extends JsonResource
         // --- Calcula las habitaciones de cada tipo disponibles en el formulario --------------------------------------
         foreach ($formRoomTypes as $key => $room) {
             $rA = array_search($room['id'], array_column($roomAvailability, 'id'));
-            $formRoomTypes[$key]['available'] = min($room['quantity'] - $rA['quantity'], 0);
+            $formRoomTypes[$key]['available'] = min($room['quantity'] - $roomAvailability[$rA]['quantity'], 0);
         }
 
         return [
