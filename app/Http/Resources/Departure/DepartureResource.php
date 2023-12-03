@@ -39,17 +39,11 @@ class DepartureResource extends JsonResource
         }])->get());
         // --- Calcula las habitaciones de cada tipo de que dispone la Departure ---------------------------------------
         $room_availability = RoomTypeAvailabilityResource::collection($this->roomTypes)->resolve();
+        $formRoomTypes = RoomTypeAvailabilityResource::collection($this->formRoomTypes)->resolve();
+
 
         // --- Calcula las habitaciones disponibles de cada tipo -------------------------------------------------------
         foreach ($room_availability as $key => $room) {
-            /*$travelers = collect($clients)->filter(function($client, $key) use ($room) {
-                return $client->resolve()['room_type_id'] === $room['id'];
-            })->count();
-
-            $occupied = ceil($travelers / $room['capacity']);
-
-            $room_availability[$key]['available'] = $room['quantity'] - $occupied;*/
-
             $room_availability[$key]['available'] = $room['capacity'] <= $this->pax_capacity;
         }
 
@@ -68,6 +62,7 @@ class DepartureResource extends JsonResource
             'title'                 => $this->trip->title,
             //'room_availability'     => RoomTypeAvailabilityResource::collection($this->whenLoaded('roomTypes'))
             'room_availability'     => $room_availability, //RoomTypeAvailabilityResource::collection($this->roomTypes)
+            'form_rooms'            => $formRoomTypes,
             'clients_count'         => $clients->count(),
             'hidden'                => $this->hidden
         ];
