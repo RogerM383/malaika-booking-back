@@ -291,15 +291,34 @@ class DepartureService extends ResourceService
 
         if (!isset($room_id) && isset($room_type_id) && $state <= 4) {
             // Si state es uno de los activos y no tenemos room_id crea habitacion
-            $room   = $this->addRoom($departure_id, $room_type_id, $observations);
+            $room = $this->addRoom($departure_id, $room_type_id, $observations);
             $client = $this->clientService->getById($client_id);
             $client->rooms()->attach($room->id);
 
             // --- Habitacion nueva ----------------------------------------------------- 29/11/23
             // TODO hacerlo mejor, quitar apaño
             $departure = $this->getById($departure_id);
-            $departure->roomTypes()->newPivotQuery()->where('room_type_id',$room_type_id)->increment('quantity');
+            $departure->roomTypes()->newPivotQuery()->where('room_type_id', $room_type_id)->increment('quantity');
 
+        } else if (isset($room_id) && isset($room_type_id) && $state <= 4) {
+
+            // Si state es uno de los activos && estramos modificando el tipo de una habitacion
+            $room = $this->roomService->getById($room_id);
+            $oldRoomTypeId = $room->room_type_id;
+
+            if ($oldRoomTypeId !== $room_type_id) {
+                // --- Cambio de tipo de habitacion ------------------------------------------ 03/12/23
+                // TODO hacerlo mejor, quitar apaño
+                $departure = $this->getById($departure_id);
+
+                // TODO: check si la capacidad sigue siendo menor que pax
+                $departure->roomTypes()->newPivotQuery()->where('room_type_id', $oldRoomTypeId)->decrement('quantity', 1);
+                $departure->roomTypes()->newPivotQuery()->where('room_type_id', $room_type_id)->increment('quantity');
+
+                // save room
+                $room->room_type_id = $room_type_id;
+                $room->save();
+            }
         } else if ($room_id && $state <= 4) {
 
             // Si state es uno de los activos y tenemos room_id añadimos a la habitacion
