@@ -45,6 +45,7 @@ class DepartureDetailsResource extends JsonResource
             'taxes'                 => $this->taxes,
             'expedient'             => $this->expedient,
             'room_availability'     => RoomTypeAvailabilityResource::collection($this->roomTypes),
+            'form_rooms'            => RoomTypeAvailabilityResource::collection($this->formRoomTypes),
             'hidden'                => $this->hidden
         ];
     }
