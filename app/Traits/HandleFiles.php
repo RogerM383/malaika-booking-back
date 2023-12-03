@@ -34,6 +34,8 @@ trait HandleFiles
         // decode the base64 file
         $fileData = base64_decode(preg_replace('#^data:'.$mime.'/\w+;base64,#i', '', $base64File));
 
-        return Storage::disk('public')->put( $folder . '/' . $filename . '.' . $extension, $fileData);
+        Storage::disk('public')->put( $folder . '/' . $filename . '.' . $extension, $fileData);
+
+        return $folder . '/' . $filename . '.' . $extension;
     }
 }
