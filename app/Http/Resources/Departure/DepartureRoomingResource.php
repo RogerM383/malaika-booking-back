@@ -58,9 +58,9 @@ class DepartureRoomingResource extends JsonResource
 
         $canceled = ClientRoomingResource::collection($this->canceledClients);
 
-        $room_availability = RoomTypeAvailabilityResource::collection($this->roomTypes)->resolve();
+        $roomAvailability = RoomTypeAvailabilityResource::collection($this->roomTypes)->resolve();
 
-        foreach ($room_availability as $key => $room) {
+        /*foreach ($room_availability as $key => $room) {
             $occupied = collect($clients)->filter(function($client, $key) use ($room) {
                 return $client->resolve()['room_type_id'] === $room['id'];
             })->count();
@@ -68,7 +68,7 @@ class DepartureRoomingResource extends JsonResource
             $occupied = $occupied / $room['capacity'];
 
             $room_availability[$key]['available'] = $room['quantity'] - $occupied;
-        }
+        }*/
 
         return [
             'id'                    => $this->id,
@@ -87,7 +87,7 @@ class DepartureRoomingResource extends JsonResource
             'canceled'              => $this->when(!empty($canceled), fn () => $canceled),
             //'room_types'            => RoomTypeResource::collection($this->roomTypes),
             'rooms_total'           => $total,
-            'room_availability'     => $room_availability,
+            'room_availability'     => $roomAvailability,
         ];
     }
 }

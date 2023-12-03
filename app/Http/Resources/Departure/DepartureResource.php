@@ -42,7 +42,6 @@ class DepartureResource extends JsonResource
         $roomAvailability   = RoomTypeAvailabilityResource::collection($this->roomTypes)->resolve();
         $formRoomTypes      = RoomTypeAvailabilityResource::collection($this->formRoomTypes)->resolve();
 
-
         // --- Calcula las habitaciones de cada tipo disponibles en el formulario --------------------------------------
         foreach ($formRoomTypes as $key => $room) {
             $rA = array_search($room['id'], array_column($roomAvailability, 'id'));
