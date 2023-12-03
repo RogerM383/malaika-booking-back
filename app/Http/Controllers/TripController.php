@@ -232,7 +232,7 @@ class TripController extends Controller
         $image = $request->file('image');
 
         $validatedData = Validator::make([...$request->all(), 'image' => $image], [
-            'title'             => 'nullable|string',
+            'title'             => 'string',
             'description'       => 'string',
             'commentary'        => 'nullable|string',
             'trip_state_id'     => 'integer',

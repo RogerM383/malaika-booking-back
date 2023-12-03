@@ -101,6 +101,11 @@ class TripService extends ResourceService
             $data['image'] = asset($image);
         }
 
+        if (isset($data['pdf']) && $this->isBase64Pdf($data['pdf'], true)) {
+            $pdf = $this->storeBase64File($data['pdf'], $data['slug'], 'application/pdf', 'pdfs');
+            $data['pdf'] = asset($pdf);
+        }
+
         return $this->model::create($data);
     }
 
@@ -120,8 +125,13 @@ class TripService extends ResourceService
         }
 
         if (isset($data['image']) && $this->isBase64Image($data['image'])) {
-            $image = $this->storeBase64File($data['image'], $data['slug'], 'image', 'images');
+            $image = $this->storeBase64File($data['image'], $data['slug'] ?? $model->slug, 'image', 'images');
             $data['image'] = asset($image);
+        }
+
+        if (isset($data['pdf']) && $this->isBase64Pdf($data['pdf'], true)) {
+            $pdf = $this->storeBase64File($data['pdf'], $data['slug'] ?? $model->slug, 'application/pdf', 'pdfs');
+            $data['pdf'] = asset($pdf);
         }
 
         $model->update($data);
