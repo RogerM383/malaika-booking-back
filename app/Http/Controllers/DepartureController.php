@@ -287,7 +287,7 @@ class DepartureController extends Controller
             'hidden'                => 'nullable',
             'booking_price'         => 'nullable|numeric',
 
-            'form_rooms'             => 'nullable|array',
+            'form_rooms'            => 'nullable|array',
         ])->validate();
 
         // TODO: Mirar maneras mejores de formatear las fechas, sobretodo ver comop vienen del front
