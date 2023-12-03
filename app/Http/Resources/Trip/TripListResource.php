@@ -33,10 +33,11 @@ class TripListResource extends JsonResource
             'id'            => $this->id,
             'title'         => $this->title,
             'slug'          => $this->slug,
-            'description'   => $this->description,
+            //'description'   => $this->description,
             'commentary'    => $this->commentary,
             'departures'    => $this->departures->count(),
-            'closed'        => $this->closed
+            'closed'        => $this->closed,
+            'expedients'    => $this->departures->pluck('expedient')->join('-')
         ];
     }
 }
