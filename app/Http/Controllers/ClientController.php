@@ -7,6 +7,7 @@ use App\Http\Resources\Client\ClientDetailResource;
 use App\Http\Resources\Client\ClientListCollection;
 use App\Http\Resources\Client\ClientListResource;
 use App\Http\Resources\Client\ClientResource;
+use App\Http\Resources\Departure\DepartureClientListResource;
 use App\Http\Resources\Departure\DepartureListResource;
 use App\Http\Resources\Departure\DepartureResource;
 use App\Services\ClientService;
@@ -220,7 +221,7 @@ class ClientController extends Controller
         ])->validate();
 
         return $this->sendResponse(
-            DepartureResource::collection($this->service->getClientDepartures($validatedData['id'])),
+            DepartureClientListResource::collection($this->service->getClientDepartures($validatedData['id'])),
             'Client departures retrieved successfully'
         );
     }

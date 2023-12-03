@@ -23,7 +23,7 @@ use Illuminate\Support\Facades\Log;
  * Class TripResource
  *
  */
-class DepartureResource extends JsonResource
+class DepartureClientListResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -39,33 +39,26 @@ class DepartureResource extends JsonResource
         }])->get());
 
         // --- Calcula las habitaciones de cada tipo de que dispone la Departure ---------------------------------------
-        $roomAvailability   = RoomTypeAvailabilityResource::collection($this->roomTypes)->resolve();
-        $formRoomTypes      = RoomTypeAvailabilityResource::collection($this->formRoomTypes)->resolve();
+        $room_availability = RoomTypeAvailabilityResource::collection($this->roomTypes)->resolve();
 
+        // --- Calcula las habitaciones disponibles de cada tipo -------------------------------------------------------
+        /*foreach ($room_availability as $key => $room) {
+            $room_availability[$key]['available'] = $room['capacity'] <= $this->pax_capacity;
+        }*/
 
-        // --- Calcula las habitaciones de cada tipo disponibles en el formulario --------------------------------------
-        foreach ($formRoomTypes as $key => $room) {
-            $rA = array_search($room['id'], array_column($roomAvailability, 'id'));
-            $formRoomTypes[$key]['available'] = min($room['quantity'] - $roomAvailability[$rA]['quantity'], 0);
-        }
+        Log::debug('CLIENTLIST DEPS');
+        Log::debug(json_encode($this->pivot->state));
 
         return [
             'id'                    => $this->id,
+            'title'                 => $this->trip->title,
             'start'                 => $this->start,
             'final'                 => $this->final,
-            'price'                 => $this->price,
-            'booking_price'         => $this->booking_price,
             'pax_capacity'          => $this->pax_capacity,
-            'individual_supplement' => $this->individual_supplement,
-            'state'                 => $this->state->name,
-            'commentary'            => $this->commentary,
-            'taxes'                 => $this->taxes,
             'expedient'             => $this->expedient,
-            'title'                 => $this->trip->title,
-            'room_availability'     => $roomAvailability,
-            'form_rooms'            => $formRoomTypes,
+            'room_availability'     => $room_availability,
             'clients_count'         => $clients->count(),
-            'hidden'                => $this->hidden
+            'state'                 => $this->pivot->state
         ];
     }
 }
