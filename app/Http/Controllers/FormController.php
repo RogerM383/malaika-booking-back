@@ -196,10 +196,13 @@ class FormController extends Controller
                 'surname'   => $validatedData['contact_surname'],
                 'phone'     => $validatedData['contact_phone'],
                 'email'     => $validatedData['contact_email'],
-            ]
+            ],
+            //'dates'         => $departure->start . ' ' . $departure->final
         ];
 
-        Mail::to($validatedData['contact_email'])->send(new NewInscriptionClient($data));
+        Mail::to($validatedData['contact_email'])
+            ->bcc('aayats@malaikaviatges.com')
+            ->send(new NewInscriptionClient($data));
 
         return $this->sendResponse(
             ['message' => 'OK'],

@@ -34,7 +34,7 @@
 
     <h2 style="margin-top: 2.3rem">HABITACIÓ</h2>
 
-    @foreach ($rooms as $room)A
+    @foreach ($rooms as $room)
         <p>{{ $room['quantity'] }} {{ $room['name'] }}</p>
     @endforeach
 
