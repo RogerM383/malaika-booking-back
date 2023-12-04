@@ -199,7 +199,7 @@ class FormController extends Controller
             ]
         ];
 
-        Mail::to($validatedData['contact_email'])->queue(new NewInscriptionClient($data));
+        Mail::to($validatedData['contact_email'])->send(new NewInscriptionClient($data));
 
         return $this->sendResponse(
             ['message' => 'OK'],
