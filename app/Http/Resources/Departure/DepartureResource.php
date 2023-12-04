@@ -46,7 +46,6 @@ class DepartureResource extends JsonResource
         // --- Calcula las habitaciones de cada tipo disponibles en el formulario --------------------------------------
         foreach ($formRoomTypes as $key => $room) {
             $rA = array_search($room['id'], array_column($roomAvailability, 'id'));
-
             if (empty($room['quantity'])) {
                 $formRoomTypes[$key]['available'] = 10000000;
             } else if (is_numeric($rA)) {
@@ -62,7 +61,7 @@ class DepartureResource extends JsonResource
             'final'                 => $this->final,
             'price'                 => $this->price,
             'booking_price'         => $this->booking_price,
-            'pax_capacity'          => $this->pax_capacity,
+            'pax_capacity'          => intval($this->pax_capacity),
             'individual_supplement' => $this->individual_supplement,
             'state'                 => $this->state->name,
             'commentary'            => $this->commentary,
@@ -72,7 +71,7 @@ class DepartureResource extends JsonResource
             'room_availability'     => $roomAvailability,
             'form_rooms'            => $formRoomTypes,
             'clients_count'         => $clients->count(),
-            'hidden'                => $this->hidden
+            'hidden'                => $this->hidden,
         ];
     }
 }
