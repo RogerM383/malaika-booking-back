@@ -188,6 +188,9 @@ class DepartureService extends ResourceService
      */
     public function updateDepartureClient($id, $client_id, $data): mixed
     {
+        Log::debug($client_id);
+        Log::debug(json_encode($data));
+
         $departure = $this->getById($id);
         // room_type_id no se actualiza en la relacion ahi se guarda lo que pidio al entrar en el viaje
         $client = $departure->clients()->updateExistingPivot($client_id, Arr::except($data, ['id', 'client_id', 'room_id', 'room_type_id']));
@@ -270,6 +273,7 @@ class DepartureService extends ResourceService
      */
     public function addClient($id, $client): Model|Room|null
     {
+        Log::debug($client);
         $departure = $this->getById($id);
         $departure->clients()->attach($client['client_id'],  Arr::except($client, ['id', 'room_id', 'client_id']));
         return $this->manageRoom($id, ...Arr::except($client, ['id', 'seat']));
@@ -312,7 +316,11 @@ class DepartureService extends ResourceService
                 $departure = $this->getById($departure_id);
 
                 // TODO: check si la capacidad sigue siendo menor que pax
-                $departure->roomTypes()->newPivotQuery()->where('room_type_id', $oldRoomTypeId)->decrement('quantity', 1);
+                $departure->roomTypes()
+                    ->newPivotQuery()
+                    ->where('room_type_id', $oldRoomTypeId)
+                    ->where('quantity', '>=', 1)
+                    ->decrement('quantity', 1);
                 $departure->roomTypes()->newPivotQuery()->where('room_type_id', $room_type_id)->increment('quantity');
 
                 // save room
@@ -344,10 +352,16 @@ class DepartureService extends ResourceService
         $departure  = $this->getById($departure_id);
         $emptyRooms = $departure->rooms()->doesntHave('clients')->get();
 
+        Log::debug(json_encode($emptyRooms));
+
         if ($emptyRooms->count() >= 1) {
             // Si hay habitaciojnes vacias las elimina
             foreach ($emptyRooms as $r)  {
-                $departure->roomTypes()->newPivotQuery()->where('room_type_id', $r->room_type_id)->decrement('quantity',1);
+                $departure->roomTypes()
+                    ->newPivotQuery()
+                    ->where('room_type_id', $r->room_type_id)
+                    ->where('quantity', '>=', 1)
+                    ->decrement('quantity',1);
                 $r->delete();
             }
 

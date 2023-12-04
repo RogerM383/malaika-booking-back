@@ -22,7 +22,7 @@ return new class extends Migration
             $table->text('observations')->nullable(true);
 
             $table->timestamps();
-            //$table->softDeletes();
+            $table->softDeletes();
 
             // Definimos restricción para que no puede haber numeros de habitacion repetidos por salida.
             //$table->unique(['departure_id', 'room_number']);
