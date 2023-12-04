@@ -47,10 +47,6 @@ class DepartureResource extends JsonResource
         foreach ($formRoomTypes as $key => $room) {
             $rA = array_search($room['id'], array_column($roomAvailability, 'id'));
 
-            Log::debug(json_encode($rA));
-            Log::debug(json_encode($room));
-            Log::debug(json_encode($roomAvailability[$rA]['quantity']));
-
             if (empty($room['quantity'])) {
                 $formRoomTypes[$key]['available'] = 10000000;
             } else if (empty($rA)) {
@@ -58,8 +54,6 @@ class DepartureResource extends JsonResource
             } else {
                 $formRoomTypes[$key]['available'] = 0;
             }
-
-            Log::debug($formRoomTypes[$key]['available']);
         }
 
         return [
