@@ -53,11 +53,13 @@ class DepartureResource extends JsonResource
 
             if (empty($room['quantity'])) {
                 $formRoomTypes[$key]['available'] = 10000000;
-            } else if ($rA) {
+            } else if ($rA !== false) {
                 $formRoomTypes[$key]['available'] = max($room['quantity'] - $roomAvailability[$rA]['quantity'], 0);
             } else {
                 $formRoomTypes[$key]['available'] = 0;
             }
+
+            Log::debug($formRoomTypes[$key]['available']);
         }
 
         return [
