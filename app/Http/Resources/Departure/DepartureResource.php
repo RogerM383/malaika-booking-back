@@ -7,6 +7,7 @@ use App\Http\Resources\RoomType\RoomTypeAvailabilityResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Facades\Log;
+use function PHPUnit\Framework\logicalOr;
 
 /**
  *TODO update data
@@ -45,6 +46,11 @@ class DepartureResource extends JsonResource
         // --- Calcula las habitaciones de cada tipo disponibles en el formulario --------------------------------------
         foreach ($formRoomTypes as $key => $room) {
             $rA = array_search($room['id'], array_column($roomAvailability, 'id'));
+
+            Log::debug(json_encode($rA));
+            Log::debug(json_encode($roomAvailability));
+            Log::debug(json_encode($formRoomTypes));
+
             if (empty($room['quantity'])) {
                 $formRoomTypes[$key]['available'] = 10000000;
             } else if ($rA) {
