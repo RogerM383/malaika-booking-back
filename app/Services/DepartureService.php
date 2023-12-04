@@ -103,14 +103,14 @@ class DepartureService extends ResourceService
         $roomTypes = $this->roomTypeService->get()->pluck('capacity', 'id');
 
         // Calcula el maximo de slots
-        $total = collect($formRooms)->map(function ($room) use ($roomTypes) {
+        /*$total = collect($formRooms)->map(function ($room) use ($roomTypes) {
             return $roomTypes->has($room['id']) ? $roomTypes[$room['id']] * $room['quantity'] : 0;
-        })->sum();
+        })->sum();*/
 
         // Check que no nos pasemos de plazas (puede haber menos xo no más)
-        if ($total > $data['pax_capacity']) {
+        /*if ($total > $data['pax_capacity']) {
             throw new DeparturePaxCapacityExceededException();
-        }
+        }*/
 
         // Obtenemos el Trip
         $trip = $this->tripService->getById($data['trip_id']);
@@ -151,13 +151,13 @@ class DepartureService extends ResourceService
             $roomTypes = $this->roomTypeService->get()->pluck('capacity', 'id');
 
             // Calcula el maximo de slots
-            $total = collect($formRooms)->map(function ($room) use ($roomTypes) {
+            /*$total = collect($formRooms)->map(function ($room) use ($roomTypes) {
                 return $roomTypes->has($room['id']) ? $roomTypes[$room['id']] * $room['quantity'] : 0;
             })->sum();
             $capacity = $data['pax_capacity'] ?? $departure->pax_capacity;
             if ($total > $capacity) {
                 throw new DeparturePaxCapacityExceededException();
-            }
+            }*/
 
             // TODO: mejorar todo esto
             // --- Pilla tipos de habitacion permitidas en el form -----------------------------------------------------
