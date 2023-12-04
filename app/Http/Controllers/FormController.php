@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Exceptions\DeparturePaxCapacityExceededException;
 use App\Exceptions\ModelNotFoundException;
 use App\Http\Resources\Trip\TripFormResource;
+use App\Mail\NewInscriptionClient;
 use App\Services\ClientService;
 use App\Services\ClientTypeService;
 use App\Services\DepartureService;
@@ -15,6 +16,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 use function PHPUnit\Framework\logicalOr;
@@ -123,49 +125,6 @@ class FormController extends Controller
             throw new DeparturePaxCapacityExceededException();
         }
 
-        /*// Get departure room types
-        $departureRoomTypes = $departure->roomTypes->mapWithKeys(function ($item, int $key) {
-                return [$item['id'] => $item['pivot']['quantity']];
-            });
-
-        // Get departure assigned room types count
-        $assignedRoomTypes = $departure->assignedRoomsCount()->mapWithKeys(function ($room, $key) {
-            return [$room['room_type_id'] => $room['quantity']];
-        });
-
-        // Get departure available room types
-        $availableRoomTypes = [];
-        foreach ($assignedRoomTypes as $key => $value) {
-            if (is_null($departureRoomTypes[$key])) {
-                $availableRoomTypes[$key] = null;
-            } else {
-                $availableRoomTypes[$key] = $departureRoomTypes[$key] - $value;
-            }
-        }*/
-
-        // Check si hay suficientes habitaciones de cada tipos solicitado
-        /*$requestedRooms = collect($validatedData['rooms'])->mapWithKeys(function ($room, $key) {
-            return [$room['room_type_id'] => $room['quantity']];
-        });*/
-
-        /*Log::debug('DEPARTURE ROOM TYPES');
-        Log::debug(json_encode($departureRoomTypes));
-        Log::debug('ASSIGNED ROOMS TYPES');
-        Log::debug(json_encode($assignedRoomTypes));
-        Log::debug('AVAILABLE ROOM TYPES');
-        Log::debug(json_encode($availableRoomTypes));
-        Log::debug('REQUESTED ROOM TYPES');
-        Log::debug(json_encode($requestedRooms));*/
-
-        /*$enoughRooms = $requestedRooms->every(function (int $value, int $key) use ($availableRoomTypes) {
-            return !isset($availableRoomTypes[$key]) || $availableRoomTypes[$key] >= $value;
-        });*/
-
-        /*if (!$enoughRooms) {
-            // TODO: Cambiar esto por un throw new RequiredRoomType o alguna historia asi
-            Log::error('Not enough rooms of required types');
-        }*/
-
         // Creamos clientes
         $clients = [];
         foreach ($request['clients'] as $client) {
@@ -183,11 +142,27 @@ class FormController extends Controller
 
         $clientsCollection = collect($clients);
 
+        $mailRooms = [];
+
         // Creamos las habitaciones
         foreach ($validatedData['rooms'] as $roomData) {
             $roomTypeId     = $roomData['room_type_id'];
             $roomQuantity   = $roomData['quantity'];
-            $capacity       = $this->roomTypeService->getById($roomTypeId)->capacity;
+            $roomType       = $this->roomTypeService->getById($roomTypeId);
+            $capacity       = $roomType->capacity;
+            $name           = $roomType->name;
+
+            $prettyNames    = [
+                'Dui'       => 'Doble individual',
+                'Doble'     => 'Doble',
+                'Twin'      => 'Doble amb dos llits',
+                'Triple'    => 'Triple'
+            ];
+
+            $mailRooms[] = [
+                'quantity' => $roomQuantity,
+                'name' => $prettyNames[$name]
+            ];
 
             for ($i = 1; $i <= $roomQuantity; $i++) {
 
@@ -211,6 +186,20 @@ class FormController extends Controller
                 $departure->roomTypes()->newPivotQuery()->where('room_type_id', $roomTypeId)->increment('quantity');
             }
         }
+
+        $data = [
+            'title'     => $departure->trip->title,
+            'clients'   => $validatedData['clients'],
+            'rooms'     => $mailRooms,
+            'contact'   => [
+                'name'      => $validatedData['contact_name'],
+                'surname'   => $validatedData['contact_surname'],
+                'phone'     => $validatedData['contact_phone'],
+                'email'     => $validatedData['contact_email'],
+            ]
+        ];
+
+        Mail::to('kirian@fruntera.com')->send(new NewInscriptionClient($data));
 
         return $this->sendResponse(
             ['message' => 'OK'],

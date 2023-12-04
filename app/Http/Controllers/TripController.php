@@ -8,12 +8,14 @@ use App\Http\Resources\Trip\TripFormResource;
 use App\Http\Resources\Trip\TripListCollection;
 use App\Http\Resources\Trip\TripListResource;
 use App\Http\Resources\Trip\TripResource;
+use App\Mail\NewInscriptionClient;
 use App\Services\TripService;
 use App\Traits\HasPagination;
 use Illuminate\Foundation\Bootstrap\LoadConfiguration;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 

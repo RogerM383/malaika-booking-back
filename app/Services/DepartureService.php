@@ -352,8 +352,6 @@ class DepartureService extends ResourceService
         $departure  = $this->getById($departure_id);
         $emptyRooms = $departure->rooms()->doesntHave('clients')->get();
 
-        Log::debug(json_encode($emptyRooms));
-
         if ($emptyRooms->count() >= 1) {
             // Si hay habitaciojnes vacias las elimina
             foreach ($emptyRooms as $r)  {

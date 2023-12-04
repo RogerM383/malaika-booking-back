@@ -84,6 +84,7 @@ class RoomService extends ResourceService
         $nextNumber = DB::table('rooms')
             ->selectRaw('MAX(room_number) + 1 AS lowest_available')
             ->where('departure_id', $departure_id)
+            ->where('deleted_at', null)
             ->whereNotExists(function ($query) {
                 $query->select(DB::raw(1))
                     ->from('rooms as t2')
