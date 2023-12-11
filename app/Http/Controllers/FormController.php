@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Exceptions\DeparturePaxCapacityExceededException;
+use App\Exceptions\DepartureTypeRoomCapacityExceededException;
 use App\Exceptions\ModelNotFoundException;
 use App\Http\Resources\Trip\TripFormResource;
 use App\Mail\NewInscriptionClient;
@@ -98,6 +99,7 @@ class FormController extends Controller
      *
      * @throws ValidationException|ModelNotFoundException
      * @throws DeparturePaxCapacityExceededException
+     * @throws DepartureTypeRoomCapacityExceededException
      */
     public function process(Request $request): JsonResponse
     {
@@ -123,6 +125,12 @@ class FormController extends Controller
 
         if (!$departure->hasEnoughSpace($clientsCount)) {
             throw new DeparturePaxCapacityExceededException();
+        }
+
+        foreach ($validatedData['rooms'] as $room) {
+            if (!$departure->hasEnoughRooms($room['room_type_id'], $room['quantity'])) {
+                throw new DepartureTypeRoomCapacityExceededException();
+            }
         }
 
         // Creamos clientes

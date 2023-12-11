@@ -402,24 +402,50 @@ class DatabaseMigrationService
                 ->groupBy('type_room')
                 ->get();
 
-            // Crea los totales de rooms assignados al departure
-            $departureRoomsTotals->each(function ($departureRoom) use ($newDeparture, $departure) {
-                // Excluye el tipo 0 que solo se aplica a cancelados y esperando
-                if ($departureRoom->type_room != 0) {
 
-                    $capacity = $departureRoom->type_room === 1 ? 1 : ($departureRoom->type_room === 2 || $departureRoom->type_room === 3 ? 2 : 3);
+
+            // Todos los posibles valores de type_room
+            $allPossibleTypeRooms = [1, 2, 3, 4];
+
+            // Crear una colección con todos los posibles valores de type_room
+            $newCollection = collect($allPossibleTypeRooms)->map(function ($typeRoom) use ($departureRoomsTotals) {
+                // Buscar la entrada correspondiente en la colección original
+                $entry = $departureRoomsTotals->firstWhere('type_room', $typeRoom);
+
+                // Devolver una nueva entrada con total a 0 si no existe
+                return collect(['type_room' => $typeRoom, 'total' => $entry ? $entry->total : 0]);
+            });
+
+            // Crea los totales de rooms assignados al departure
+            $newCollection->each(function ($departureRoom) use ($newDeparture, $departure) {
+
+                // Excluye el tipo 0 que solo se aplica a cancelados y esperando
+                if ($departureRoom['type_room'] != 0) {
+
+                    $capacity = $departureRoom['type_room'] === 1 ? 1 : ($departureRoom['type_room'] === 2 || $departureRoom['type_room'] === 3 ? 2 : 3);
 
                     // Set connection to local
                     DB::connection('mysql')
                         ->table('rel_departure_room_type')
                         ->insert([
                             'departure_id' => $newDeparture->id,
-                            'room_type_id' => $departureRoom->type_room,
-                            'quantity' => $departureRoom->total / $capacity,
+                            'room_type_id' => $departureRoom['type_room'],
+                            'quantity' => $departureRoom['total'] / $capacity,
                             'created_at' => now(),
                             'updated_at' => now(),
                         ]);
 
+                } else {
+                    // Set connection to local
+                    DB::connection('mysql')
+                        ->table('rel_departure_room_type')
+                        ->insert([
+                            'departure_id' => $newDeparture->id,
+                            'room_type_id' => $departureRoom['type_room'],
+                            'quantity' => 0,
+                            'created_at' => now(),
+                            'updated_at' => now(),
+                        ]);
                 }
             });
 

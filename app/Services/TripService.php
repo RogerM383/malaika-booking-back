@@ -117,7 +117,6 @@ class TripService extends ResourceService
      */
     public function update(int $id, array $data): Model
     {
-
         $model = $this->getById($id);
 
         if (isset($data['title']) && !isset($data['slug'])) {

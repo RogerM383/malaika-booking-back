@@ -97,6 +97,7 @@ class RoomService extends ResourceService
         if (is_null($nextNumber)) {
             $nextNumber = DB::table('rooms')
                     ->where('departure_id', $departure_id)
+                    ->where('deleted_at', null)
                     ->max('room_number') + 1;
         }
 

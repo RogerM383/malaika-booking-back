@@ -185,6 +185,40 @@ class Departure extends Model
     }
 
     /**
+     * Check if departure available slots is equal or more than required slots
+     *
+     * @param $roomTypeId
+     * @param $required
+     * @return bool
+     */
+    public function hasEnoughRooms($roomTypeId, $required): bool
+    {
+        return $this->availableFormSlots($roomTypeId) >= $required;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function availableFormSlots($roomTypeId): mixed
+    {
+        $ocupied = $this->rooms()
+            ->where('room_type_id', '=', $roomTypeId)
+            ->count();
+
+        $roomType = $this->formRoomTypes()
+            ->addSelect('form_departure_room_type.quantity')
+            ->where('room_type_id', '=', $roomTypeId)
+            ->first();
+
+        $max = $roomType ? max($roomType->quantity, 0) : 0;
+
+        Log::debug($ocupied);
+        Log::debug($max);
+
+        return $max - $ocupied;
+    }
+
+    /**
      * @return BelongsToMany
      */
     /*public function clientSortRoom(): BelongsToMany

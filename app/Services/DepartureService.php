@@ -337,6 +337,9 @@ class DepartureService extends ResourceService
             // Si state es waiting o cancelado, nos aseguramos de que no esten en una habitacion
             // si lo esta la eliminamos
             $client = $this->clientService->getById($client_id);
+
+            Log::debug('DETACHING '.$room_id);
+
             $client->rooms()->detach($room_id);
 
             $room = $this->roomService->getById($room_id);
