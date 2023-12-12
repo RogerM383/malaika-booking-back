@@ -128,6 +128,45 @@ class FormController extends Controller
         $departure      = $this->departureService->getById($departureId);
 
         if (!$departure->hasEnoughSpace($clientsCount)) {
+
+            // Creamos clientes
+            $clients = [];
+            foreach ($request['clients'] as $client) {
+                $data = [
+                    'name'      => $client['name'],
+                    'surname'   => $client['surname'],
+                    'dni'       => $client['dni'],
+                    'MNAC'      => $client['MNAC'] ?? null
+                ];
+                if (!empty($client['MNAC'])) {
+                    $data['client_type_id'] = 2;
+                }
+                $clients[] = $this->clientService->create($data);
+            }
+
+            $clientsCollection = collect($clients);
+
+            // Creamos las habitaciones
+            foreach ($validatedData['rooms'] as $roomData) {
+                $roomTypeId     = $roomData['room_type_id'];
+                $roomQuantity   = $roomData['quantity'];
+                $roomType       = $this->roomTypeService->getById($roomTypeId);
+                $capacity       = $roomType->capacity;
+                $name           = $roomType->name;
+
+                for ($i = 1; $i <= $roomQuantity; $i++) {
+
+                    $assignedClients = $clientsCollection->splice(0, $capacity);
+
+                    // Assignamos todos los clientes a la salida
+                    $departure->clients()->attach(
+                        $assignedClients->mapWithKeys(function ($client, $key) use ($roomTypeId) {
+                            return [$client['id'] => ['room_type_id' => $roomTypeId, 'state' => 6]];
+                        })
+                    );
+                }
+            }
+
             return $this->sendError(
                 'En espera'
             );
@@ -136,6 +175,48 @@ class FormController extends Controller
 
         foreach ($validatedData['rooms'] as $room) {
             if (!$departure->hasEnoughRooms($room['room_type_id'], $room['quantity'])) {
+
+                // Creamos clientes
+                $clients = [];
+                foreach ($request['clients'] as $client) {
+                    $data = [
+                        'name'      => $client['name'],
+                        'surname'   => $client['surname'],
+                        'dni'       => $client['dni'],
+                        'MNAC'      => $client['MNAC'] ?? null
+                    ];
+                    if (!empty($client['MNAC'])) {
+                        $data['client_type_id'] = 2;
+                    }
+                    $clients[] = $this->clientService->create($data);
+                }
+
+                $clientsCollection = collect($clients);
+
+
+                $clientsCollection = collect($clients);
+
+                // Creamos las habitaciones
+                foreach ($validatedData['rooms'] as $roomData) {
+                    $roomTypeId     = $roomData['room_type_id'];
+                    $roomQuantity   = $roomData['quantity'];
+                    $roomType       = $this->roomTypeService->getById($roomTypeId);
+                    $capacity       = $roomType->capacity;
+                    $name           = $roomType->name;
+
+                    for ($i = 1; $i <= $roomQuantity; $i++) {
+
+                        $assignedClients = $clientsCollection->splice(0, $capacity);
+
+                        // Assignamos todos los clientes a la salida
+                        $departure->clients()->attach(
+                            $assignedClients->mapWithKeys(function ($client, $key) use ($roomTypeId) {
+                                return [$client['id'] => ['room_type_id' => $roomTypeId, 'state' => 6]];
+                            })
+                        );
+                    }
+                }
+
                 return $this->sendError(
                     'En espera'
                 );
