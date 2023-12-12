@@ -210,10 +210,7 @@ class Departure extends Model
             ->where('room_type_id', '=', $roomTypeId)
             ->first();
 
-        $max = $roomType ? max($roomType->quantity, 0) : 0;
-
-        Log::debug($ocupied);
-        Log::debug($max);
+        $max = $roomType && $roomType->quantity >= 1 ? max($roomType->quantity, 0) : 10000000;
 
         return $max - $ocupied;
     }
