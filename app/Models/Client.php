@@ -32,7 +32,9 @@ class Client extends Model
         'dni',
         'address',
         'dni_expiration',
-        'place_birth'
+        'place_birth',
+        'observations',
+        'seat'
     ];
 
     /**

@@ -13,9 +13,11 @@ use App\Services\DepartureService;
 use App\Services\RoomService;
 use App\Services\RoomTypeService;
 use App\Services\TripService;
+use App\Traits\HandleDates;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
@@ -24,6 +26,8 @@ use function PHPUnit\Framework\logicalOr;
 
 class FormController extends Controller
 {
+    use HandleDates;
+
     private ClientService $clientService;
     private ClientTypeService $clientTypeService;
     private DepartureService $departureService;
@@ -124,12 +128,18 @@ class FormController extends Controller
         $departure      = $this->departureService->getById($departureId);
 
         if (!$departure->hasEnoughSpace($clientsCount)) {
-            throw new DeparturePaxCapacityExceededException();
+            return $this->sendError(
+                'En espera'
+            );
+            //throw new DeparturePaxCapacityExceededException();
         }
 
         foreach ($validatedData['rooms'] as $room) {
             if (!$departure->hasEnoughRooms($room['room_type_id'], $room['quantity'])) {
-                throw new DepartureTypeRoomCapacityExceededException();
+                return $this->sendError(
+                    'En espera'
+                );
+                //throw new DepartureTypeRoomCapacityExceededException();
             }
         }
 
@@ -195,8 +205,12 @@ class FormController extends Controller
             }
         }
 
+        $count = $departure->rooms->groupBy('created_at')->count();
+        $number = $departure->expedient . str_pad($count, 3, '0', STR_PAD_LEFT);
+
         $data = [
             'title'     => $departure->trip->title,
+            'booking_price' => $departure->booking_price,
             'clients'   => $validatedData['clients'],
             'rooms'     => $mailRooms,
             'contact'   => [
@@ -205,11 +219,14 @@ class FormController extends Controller
                 'phone'     => $validatedData['contact_phone'],
                 'email'     => $validatedData['contact_email'],
             ],
-            //'dates'         => $departure->start . ' ' . $departure->final
+            'pdf' => $departure->trip->pdf,
+            'number' => $number,
+            'dates'  => $this->getPeriod($departure->start, $departure->final)
         ];
 
         Mail::to($validatedData['contact_email'])
-            ->bcc('aayats@malaikaviatges.com')
+            ->bcc('kirian@fruntera.com')
+            //->bcc('aayats@malaikaviatges.com')
             ->send(new NewInscriptionClient($data));
 
         return $this->sendResponse(

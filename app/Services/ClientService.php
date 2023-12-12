@@ -159,6 +159,6 @@ class ClientService extends ResourceService
 
     public function getClientDepartures(int $id)
     {
-        return $this->getById($id)->departures()->get();
+        return $this->getById($id)->departures()->orderBy('departures.start', 'desc')->get();
     }
 }

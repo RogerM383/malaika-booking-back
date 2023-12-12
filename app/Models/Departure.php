@@ -70,7 +70,7 @@ class Departure extends Model
             ->using(ClientDepartures::class)
             ->withPivot(
                 'state',
-                'seat',
+                //'seat',
                 'observations')
             ->orderBy('rel_client_departure.updated_at', 'asc')
             ->withTimestamps();
@@ -85,7 +85,7 @@ class Departure extends Model
             //->using(ClientDepartures::class)
             ->withPivot(
                 'state',
-                'seat',
+                //'seat',
                 'observations')
             //->orderBy('rel_client_departure.updated_at', 'asc')
             ->wherePivot('state', '<=', 4)
@@ -101,7 +101,7 @@ class Departure extends Model
             //->using(ClientDepartures::class)
             ->withPivot(
                 'state',
-                'seat',
+                //'seat',
                 'observations')
             ->wherePivot('state', '=', 6)
             ->withTimestamps();
@@ -116,7 +116,7 @@ class Departure extends Model
             //->using(ClientDepartures::class)
             ->withPivot(
                 'state',
-                'seat',
+                //'seat',
                 'observations')
             ->wherePivot('state', '=', 5)
             ->withTimestamps();

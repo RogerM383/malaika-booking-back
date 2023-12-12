@@ -16,7 +16,7 @@ return new class extends Migration
             $table->foreignId('departure_id')->constrained('departures');
             $table->foreignId('client_id')->constrained('clients');
 
-            $table->string('seat')->nullable(true);
+            //$table->string('seat')->nullable(true);
             $table->unsignedTinyInteger('state')->default(1);
             $table->text('observations')->nullable(true);
 

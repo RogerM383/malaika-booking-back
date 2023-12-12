@@ -24,7 +24,7 @@ class DatabaseMigrationService
 
     private RoomService $roomService;
 
-    #[Pure] public function __construct(RoomService $roomService)
+    #[Pure] public function __construct(RoomService $roomService, protected DepartureService $departureService)
     {
         $this->roomService = $roomService;
     }
@@ -182,6 +182,8 @@ class DatabaseMigrationService
                 $newClient->frequent_flyer = $traveler->frequency_fly;
                 $newClient->member_number = $traveler->member_number;
                 $newClient->notes = $traveler->notes;
+                $newClient->observations = $traveler->observations;
+                $newClient->seat = $traveler->seat;
                 $newClient->language_id = $languagesValues[$traveler->lang] ?? 1; // Esta en texto hay que mirar como pasarlo
                 $newClient->created_at = $client->created_at;
                 $newClient->updated_at = $client->updated_at;
@@ -209,6 +211,8 @@ class DatabaseMigrationService
                 $newClient->frequent_flyer = $traveler->frequency_fly;
                 $newClient->member_number = $traveler->member_number;
                 $newClient->notes = $traveler->notes;
+                $newClient->observations = $traveler->observations;
+                $newClient->seat = $traveler->seat;
                 $newClient->language_id = $languagesValues[$traveler->lang] ?? 1; // Esta en texto hay que mirar como pasarlo
                 $newClient->created_at = $client->created_at;
                 $newClient->updated_at = $client->updated_at;
@@ -487,9 +491,15 @@ class DatabaseMigrationService
                     $newRoom->updated_at = $departureRoom->updated_at;
                     //$newRoom->deleted_at = null;
                     $newRoom->save();
+
+                    // Count room types
+                    $dep = $this->departureService->getById($newDeparture->id);
+                    $dep->roomTypes()->newPivotQuery()->where('room_type_id', $newRoom->room_type_id)->increment('quantity');
                 } else {
                     $newRoom = $existingRoom;
                 }
+
+
             }
 
             $client = Client::find($departureRoom->client_id);
@@ -523,9 +533,9 @@ class DatabaseMigrationService
                     $newClientDeparture = ClientDepartures::make([]);
                     $newClientDeparture->departure_id = $departureRoom->departure_id;
                     $newClientDeparture->client_id = $departureRoom->client_id;
-                    $newClientDeparture->seat = $traveler->seat;
+                    //$newClientDeparture->seat = $traveler->seat;
                     $newClientDeparture->state = $departureRoom->state + 1;
-                    $newClientDeparture->observations = $traveler->observations;
+                    $newClientDeparture->observations = $departureRoom->observations;//$traveler->observations;
                     // Si type_room es 0 estan cancedlats
                     $newClientDeparture->room_type_id = $departureRoom->type_room !== 0 ? $departureRoom->type_room : 1;
                     $newClientDeparture->created_at = $traveler->created_at;

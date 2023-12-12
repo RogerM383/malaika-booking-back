@@ -68,7 +68,7 @@ class DepartureService extends ResourceService
         }
 
         if ($this->isPaginated($per_page, $page)) {
-            return $query->orderBy('id', 'desc')->paginate(
+            return $query->orderBy('departures.start', 'desc')->paginate(
                 $per_page ?? $this->defaultPerPage,
                 ['*'],
                 'trips',
@@ -188,9 +188,6 @@ class DepartureService extends ResourceService
      */
     public function updateDepartureClient($id, $client_id, $data): mixed
     {
-        Log::debug($client_id);
-        Log::debug(json_encode($data));
-
         $departure = $this->getById($id);
         // room_type_id no se actualiza en la relacion ahi se guarda lo que pidio al entrar en el viaje
         $client = $departure->clients()->updateExistingPivot($client_id, Arr::except($data, ['id', 'client_id', 'room_id', 'room_type_id']));
@@ -273,7 +270,6 @@ class DepartureService extends ResourceService
      */
     public function addClient($id, $client): Model|Room|null
     {
-        Log::debug($client);
         $departure = $this->getById($id);
         $departure->clients()->attach($client['client_id'],  Arr::except($client, ['id', 'room_id', 'client_id']));
         return $this->manageRoom($id, ...Arr::except($client, ['id', 'seat']));

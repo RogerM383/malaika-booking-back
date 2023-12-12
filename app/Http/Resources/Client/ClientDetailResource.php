@@ -5,6 +5,7 @@ namespace App\Http\Resources\Client;
 use App\Http\Resources\ClientType\ClientTypeListResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\Log;
 
 /**
  *
@@ -63,7 +64,9 @@ class ClientDetailResource extends JsonResource
             'exp'               => $this->when(!empty($this->passport), fn () => $this->passport->exp),
             'nationality'       => $this->when(!empty($this->passport), fn () => $this->passport->nationality),
 
-
+            //'seat'              => $this->when(!empty($this->departures), fn () => $this->departures[0]->pivot->seat),
+            'observations'      => $this->observations,
+            'seat'              => $this->seat
         ];
     }
 }

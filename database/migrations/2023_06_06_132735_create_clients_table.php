@@ -35,6 +35,9 @@ return new class extends Migration
 
             $table->foreignId('language_id')->default(1)->constrained('languages');
 
+            $table->text('observations')->nullable(true)->default(null);
+            $table->string('seat')->nullable(true);
+
             $table->timestamps();
             $table->softDeletes();
         });

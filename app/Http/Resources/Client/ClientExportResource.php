@@ -58,7 +58,7 @@ class ClientExportResource extends JsonResource
             'type_room'         => $this->when(!empty($room), fn () => $room->roomType->name),
             'phone'             => $this->phone,
             'email'             => $this->email,
-            'seat'              => $this->pivot->seat,
+            //'seat'              => $this->pivot->seat,
             'rm_observations'   => $this->when(!empty($room), fn () => $room->observations), //$room->observations,
             'intolerances'      => $this->intolerances,
             'dni'               => $this->dni,

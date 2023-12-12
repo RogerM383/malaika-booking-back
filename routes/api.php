@@ -12,6 +12,7 @@ use App\Http\Controllers\LanguageController;
 use App\Http\Controllers\PassportController;
 use App\Http\Controllers\RoomTypeController;
 use App\Http\Controllers\TripController;
+use App\Mail\NewInscriptionClient;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 

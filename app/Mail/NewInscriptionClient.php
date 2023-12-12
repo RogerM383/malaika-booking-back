@@ -42,9 +42,13 @@ class NewInscriptionClient extends Mailable
             view: 'emails.new_inscription_client',
             with: [
                 'title'     => $this->data['title'],
+                'pdf'       => $this->data['pdf'],
+                'number'    => $this->data['number'],
+                'booking_price' => $this->data['booking_price'],
                 'clients'   => $this->data['clients'],
                 'rooms'     => $this->data['rooms'],
-                'contact'   => $this->data['contact']
+                'contact'   => $this->data['contact'],
+                'dates'     => $this->data['dates']
             ]
         );
     }

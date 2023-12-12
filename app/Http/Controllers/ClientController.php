@@ -275,6 +275,8 @@ class ClientController extends Controller
             'frequent_flyer'    => 'string',
             'member_number'     => 'string',
             'notes'             => 'string',
+            'observations'      => 'string',
+            'seat'              => 'string'
         ])->validate();
 
         return $this->sendResponse(
@@ -339,7 +341,8 @@ class ClientController extends Controller
             'frequent_flyer'    => 'string',
             'member_number'     => 'string',
             'notes'             => 'string',
-
+            'observations'      => 'string',
+            'seat'              => 'string'
         ])->validate();
 
         return $this->sendResponse(

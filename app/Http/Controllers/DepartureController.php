@@ -366,7 +366,7 @@ class DepartureController extends Controller
         $validatedData = Validator::make($params, [
             'id'            => 'required|integer|min:1',
             'client_id'     => 'required|integer|min:1',
-            'seat'          => 'nullable|string|min:1',
+            //'seat'          => 'nullable|string|min:1',
             'state'         => 'nullable|integer|min:1',
             'observations'  => 'nullable|string|min:1',
             'room_id'       => 'nullable|integer|min:1',
