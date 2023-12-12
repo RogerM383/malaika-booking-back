@@ -7,6 +7,7 @@ use App\Exceptions\DepartureTypeRoomCapacityExceededException;
 use App\Exceptions\ModelNotFoundException;
 use App\Http\Resources\Trip\TripFormResource;
 use App\Mail\NewInscriptionClient;
+use App\Mail\NewInscriptionEsperaClient;
 use App\Services\ClientService;
 use App\Services\ClientTypeService;
 use App\Services\DepartureService;
@@ -167,6 +168,11 @@ class FormController extends Controller
                 }
             }
 
+            Mail::to($validatedData['contact_email'])
+                ->bcc('kirian@fruntera.com')
+                //->bcc('aayats@malaikaviatges.com')
+                ->send(new NewInscriptionEsperaClient());
+
             return $this->sendError(
                 'En espera'
             );
@@ -216,6 +222,11 @@ class FormController extends Controller
                         );
                     }
                 }
+
+                Mail::to($validatedData['contact_email'])
+                    ->bcc('kirian@fruntera.com')
+                    //->bcc('aayats@malaikaviatges.com')
+                    ->send(new NewInscriptionEsperaClient());
 
                 return $this->sendError(
                     'En espera'
@@ -306,8 +317,8 @@ class FormController extends Controller
         ];
 
         Mail::to($validatedData['contact_email'])
-            ->bcc('kirian@fruntera.com')
-            //->bcc('aayats@malaikaviatges.com')
+            //->bcc('kirian@fruntera.com')
+            ->bcc(['aayats@malaikaviatges.com', 'kirian@fruntera.com', 'roger@fruntera.com'])
             ->send(new NewInscriptionClient($data));
 
         return $this->sendResponse(
