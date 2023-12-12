@@ -97,10 +97,6 @@ class DepartureController extends Controller
             $data = DepartureResource::collection($this->service->get(...$validatedData));
         }
 
-
-        Log::debug(json_encode($data));
-
-
         return $this->sendResponse($data, 'Departures retrieved successfully');
     }
 

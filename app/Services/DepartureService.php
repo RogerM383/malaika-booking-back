@@ -68,7 +68,7 @@ class DepartureService extends ResourceService
         }
 
         if ($this->isPaginated($per_page, $page)) {
-            return $query->orderBy('departures.start', 'desc')->paginate(
+            return $query->orderBy('departures.start', 'asc')->paginate(
                 $per_page ?? $this->defaultPerPage,
                 ['*'],
                 'trips',
