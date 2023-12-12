@@ -199,9 +199,6 @@ class FormController extends Controller
 
                 $clientsCollection = collect($clients);
 
-
-                $clientsCollection = collect($clients);
-
                 // Creamos las habitaciones
                 foreach ($validatedData['rooms'] as $roomData) {
                     $roomTypeId     = $roomData['room_type_id'];
@@ -318,7 +315,12 @@ class FormController extends Controller
 
         Mail::to($validatedData['contact_email'])
             //->bcc('kirian@fruntera.com')
-            ->bcc(['aayats@malaikaviatges.com', 'kirian@fruntera.com', 'roger@fruntera.com'])
+            ->bcc('aayats@malaikaviatges.com')
+            ->send(new NewInscriptionClient($data));
+
+        Mail::to('kirian@fruntera.com')
+            //->bcc('kirian@fruntera.com')
+            ->bcc('roger@fruntera.com')
             ->send(new NewInscriptionClient($data));
 
         return $this->sendResponse(
