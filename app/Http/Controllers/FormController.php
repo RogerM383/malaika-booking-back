@@ -370,4 +370,46 @@ class FormController extends Controller
             'Trip data retrieved successfully'
         );
     }
+
+
+    /**
+     * @OA\Get(
+     *      path="/api/forms/mail",
+     *      tags={"Forms"},
+     *      summary="Retorna los datos del formulario de un viaje por slug",
+     *      security={{"bearer_token":{}}},
+     *      description="Retorna los datos del formulario de un viaje por slug",
+     *      operationId="mailer",
+     *      @OA\Response(
+     *          response="200",
+     *          description="Trip data retrived successfully",
+     *           @OA\JsonContent(
+     *              type="object",
+     *              @OA\Property(
+     *                  property="data",
+     *                  type="object",
+     *                  ref="#/components/schemas/TripFormResource"
+     *              )
+     *          )
+     *      )
+     *  )
+     * @throws ValidationException|ModelNotFoundException
+     */
+    public function mail(Request $request): JsonResponse
+    {
+        Mail::to('kirian@fruntera.com')
+            //->bcc('kirian@fruntera.com')
+            ->bcc('roger@fruntera.com')
+            ->send(new NewInscriptionEsperaClient());
+
+        Mail::to('kgg.karts@gmail.com')
+            //->bcc('kirian@fruntera.com')
+            ->bcc('roger@fruntera.com')
+            ->send(new NewInscriptionEsperaClient());
+
+        return $this->sendResponse(
+            ['message' => 'OK'],
+            'Trip data retrieved successfully'
+        );
+    }
 }
