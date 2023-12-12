@@ -868,6 +868,10 @@
                                         "type": "integer",
                                         "example": "55688"
                                     },
+                                    "hidden": {
+                                        "type": "boolean",
+                                        "example": "0"
+                                    },
                                     "taxes": {
                                         "type": "numeric",
                                         "example": "157.65"
@@ -1467,6 +1471,38 @@
                         }
                     }
                 ],
+                "responses": {
+                    "200": {
+                        "description": "Trip data retrived successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/TripFormResource"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
+        },
+        "/api/forms/mail": {
+            "get": {
+                "tags": [
+                    "Forms"
+                ],
+                "summary": "Retorna los datos del formulario de un viaje por slug",
+                "description": "Retorna los datos del formulario de un viaje por slug",
+                "operationId": "mailer",
                 "responses": {
                     "200": {
                         "description": "Trip data retrived successfully",
@@ -2458,6 +2494,43 @@
                 "type": "object",
                 "xml": {
                     "name": "ClientListResource"
+                }
+            },
+            "DepartureClientListResource": {
+                "required": [
+                    "id"
+                ],
+                "properties": {
+                    "id": {
+                        "description": "TODO update data",
+                        "type": "integer",
+                        "readOnly": "true",
+                        "example": "1"
+                    },
+                    "title": {
+                        "description": "Trip title",
+                        "type": "string",
+                        "example": "Antartida desde el mar"
+                    },
+                    "description": {
+                        "description": "Trip description",
+                        "type": "string",
+                        "example": "Es un viaje muy chulo"
+                    },
+                    "commentary": {
+                        "description": "Trip commentary",
+                        "type": "string",
+                        "example": "Especial para ciegos"
+                    },
+                    "state": {
+                        "description": "Trip state",
+                        "type": "string",
+                        "example": "OPEN"
+                    }
+                },
+                "type": "object",
+                "xml": {
+                    "name": "TripResource"
                 }
             },
             "DepartureDetailsResource": {
