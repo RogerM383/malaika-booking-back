@@ -73,7 +73,7 @@ class Client extends Model
                 'state',
                 /*'number_room',*/
                 'room_type_id',
-                'seat',
+                //'seat',
                 'observations')
                 //'room_observations')
             //->orderBy('rel_client_departure.number_room')
