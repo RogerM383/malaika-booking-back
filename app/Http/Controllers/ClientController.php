@@ -261,22 +261,22 @@ class ClientController extends Controller
     public function create(Request $request): JsonResponse
     {
         $validatedData = Validator::make($request->only($this->service->getFillable()), [
-            'client_type_id'    => 'required|integer|min:1',
-            'language_id'       => 'required|integer|min:1',
+            'client_type_id'    => 'nullable|integer|min:1',
+            'language_id'       => 'nullable|integer|min:1',
             'name'              => 'required|string',
-            'surname'           => 'string',
-            'phone'             => 'string',
-            'email'             => 'string|email',
-            'dni'               => 'string',
-            'address'           => 'string',
-            'dni_expiration'    => 'string',
-            'place_birth'       => 'string',
-            'intolerances'      => 'string',
-            'frequent_flyer'    => 'string',
-            'member_number'     => 'string',
-            'notes'             => 'string',
-            'observations'      => 'string',
-            'seat'              => 'string'
+            'surname'           => 'nullable|string',
+            'phone'             => 'nullable|string',
+            'email'             => 'nullable|string|email',
+            'dni'               => 'nullable|string',
+            'address'           => 'nullable|string',
+            'dni_expiration'    => 'nullable|string',
+            'place_birth'       => 'nullable|string',
+            'intolerances'      => 'nullable|string',
+            'frequent_flyer'    => 'nullable|string',
+            'member_number'     => 'nullable|string',
+            'notes'             => 'nullable|string',
+            'observations'      => 'nullable|string',
+            'seat'              => 'nullable|string'
         ])->validate();
 
         return $this->sendResponse(
@@ -327,22 +327,22 @@ class ClientController extends Controller
         $params = array_merge($request->only($this->service->getFillable()), ['id' => $id]);
 
         $validatedData = Validator::make($params, [
-            'client_type_id'    => 'required|integer|min:1',
-            'language_id'       => 'required|integer|min:1',
+            'client_type_id'    => 'nullable|integer|min:1',
+            'language_id'       => 'nullable|integer|min:1',
             'name'              => 'required|string',
-            'surname'           => 'string',
-            'phone'             => 'string',
-            'email'             => 'string|email',
-            'dni'               => 'string',
-            'address'           => 'string',
-            'dni_expiration'    => 'string',
-            'place_birth'       => 'string',
-            'intolerances'      => 'string',
-            'frequent_flyer'    => 'string',
-            'member_number'     => 'string',
-            'notes'             => 'string',
-            'observations'      => 'string',
-            'seat'              => 'string'
+            'surname'           => 'nullable|string',
+            'phone'             => 'nullable|string',
+            'email'             => 'nullable|string|email',
+            'dni'               => 'nullable|string',
+            'address'           => 'nullable|string',
+            'dni_expiration'    => 'nullable|string',
+            'place_birth'       => 'nullable|string',
+            'intolerances'      => 'nullable|string',
+            'frequent_flyer'    => 'nullable|string',
+            'member_number'     => 'nullable|string',
+            'notes'             => 'nullable|string',
+            'observations'      => 'nullable|string',
+            'seat'              => 'nullable|string'
         ])->validate();
 
         return $this->sendResponse(
