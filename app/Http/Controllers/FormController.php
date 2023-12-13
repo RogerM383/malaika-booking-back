@@ -7,6 +7,7 @@ use App\Exceptions\DepartureTypeRoomCapacityExceededException;
 use App\Exceptions\ModelNotFoundException;
 use App\Http\Resources\Trip\TripFormResource;
 use App\Mail\NewInscriptionClient;
+use App\Mail\NewInscriptionEsperaAdmin;
 use App\Mail\NewInscriptionEsperaClient;
 use App\Services\ClientService;
 use App\Services\ClientTypeService;
@@ -168,6 +169,20 @@ class FormController extends Controller
                 }
             }
 
+            $data = [
+                'contact'   => [
+                    'name'      => $validatedData['contact_name'],
+                    'surname'   => $validatedData['contact_surname'],
+                    'phone'     => $validatedData['contact_phone'],
+                    'email'     => $validatedData['contact_email'],
+                ]
+            ];
+
+            Mail::to('aayats@malaikaviatges.com')
+                ->bcc('kirian@fruntera.com')
+                //->bcc('aayats@malaikaviatges.com')
+                ->send(new NewInscriptionEsperaAdmin($data));
+
             Mail::to($validatedData['contact_email'])
                 ->bcc('kirian@fruntera.com')
                 //->bcc('aayats@malaikaviatges.com')
@@ -219,6 +234,20 @@ class FormController extends Controller
                         );
                     }
                 }
+
+                $data = [
+                    'contact'   => [
+                        'name'      => $validatedData['contact_name'],
+                        'surname'   => $validatedData['contact_surname'],
+                        'phone'     => $validatedData['contact_phone'],
+                        'email'     => $validatedData['contact_email'],
+                    ]
+                ];
+
+                Mail::to('aayats@malaikaviatges.com')
+                    ->bcc('kirian@fruntera.com')
+                    //->bcc('aayats@malaikaviatges.com')
+                    ->send(new NewInscriptionEsperaAdmin($data));
 
                 Mail::to($validatedData['contact_email'])
                     ->bcc('kirian@fruntera.com')
