@@ -5,6 +5,7 @@ namespace App\Http\Resources\Client;
 use App\Http\Resources\ClientType\ClientTypeListResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\Log;
 
 /**
  *
@@ -58,7 +59,7 @@ class ClientExportResource extends JsonResource
             'type_room'         => $this->when(!empty($room), fn () => $room->roomType->name),
             'phone'             => $this->phone,
             'email'             => $this->email,
-            //'seat'              => $this->pivot->seat,
+            'seat'              => $this->seat,
             'rm_observations'   => $this->when(!empty($room), fn () => $room->observations), //$room->observations,
             'intolerances'      => $this->intolerances,
             'dni'               => $this->dni,
@@ -70,7 +71,7 @@ class ClientExportResource extends JsonResource
             'place_birth'       => $this->place_birth,
             'birth'             => $this->when(!empty($this->passport), fn () => $this->passport->birth),
             'nationality'       => $this->when(!empty($this->passport), fn () => $this->passport->nationality),
-            'dp_observations'   => $this->pivot->observations,
+            'dp_observations'   => $this->observations,
         ];
     }
 }

@@ -743,6 +743,39 @@
                 ]
             }
         },
+        "/api/db/calculate": {
+            "get": {
+                "tags": [
+                    "Database"
+                ],
+                "summary": "Calculate rooms",
+                "description": "Calculate rooms",
+                "operationId": "roomCalc",
+                "responses": {
+                    "200": {
+                        "description": "DB migrated successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {}
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
+        },
         "/api/departures": {
             "get": {
                 "tags": [

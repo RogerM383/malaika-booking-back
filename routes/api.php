@@ -95,6 +95,7 @@ Route::prefix('db')->group(function () {
     Route::get('/4', [DBMigrationController::class, 'migrate4']);
     Route::get('/5', [DBMigrationController::class, 'migrate5']);
     Route::get('/6', [DBMigrationController::class, 'migrate6']);
+    Route::get('/calculate', [DBMigrationController::class, 'calc']);
 });
 
 Route::prefix('exports')->group(function () {

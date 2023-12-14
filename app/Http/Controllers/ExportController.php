@@ -72,6 +72,8 @@ class ExportController extends Controller
             'Departure created successfully'
         );*/
 
-        return Excel::download(new DeparturesExport2(3), 'Rooming-'.$expedient.'.xlsx');
+        //Log::debug(json_encode($departure));
+
+        return Excel::download(new DeparturesExport2($departure->id), 'Rooming-'.$expedient.'.xlsx');
     }
 }

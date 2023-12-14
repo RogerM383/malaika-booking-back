@@ -5,8 +5,10 @@ namespace App\Exports;
 
 use App\Http\Resources\Departure\DepartureExportResource;
 use App\Models\Departure;
+use GuzzleHttp\Psr7\LazyOpenStream;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Log;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\Exportable;
 use Maatwebsite\Excel\Concerns\FromArray;
@@ -27,6 +29,7 @@ use \Maatwebsite\Excel\Sheet;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 
 use Maatwebsite\Excel\Concerns\RegistersEventListeners;
+use function Psy\debug;
 
 
 class DeparturesExport2 implements WithMapping, FromCollection, WithHeadings, WithTitle, WithEvents, ShouldAutoSize, WithColumnFormatting
@@ -148,14 +151,17 @@ class DeparturesExport2 implements WithMapping, FromCollection, WithHeadings, Wi
             return $value->room_number;
         }));*/
 
-        $departure = new DepartureExportResource(Departure::find($this->departure)->first());
+        $departure = new DepartureExportResource(Departure::find($this->departure));
         $departure = json_decode($departure->toJson());
+
+        //Log:debug($departure);
 
         $active = $departure->active;
         $waiting = $departure->waiting;
 
 
-        $value = collect($active);
+        $value = collect($active)->sortBy('room_number')->values();
+
 
         $value->add($empty);
         $value->add($empty);
@@ -171,19 +177,25 @@ class DeparturesExport2 implements WithMapping, FromCollection, WithHeadings, Wi
 
         // Indices donde debemos insertar una fila en blanco
         foreach ($value as $key => $departure) {
+
             if (isset($departure->room_number)) {
-                if ($comparacion <= $departure->room_number) {
-                    $comparacion = $comparacion + 1;
-                    array_push($indices, $key);
+                if ($departure->room_number > $comparacion) {
+                    $value->splice($key + $contador, 0, [$empty]);
+                    $comparacion = $departure->room_number;
+                    $contador++;
                 }
+                //if ($comparacion <= $departure->room_number) {
+                //    $comparacion = $comparacion + 1;
+                //    //array_push($indices, $key + 1);
+                //}
             }
         }
 
         // insertamos la fila en blacno
-        foreach ($indices as $ind) {
-            $value->splice($ind + $contador, 0, [$empty]);
-            $contador = $contador + 1;
-        }
+        //foreach ($indices as $ind) {
+        //    $value->splice($ind + $contador, 0, [$empty]);
+        //    $contador = $contador + 1;
+        //}
 
         return $value;
     }
@@ -275,7 +287,7 @@ class DeparturesExport2 implements WithMapping, FromCollection, WithHeadings, Wi
 
     public function headings(): array
     {
-        $departure = new DepartureExportResource(Departure::find($this->departure)->first());
+        $departure = new DepartureExportResource(Departure::find($this->departure));
         $departure = json_decode($departure->toJson());
 
         $types = $departure->room_types;

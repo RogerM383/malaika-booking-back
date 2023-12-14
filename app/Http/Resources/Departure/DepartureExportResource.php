@@ -6,6 +6,7 @@ use App\Http\Resources\Client\ClientExportResource;
 use App\Http\Resources\RoomType\RoomTypeAvailabilityResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\Log;
 
 /**
  *TODO update data
@@ -32,9 +33,15 @@ class DepartureExportResource extends JsonResource
      */
     public function toArray($request): array
     {
-        $clients = ClientExportResource::collection($this->activeClients()->with(['rooms' => function ($query) {
+        $mierder = $this->activeClients()->with(['rooms' => function ($query) {
             return $query->where('departure_id', $this->id);
-        }])->get());
+        }])->get();
+
+        Log::debug(json_encode($mierder));
+
+        $clients = ClientExportResource::collection(($this->activeClients()->with(['rooms' => function ($query) {
+            return $query->where('departure_id', $this->id);
+        }])->get()));
 
         $waiting = ClientExportResource::collection($this->waitingClients);
 
