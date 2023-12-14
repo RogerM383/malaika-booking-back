@@ -37,11 +37,17 @@ class ClientService extends ResourceService
      */
     public function create(array $data): mixed
     {
-        $data['updated_at'] = null;
-        $client =  $this->model->withTrashed()->updateOrCreate(
-            ['dni' => $data['dni']],
-            $data
-        );
+        $data['deleted_at'] = null;
+
+        if (isset($data['dni']) && !empty($data['dni'])) {
+            $client =  $this->model->withTrashed()->updateOrCreate(
+                ['dni' => $data['dni']],
+                $data
+            );
+        } else {
+            $client =  $this->model->create($data);
+        }
+
         return $client;
     }
 
