@@ -8,6 +8,7 @@ use App\Models\Departure;
 use App\Models\Passport;
 use App\Models\Role;
 use App\Models\Room;
+use App\Models\RoomType;
 use App\Models\Trip;
 use App\Models\User;
 use App\Traits\Slugeable;
@@ -24,7 +25,9 @@ class DatabaseMigrationService
 
     private RoomService $roomService;
 
-    #[Pure] public function __construct(RoomService $roomService, protected DepartureService $departureService)
+    #[Pure] public function __construct(
+        RoomService $roomService,
+        protected DepartureService $departureService)
     {
         $this->roomService = $roomService;
     }
@@ -802,5 +805,35 @@ class DatabaseMigrationService
             'updated_at' => 'rel_role_user.updated_at',
         ];
 
+    }
+
+    function updateRoomsNumbers ()
+    {
+        Departure::with('rooms')->chunk(100, function ($departures) {
+
+            foreach ($departures as $departure) {
+                $roomTypes = [];
+                foreach ($departure->rooms as $room) {
+                    $current = $roomTypes[$room->room_type_id] ?? 0;
+                    $roomTypes[$room->room_type_id] = $current + 1;
+                }
+
+                foreach ($roomTypes as $key => $quantity) {
+                    DB::table('rel_departure_room_type')
+                        ->where('departure_id', $departure->id)
+                        ->where('room_type_id', $key)
+                        ->update(['quantity' => $quantity]);
+                }
+            }
+
+
+
+            /*foreach ($departures as $departure) {
+                $clients = $departure->clients->pluck('id', 'name');
+                foreach ($clients as $name => $client) {
+                    Log::debug('name => '.$name.' ID => '.$client);
+                }
+            }*/
+        });
     }
 }

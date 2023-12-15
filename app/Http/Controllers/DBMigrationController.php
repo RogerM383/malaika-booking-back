@@ -176,4 +176,31 @@ class DBMigrationController extends Controller
         $this->dbms->migrate6();
         return $this->sendResponse([],'Data migrated successfully');
     }
+
+    /**
+     * @OA\Get(
+     *      path="/api/db/calculate",
+     *      tags={"Database"},
+     *      summary="Calculate rooms",
+     *      security={{"bearer_token":{}}},
+     *      description="Calculate rooms",
+     *      operationId="roomCalc",
+     *      @OA\Response(
+     *          response="200",
+     *          description="DB migrated successfully",
+     *           @OA\JsonContent(
+     *              type="object",
+     *              @OA\Property(property="data", type="array", @OA\Items())
+     *          )
+     *      )
+     *  )
+     *
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function calc(Request $request): JsonResponse
+    {
+        $this->dbms->updateRoomsNumbers();
+        return $this->sendResponse([],'Data updated successfully');
+    }
 }

@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Client;
+use App\Traits\HandleDNI;
 use App\Traits\HasPagination;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection;
@@ -11,6 +12,8 @@ use JetBrains\PhpStorm\Pure;
 
 class ClientService extends ResourceService
 {
+    use HandleDNI;
+
     /**
      * @param Client $model
      */
@@ -38,6 +41,10 @@ class ClientService extends ResourceService
     public function create(array $data): mixed
     {
         $data['deleted_at'] = null;
+
+        if (isset($data['dni'])) {
+            $data['dni'] = $this->trimDNI($data['dni']);
+        }
 
         if (isset($data['dni']) && !empty($data['dni'])) {
             $client =  $this->model->withTrashed()->updateOrCreate(
