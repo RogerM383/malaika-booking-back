@@ -334,18 +334,18 @@ class DepartureService extends ResourceService
             // si lo esta la eliminamos
             $client = $this->clientService->getById($client_id);
 
-            Log::debug('DETACHING '.$room_id);
+            if ($room_id) {
+                $client->rooms()->detach($room_id);
 
-            $client->rooms()->detach($room_id);
-
-            $room = $this->roomService->getById($room_id);
-            // Si no tengo room ID es que he de petarla
-            // TODO:: Pasar rom_type por param para evitar tener que buscar la room con el service
-            /*if ($room_id) {
                 $room = $this->roomService->getById($room_id);
-                $departure = $this->getById($departure_id);
-                $departure->roomTypes()->newPivotQuery()->where('room_type_id',$room->room_type_id)->decrement('quantity',1);
-            }*/
+                // Si no tengo room ID es que he de petarla
+                // TODO:: Pasar rom_type por param para evitar tener que buscar la room con el service
+                /*if ($room_id) {
+                    $room = $this->roomService->getById($room_id);
+                    $departure = $this->getById($departure_id);
+                    $departure->roomTypes()->newPivotQuery()->where('room_type_id',$room->room_type_id)->decrement('quantity',1);
+                }*/
+            }
         }
 
         $departure  = $this->getById($departure_id);
