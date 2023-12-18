@@ -342,7 +342,7 @@ class DeparturesExport2 implements WithMapping, FromCollection, WithHeadings, Wi
                 "DOB",
                 "POB",
                 'Nacionalitat',
-                'Observacions Puntuals',
+                'Comentaris',
             ],
         ];
     }
