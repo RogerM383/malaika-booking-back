@@ -332,7 +332,7 @@ class DeparturesExport2 implements WithMapping, FromCollection, WithHeadings, Wi
                 'Telefon',
                 'Email',
                 'Seient',
-                'Observations',
+                'Observacions',
                 'Intolerancies',
                 'Dni',
                 'EXP',
