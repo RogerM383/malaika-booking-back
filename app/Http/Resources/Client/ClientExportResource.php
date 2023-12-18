@@ -53,14 +53,14 @@ class ClientExportResource extends JsonResource
             'id'                => $this->id,
             'room_number'       => $this->when(!empty($room), fn () => $room->room_number),
             'state'             => $this->pivot->state,
-            'surname'           => $this->surname,
-            'name'              => $this->name,
+            'surname'           => $this->when(!empty($this->surname), fn () => strtoupper($this->surname)),
+            'name'              => $this->when(!empty($this->name), fn () => strtoupper($this->name)),
             'room_type_id'      => $this->when(!empty($room), fn () => $room->room_type_id),
             'type_room'         => $this->when(!empty($room), fn () => $room->roomType->name),
             'phone'             => $this->phone,
             'email'             => $this->email,
             'seat'              => $this->seat,
-            'rm_observations'   => $this->when(!empty($room), fn () => $room->observations), //$room->observations,
+            //'rm_observations'   => $this->when(!empty($room), fn () => $room->observations), //$room->observations,
             'intolerances'      => $this->intolerances,
             'dni'               => $this->dni,
             'dni_expiration'    => $this->dni_expiration,
@@ -72,6 +72,8 @@ class ClientExportResource extends JsonResource
             'birth'             => $this->when(!empty($this->passport), fn () => $this->passport->birth),
             'nationality'       => $this->when(!empty($this->passport), fn () => $this->passport->nationality),
             'dp_observations'   => $this->observations,
+            'rm_observations'   => $this->room_observations,
+            'pn_observations'   => $this->pivot->observations
         ];
     }
 }

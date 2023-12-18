@@ -276,7 +276,8 @@ class ClientController extends Controller
             'member_number'     => 'nullable|string',
             'notes'             => 'nullable|string',
             'observations'      => 'nullable|string',
-            'seat'              => 'nullable|string'
+            'seat'              => 'nullable|string',
+            'room_observations' => 'nullable|string'
         ])->validate();
 
         return $this->sendResponse(
@@ -342,7 +343,8 @@ class ClientController extends Controller
             'member_number'     => 'nullable|string',
             'notes'             => 'nullable|string',
             'observations'      => 'nullable|string',
-            'seat'              => 'nullable|string'
+            'seat'              => 'nullable|string',
+            'room_observations' => 'nullable|string'
         ])->validate();
 
         return $this->sendResponse(

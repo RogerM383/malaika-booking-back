@@ -776,6 +776,39 @@
                 ]
             }
         },
+        "/api/db/import-type_room": {
+            "get": {
+                "tags": [
+                    "Database"
+                ],
+                "summary": "Import travelers.type_room column to clients.room_observations",
+                "description": "Import travelers.type_room column to clients.room_observations",
+                "operationId": "imnportTypeRooms",
+                "responses": {
+                    "200": {
+                        "description": "DB migrated successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {}
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
+        },
         "/api/departures": {
             "get": {
                 "tags": [

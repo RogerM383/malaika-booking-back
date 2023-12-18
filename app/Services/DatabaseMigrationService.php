@@ -836,4 +836,19 @@ class DatabaseMigrationService
             }*/
         });
     }
+
+    function importCommentsRoomType ()
+    {
+        // Obtiene travelers de origin
+        DB::connection('db2')
+            ->table('travelers')
+            ->orderBy('created_at')
+            ->chunk(100, function ($travelers) {
+                foreach ($travelers as $traveler) {
+                    $client = Client::withTrashed()->find($traveler->client_id);
+                    $client->room_observations = $traveler->type_room;
+                    $client->save();
+                }
+            });
+    }
 }

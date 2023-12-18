@@ -203,4 +203,31 @@ class DBMigrationController extends Controller
         $this->dbms->updateRoomsNumbers();
         return $this->sendResponse([],'Data updated successfully');
     }
+
+    /**
+     * @OA\Get(
+     *      path="/api/db/import-type_room",
+     *      tags={"Database"},
+     *      summary="Import travelers.type_room column to clients.room_observations",
+     *      security={{"bearer_token":{}}},
+     *      description="Import travelers.type_room column to clients.room_observations",
+     *      operationId="imnportTypeRooms",
+     *      @OA\Response(
+     *          response="200",
+     *          description="DB migrated successfully",
+     *           @OA\JsonContent(
+     *              type="object",
+     *              @OA\Property(property="data", type="array", @OA\Items())
+     *          )
+     *      )
+     *  )
+     *
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function importTypeRooms(Request $request): JsonResponse
+    {
+        $this->dbms->importCommentsRoomType();
+        return $this->sendResponse([],'Data imported successfully');
+    }
 }

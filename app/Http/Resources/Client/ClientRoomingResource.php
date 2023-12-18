@@ -72,6 +72,7 @@ class ClientRoomingResource extends JsonResource
             'passport_id'       => $this->when(!empty($passport_id), fn () => $passport_id),
             //'seat'              => $this->pivot->seat,
             'observations'      => $this->pivot->observations,
+            'room_observations' => $this->room_observations
         ];
     }
 }

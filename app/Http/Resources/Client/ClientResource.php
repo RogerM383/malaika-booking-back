@@ -45,7 +45,8 @@ class ClientResource extends JsonResource
             'dni_expiration'    => $this->dni_expiration,
             'place_birth'       => $this->place_birth,
             'observations'      => $this->observations,
-            'seat'              => $this->seat
+            'seat'              => $this->seat,
+            'room_observations' => $this->room_observations
         ];
     }
 }

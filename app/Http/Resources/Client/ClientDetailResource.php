@@ -66,7 +66,8 @@ class ClientDetailResource extends JsonResource
 
             //'seat'              => $this->when(!empty($this->departures), fn () => $this->departures[0]->pivot->seat),
             'observations'      => $this->observations,
-            'seat'              => $this->seat
+            'seat'              => $this->seat,
+            'room_observations' => $this->room_observations
         ];
     }
 }

@@ -124,10 +124,11 @@ class DeparturesExport2 implements WithMapping, FromCollection, WithHeadings, Wi
             'name'           => null,
             'room_type_id'   => null,
             'type_room'      => null,
+            'rm_observations'=> null,
             'phone'          => null,
             'email'          => null,
             'seat'           => null,
-            'rm_observations'=> null,
+            'dp_observations'=> null,
             'intolerances'   => null,
             'dni'            => null,
             'dni_expiration' => null,
@@ -137,7 +138,7 @@ class DeparturesExport2 implements WithMapping, FromCollection, WithHeadings, Wi
             'place_birth'    => null,
             'birth'          => null,
             'nationality'    => null,
-            'dp_observations'=> null,
+            'pn_observations'=> null,
         ];
 
         /*$data = new DepartureExportResource(Departure::find($this->departure)->first());
@@ -162,7 +163,7 @@ class DeparturesExport2 implements WithMapping, FromCollection, WithHeadings, Wi
 
         $value = collect($active)->sortBy('room_number')->values();
 
-
+        $value->prepend($empty);
         $value->add($empty);
         $value->add($empty);
         $value->add($empty);
@@ -278,7 +279,8 @@ class DeparturesExport2 implements WithMapping, FromCollection, WithHeadings, Wi
             $row->birth ?? "",                      // Client.birth
             $row->place_birth ?? "",                // Client.place_birth
             $row->nationality ?? "",                // Passport.nationality
-            $row->notes ?? "",                      // Client.notes
+            // $row->notes ?? "",                      // Client.notes
+            $row->pn_observations ?? "",
         ];
     }
 
@@ -330,10 +332,10 @@ class DeparturesExport2 implements WithMapping, FromCollection, WithHeadings, Wi
                 'Telefon',
                 'Email',
                 'Seient',
-                'Observations Generals',
+                'Observations',
                 'Intolerancies',
                 'Dni',
-                'Data de caducitat',
+                'EXP',
                 "Numero passaport",
                 'Issue',
                 "EXP",

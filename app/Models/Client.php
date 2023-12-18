@@ -35,7 +35,8 @@ class Client extends Model
         'place_birth',
         'observations',
         'seat',
-        'deleted_at'
+        'deleted_at',
+        'room_observations'
     ];
 
     /**
