@@ -11,6 +11,7 @@ use App\Models\Room;
 use App\Models\RoomType;
 use App\Models\Trip;
 use App\Models\User;
+use App\Traits\HandleDNI;
 use App\Traits\Slugeable;
 use Exception;
 use Illuminate\Support\Carbon;
@@ -21,7 +22,7 @@ use Illuminate\Support\Facades\Artisan;
 
 class DatabaseMigrationService
 {
-    use Slugeable;
+    use Slugeable, HandleDNI;
 
     private RoomService $roomService;
 
@@ -850,5 +851,40 @@ class DatabaseMigrationService
                     $client->save();
                 }
             });
+    }
+
+    function trimDNIs ()
+    {
+        $total = 0;
+        Client::chunk(100, function ($clients) use ($total) {
+            // --- Recorre todos los clientes
+            foreach ($clients as $client) {
+                // Si tienen DNI
+                if ($client->dni && !str_contains($client->dni, 'duplicated')) {
+                    $older = true;
+                    $trimedDNI = $this->trimDNI($client->dni);
+                    $others = Client::where('dni', $trimedDNI)->where('id', '!=', $client->id)->get();
+                    if ($others->count() >= 1) {
+                        foreach ($others as $index => $other) {
+                            $total = $total + 1;
+                            if ($client->id < $other->id) {
+                                $other->dni = $other->dni . '-duplicated-'.$index;
+                                $other->save();
+                            } else if ($client->dni !== $other->dni) {
+                                $older = false;
+                                $client->dni = $trimedDNI . '-duplicated-'.$index;
+                                $client->save();
+                            }
+                        }
+                    }
+
+                    if ($older && $client->dni !== $trimedDNI) {
+                        $client->dni = $trimedDNI;
+                        $client->save();
+                    }
+                }
+            }
+        });
+        return $total;
     }
 }

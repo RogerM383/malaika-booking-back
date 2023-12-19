@@ -324,7 +324,6 @@ class DepartureService extends ResourceService
                 $room->save();
             }
         } else if ($room_id && $state <= 4) {
-
             // Si state es uno de los activos y tenemos room_id añadimos a la habitacion
             $room = $this->roomService->getById($room_id);
             $client = $this->clientService->getById($client_id);

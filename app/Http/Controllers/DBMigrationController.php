@@ -230,4 +230,30 @@ class DBMigrationController extends Controller
         $this->dbms->importCommentsRoomType();
         return $this->sendResponse([],'Data imported successfully');
     }
+
+    /**
+     * @OA\Get(
+     *      path="/api/db/trimDNIs",
+     *      tags={"Database"},
+     *      summary="Clear DNI from DB",
+     *      security={{"bearer_token":{}}},
+     *      description="Clear DNI from DB",
+     *      operationId="trimDNIs",
+     *      @OA\Response(
+     *          response="200",
+     *          description="DB DNIs trimmed successfully",
+     *           @OA\JsonContent(
+     *              type="object",
+     *              @OA\Property(property="data", type="array", @OA\Items())
+     *          )
+     *      )
+     *  )
+     *
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function trimDNIs(Request $request): JsonResponse
+    {
+        return $this->sendResponse(['TOTAL' => $this->dbms->trimDNIs()],'Data trimed successfully');
+    }
 }

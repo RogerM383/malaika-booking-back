@@ -28,6 +28,10 @@ class ClientService extends ResourceService
      */
     public function make(array $data): mixed
     {
+        if (isset($data['dni'])) {
+            $data['dni'] = $this->trimDNI($data['dni']);
+        }
+
         return $this->model::firstOrNew(
             ['dni' => $data['dni']],
             $data

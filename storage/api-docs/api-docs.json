@@ -809,6 +809,39 @@
                 ]
             }
         },
+        "/api/db/trimDNIs": {
+            "get": {
+                "tags": [
+                    "Database"
+                ],
+                "summary": "Clear DNI from DB",
+                "description": "Clear DNI from DB",
+                "operationId": "trimDNIs",
+                "responses": {
+                    "200": {
+                        "description": "DB DNIs trimmed successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {}
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
+        },
         "/api/departures": {
             "get": {
                 "tags": [
