@@ -33,12 +33,6 @@ class DepartureExportResource extends JsonResource
      */
     public function toArray($request): array
     {
-        $mierder = $this->activeClients()->with(['rooms' => function ($query) {
-            return $query->where('departure_id', $this->id);
-        }])->get();
-
-        Log::debug(json_encode($mierder));
-
         $clients = ClientExportResource::collection(($this->activeClients()->with(['rooms' => function ($query) {
             return $query->where('departure_id', $this->id);
         }])->get()));

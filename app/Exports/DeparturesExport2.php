@@ -1,7 +1,6 @@
 <?php
 
 namespace App\Exports;
-;
 
 use App\Http\Resources\Departure\DepartureExportResource;
 use App\Models\Departure;
@@ -332,7 +331,7 @@ class DeparturesExport2 implements WithMapping, FromCollection, WithHeadings, Wi
                 'Telefon',
                 'Email',
                 'Seient',
-                'Observacions',
+                'Observacions Generals',
                 'Intolerancies',
                 'Dni',
                 'EXP',
