@@ -104,6 +104,7 @@ class Departure extends Model
                 //'seat',
                 'observations')
             ->wherePivot('state', '=', 6)
+            ->orderByPivot('updated_at', 'asc')
             ->withTimestamps();
     }
 
