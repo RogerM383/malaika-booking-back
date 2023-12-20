@@ -6,6 +6,7 @@ use App\Services\UserService;
 use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
@@ -25,20 +26,18 @@ class AuthController extends Controller
      *      path="/api/auth/register",
      *      tags={"Auth"},
      *      summary="Register new user",
-     *      description="Registra un nuevo usuario sin verificar, a la espera de ser verificado por un administrador de Sherwoodmedia.",
-     *      operationId="createUser",
+     *      description="Registra un nuevo usuario",
+     *      operationId="registerUser",
      *      @OA\Response(
      *          response="200",
-     *          description="User created successfully"
+     *          description="User registered successfully"
      *      ),
      *      @OA\RequestBody(
      *          description="Create user",
      *          required=true,
      *          @OA\JsonContent(
      *              required={"nif", "name", "username", "email", "password", "c_password"},
-     *              @OA\Property(property="nif", type="string", format="text", example="48965258Z"),
      *              @OA\Property(property="name", type="string", format="text", example="Selene"),
-     *              @OA\Property(property="username", type="string", format="text", example="selene"),
      *              @OA\Property(property="email", type="email", format="text", example="selene@gmail.com"),
      *              @OA\Property(property="password", type="string", format="text", example="1234567"),
      *              @OA\Property(property="c_password", type="string", format="text", example="1234567")
@@ -55,6 +54,7 @@ class AuthController extends Controller
                 'name'          => 'required|string|max:255',
                 'email'         => 'required|email|max:255|unique:users',
                 'password'      => 'required|string|min:6',
+                'c_password'    => 'required|same:password',
             ]);
 
             if ($validator->fails()) {
@@ -63,14 +63,65 @@ class AuthController extends Controller
 
             $user = $this->userService->create($data);
 
-
-
-
             $success['token'] = $user->createToken(config('app.name'))->accessToken;
             $success['name'] = $user->name;
             $success['success'] = true;
 
             return $this->sendResponse($success, 'User registered successfully.');
+        } catch (Exception $e) {
+            Log::debug(json_encode($e));
+            return $this->sendError("Can't register the requested user", $e->getMessage(), 409);
+        }
+    }
+
+    /**
+     *  @OA\Post(
+     *      path="/api/auth/create",
+     *      tags={"Auth"},
+     *      summary="Create new user",
+     *      security={{"bearer_token":{}}},
+     *      description="Crea un nuevo usuario",
+     *      operationId="createUser",
+     *      @OA\Response(
+     *          response="200",
+     *          description="User created successfully"
+     *      ),
+     *      @OA\RequestBody(
+     *          description="Create user",
+     *          required=true,
+     *          @OA\JsonContent(
+     *              required={"nif", "name", "username", "email", "password", "c_password"},
+     *              @OA\Property(property="name", type="string", format="text", example="Selene"),
+     *              @OA\Property(property="email", type="email", format="text", example="selene@gmail.com"),
+     *              @OA\Property(property="password", type="string", format="text", example="1234567"),
+     *              @OA\Property(property="c_password", type="string", format="text", example="1234567"),
+     *              @OA\Property(property="is_admin", type="integer", example=0)
+     *          )
+     *     )
+     * )
+     */
+    public function registerNewUser(Request $request): JsonResponse
+    {
+        try {
+            $data = $request->all();
+
+            $validator = Validator::make($data, [
+                'name'          => 'required|string|max:255',
+                'email'         => 'required|email|max:255|unique:users',
+                'password'      => 'required|string|min:6',
+                'c_password'    => 'required|same:password',
+                'is_admin'      => 'nullable|integer|in:0,1'
+            ]);
+
+            if ($validator->fails()) {
+                return $this->sendError('Validation Error.', $validator->errors(), 409);
+            }
+
+            $user = $this->userService->create(Arr::except($data, ['c_password']));
+
+            $success['name'] = $user->name;
+
+            return $this->sendResponse($success, 'User created successfully.');
         } catch (Exception $e) {
             Log::debug(json_encode($e));
             return $this->sendError("Can't register the requested user", $e->getMessage(), 409);

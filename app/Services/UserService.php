@@ -3,6 +3,8 @@
 namespace App\Services;
 
 use App\Models\User;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Log;
 
 class UserService
 {
@@ -22,8 +24,14 @@ class UserService
      */
     public function create($data): mixed
     {
+        $isAdmin = Arr::pull($data, 'is_admin');
         $data['password'] = bcrypt($data['password']);
-        return $this->model->create($data);
+        $user = $this->model->create($data);
+
+        if (!empty($isAdmin)) {
+            $user->roles()->attach(1);
+        }
+        return $user;
     }
 
     /**

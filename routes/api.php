@@ -34,6 +34,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::prefix('auth')->group(function () {
     Route::post('register', [AuthController::class, 'register']);
     Route::post('login', [AuthController::class, 'login']);
+    Route::post('create', [AuthController::class, 'registerNewUser'])->middleware('auth:api');
 });
 
 Route::prefix('client-types')->group(function () {
@@ -41,7 +42,7 @@ Route::prefix('client-types')->group(function () {
 });
 
 Route::prefix('clients')->group(function () {
-    Route::get('/', [ClientController::class, 'get']);//->middleware('auth:api');
+    Route::get('/', [ClientController::class, 'get'])->middleware('auth:api');
     Route::get('/{id}', [ClientController::class, 'getById'])->middleware('auth:api');
     Route::get('/{id}/departures', [ClientController::class, 'getClientDepartures'])->middleware('auth:api');
     Route::post('/', [ClientController::class, 'create'])->middleware('auth:api');

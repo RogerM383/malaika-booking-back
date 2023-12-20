@@ -19,8 +19,8 @@
                     "Auth"
                 ],
                 "summary": "Register new user",
-                "description": "Registra un nuevo usuario sin verificar, a la espera de ser verificado por un administrador de Sherwoodmedia.",
-                "operationId": "createUser",
+                "description": "Registra un nuevo usuario",
+                "operationId": "registerUser",
                 "requestBody": {
                     "description": "Create user",
                     "required": true,
@@ -36,20 +36,10 @@
                                     "c_password"
                                 ],
                                 "properties": {
-                                    "nif": {
-                                        "type": "string",
-                                        "format": "text",
-                                        "example": "48965258Z"
-                                    },
                                     "name": {
                                         "type": "string",
                                         "format": "text",
                                         "example": "Selene"
-                                    },
-                                    "username": {
-                                        "type": "string",
-                                        "format": "text",
-                                        "example": "selene"
                                     },
                                     "email": {
                                         "type": "email",
@@ -74,9 +64,74 @@
                 },
                 "responses": {
                     "200": {
-                        "description": "User created successfully"
+                        "description": "User registered successfully"
                     }
                 }
+            }
+        },
+        "/api/auth/create": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Create new user",
+                "description": "Crea un nuevo usuario",
+                "operationId": "createUser",
+                "requestBody": {
+                    "description": "Create user",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "nif",
+                                    "name",
+                                    "username",
+                                    "email",
+                                    "password",
+                                    "c_password"
+                                ],
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "format": "text",
+                                        "example": "Selene"
+                                    },
+                                    "email": {
+                                        "type": "email",
+                                        "format": "text",
+                                        "example": "selene@gmail.com"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "format": "text",
+                                        "example": "1234567"
+                                    },
+                                    "c_password": {
+                                        "type": "string",
+                                        "format": "text",
+                                        "example": "1234567"
+                                    },
+                                    "is_admin": {
+                                        "type": "integer",
+                                        "example": 0
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "User created successfully"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
             }
         },
         "/api/auth/login": {
