@@ -47,6 +47,8 @@ Route::prefix('clients')->group(function () {
     Route::post('/', [ClientController::class, 'create'])->middleware('auth:api');
     Route::put('/{id}', [ClientController::class, 'update'])->middleware(['auth:api']);
     Route::delete('/{id}', [ClientController::class, 'delete'])->middleware('auth:api');
+
+    Route::post('/merge', [ClientController::class, 'merge'])->middleware('auth:api');
 });
 
 Route::prefix('passports')->group(function () {

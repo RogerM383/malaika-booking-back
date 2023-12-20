@@ -510,6 +510,51 @@
                 ]
             }
         },
+        "/api/clients/merge": {
+            "post": {
+                "tags": [
+                    "Clients"
+                ],
+                "summary": "Combina los datos de dos clientes",
+                "description": "Combina los datos de dos clientes",
+                "operationId": "mergeClients",
+                "requestBody": {
+                    "description": "Merge clients",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "clientId",
+                                    "mergedId"
+                                ],
+                                "properties": {
+                                    "clientId": {
+                                        "type": "integer",
+                                        "example": "1"
+                                    },
+                                    "mergedId": {
+                                        "type": "integer",
+                                        "example": "1"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Clients merged successfully"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
+        },
         "/api/client-types": {
             "get": {
                 "tags": [

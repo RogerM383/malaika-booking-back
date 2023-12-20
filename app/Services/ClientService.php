@@ -2,11 +2,14 @@
 
 namespace App\Services;
 
+use App\Exceptions\ModelNotFoundException;
 use App\Models\Client;
 use App\Traits\HandleDNI;
 use App\Traits\HasPagination;
+use Exception;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use JetBrains\PhpStorm\Pure;
 
@@ -177,5 +180,84 @@ class ClientService extends ResourceService
     public function getClientDepartures(int $id)
     {
         return $this->getById($id)->departures()->orderBy('departures.start', 'desc')->get();
+    }
+
+    /**
+     * @throws ModelNotFoundException
+     * @throws Exception
+     */
+    public function mergeClients($clientId, $mergedId)
+    {
+
+        $originClient = $this->getById($clientId);
+        $mergedClient = $this->getById($mergedId);
+
+        // Merge related data
+        if ($originClient && $mergedClient) {
+            DB::table('rel_client_departure')
+                ->where('client_id', $mergedId)
+                ->update(['client_id' => $clientId]);
+
+            DB::table('rel_client_room')
+                ->where('client_id', $mergedId)
+                ->update(['client_id' => $clientId]);
+        } else {
+            throw new Exception('Two clients are needed for merge');
+        }
+
+        // Merge passports
+        $originalPassport = $originClient->passport;
+        $mergedPassport = $mergedClient->passport;
+
+        if ($originalPassport && $mergedPassport) {
+            if ($originalPassport->updated_at < $mergedPassport->updated_at) {
+                $originalPassport = $mergedPassport;
+                $mergedPassport = $originalPassport;
+            }
+        }
+
+        if ($originalPassport || $mergedPassport) {
+
+            $newPassport = [
+                'number_passport' => $originalPassport->number_passport ?? $mergedPassport->number_passport ?? null,
+                'birth' => $originalPassport->birth ?? $mergedPassport->birth ?? null,
+                'issue' => $originalPassport->issue ?? $mergedPassport->issue ?? null,
+                'exp' => $originalPassport->exp ?? $mergedPassport->exp ?? null,
+                'nationality' => $originalPassport->nationality ?? $mergedPassport->nationality ?? null,
+                'updated_at' => $originalPassport->updated_at ?? $mergedPassport->updated_at ?? null,
+            ];
+
+            $originClient->passport->update($newPassport);
+
+            if ($originClient->updated_at > $mergedClient->updated_at) {
+                $originClient = $mergedClient;
+                $mergedClient = $originClient;
+            }
+        }
+
+        // Merge client Data
+        $newClient = [
+            'notes' => $originClient->notes ?? $mergedClient->notes,
+            'intolerances' => $originClient->intolerances ?? $mergedClient->intolerances,
+            'frequent_flyer' => $originClient->frequent_flyer ?? $mergedClient->frequent_flyer,
+            'member_number' => $originClient->member_number ?? $mergedClient->member_number,
+            'client_type_id' => $originClient->client_type_id ?? $mergedClient->client_type_id,
+            'language_id' => $originClient->language_id ?? $mergedClient->language_id,
+            'name' => $originClient->name ?? $mergedClient->name,
+            'surname' => $originClient->surname ?? $mergedClient->surname,
+            'phone' => $originClient->phone ?? $mergedClient->phone,
+            'email' => $originClient->email ?? $mergedClient->email,
+            'dni' => $originClient->dni ?? $mergedClient->dni,
+            'address' => $originClient->address ?? $mergedClient->address,
+            'dni_expiration' => $originClient->dni_expiration ?? $mergedClient->dni_expiration,
+            'place_birth' => $originClient->place_birth ?? $mergedClient->place_birth,
+            'observations' => $originClient->observations ?? $mergedClient->observations,
+            'seat' => $originClient->seat ?? $mergedClient->seat,
+            'deleted_at' => $originClient->deleted_at ?? $mergedClient->deleted_at,
+            'room_observations' => $originClient->room_observations ?? $mergedClient->room_observations
+        ];
+
+        $originClient->update($newClient);
+        $mergedClient->delete();
     }
 }

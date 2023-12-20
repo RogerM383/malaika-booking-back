@@ -381,4 +381,45 @@ class ClientController extends Controller
         $this->service->delete($id);
         return $this->sendResponse([], 'Trip deleted successfully');
     }
+
+
+    /**
+     * @OA\Post(
+     *      path="/api/clients/merge",
+     *      tags={"Clients"},
+     *      summary="Combina los datos de dos clientes",
+     *      security={{"bearer_token":{}}},
+     *      description="Combina los datos de dos clientes",
+     *      operationId="mergeClients",
+     *      @OA\Response(
+     *          response="200",
+     *          description="Clients merged successfully",
+     *      ),
+     *     @OA\RequestBody(
+     *          description="Merge clients",
+     *          required=true,
+     *          @OA\JsonContent(
+     *              required={"clientId", "mergedId"},
+     *              @OA\Property(property="clientId", type="integer", example="1"),
+     *              @OA\Property(property="mergedId", type="integer", example="1")
+     *          )
+     *      )
+     *  )
+     * @throws ValidationException
+     */
+    public function merge(Request $request): JsonResponse
+    {
+        $validatedData = Validator::make($request->all(), [
+            'clientId'    => 'integer|min:1',
+            'mergedId'    => 'integer|min:1',
+        ])->validate();
+
+        $this->service->mergeClients(...$validatedData);
+
+        return $this->sendResponse(
+            [],
+            'Client created successfully'
+        );
+    }
+
 }
