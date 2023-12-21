@@ -256,4 +256,31 @@ class DBMigrationController extends Controller
     {
         return $this->sendResponse(['TOTAL' => $this->dbms->trimDNIs()],'Data trimed successfully');
     }
+
+    /**
+     * @OA\Get(
+     *      path="/api/db/import-null-passports",
+     *      tags={"Database"},
+     *      summary="Import null number pasports from DB",
+     *      security={{"bearer_token":{}}},
+     *      description="Import null number pasports from DB",
+     *      operationId="importNullPassports",
+     *      @OA\Response(
+     *          response="200",
+     *          description="Null passports imported successfully",
+     *           @OA\JsonContent(
+     *              type="object",
+     *              @OA\Property(property="data", type="array", @OA\Items())
+     *          )
+     *      )
+     *  )
+     *
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function importNullPassports(Request $request): JsonResponse
+    {
+        $this->dbms->migrateNullPassports();
+        return $this->sendResponse([],'Passport migrated successfully');
+    }
 }

@@ -907,4 +907,62 @@ class DatabaseMigrationService
         });
         return $total;
     }
+
+    function migrateNullPassports()
+    {
+        $passportValues  = [
+            'id' => 'passport.id',
+            'client_id' => 'passport.client_id',
+            'number_passport' => 'passport.number_passport',
+            'nationality' => 'passport.nac',
+            'issue' => 'passport.issue',
+            'exp' => 'passport.exp',
+            'birth' => 'passport.birth',
+            'created_at' => 'passport.created_at',
+            'updated_at' => 'passport.updated_at',
+            'deleted_at' => null,
+        ];
+
+        // Get original clients data
+        $passports = DB::connection('db2')->table('passports')->whereNull('number_passport')->get();
+        // Set connection to local
+        DB::connection('mysql');
+
+        $passports->each(function ($passport) {
+
+            if (empty($passport->number_passport)) {
+                try {
+                    $newPassport = Passport::make([]);
+                    $newPassport->id                = $passport->id;
+                    $newPassport->client_id         = $passport->client_id;
+                    $newPassport->number_passport   = $passport->number_passport;
+                    $newPassport->nationality       = $passport->nac;
+                    $newPassport->issue             = $this->formatDate($passport->issue);
+                    $newPassport->exp               = $this->formatDate($passport->exp);
+                    $newPassport->birth             = $this->formatDate($passport->birth);
+                    $newPassport->created_at        = $passport->created_at;
+                    $newPassport->updated_at        = $passport->updated_at;
+                    $newPassport->deleted_at        = null;
+                    $newPassport->save();
+                } catch (Exception $e) {
+
+                    $oldPassport = Passport::where('number_passport', $passport->number_passport)->first();
+                    $oldPassport->update(['number_passport' => $oldPassport->number_passport.'-duplicated']);
+
+                    $newPassport = Passport::make([]);
+                    $newPassport->id                = $passport->id;
+                    $newPassport->client_id         = $passport->client_id;
+                    $newPassport->number_passport   = $passport->number_passport;
+                    $newPassport->nationality       = $passport->nac;
+                    $newPassport->issue             = $this->formatDate($passport->issue);
+                    $newPassport->exp               = $this->formatDate($passport->exp);
+                    $newPassport->birth             = $this->formatDate($passport->birth);
+                    $newPassport->created_at        = $passport->created_at;
+                    $newPassport->updated_at        = $passport->updated_at;
+                    $newPassport->deleted_at        = null;
+                    $newPassport->save();
+                }
+            }
+        });
+    }
 }
