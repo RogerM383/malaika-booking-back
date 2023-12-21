@@ -813,6 +813,26 @@ class DatabaseMigrationService
         Departure::with('rooms')->chunk(100, function ($departures) {
 
             foreach ($departures as $departure) {
+
+                // --- Busca habitaciones que no tengan asignao un cliente asigando a esta departure ---
+                $emptyRooms = Room::whereHas('departure', function ($query) use ($departure) {
+                    $query->where('departures.id', $departure->id);
+                })
+                ->whereDoesntHave('clients', function ($query) use ($departure) {
+                    $query->whereHas('departures', function ($query) use ($departure) {
+                        $query->where('departures.id', $departure->id)
+                            ->where('rel_client_departure.state', '!=', 6)
+                            ->where('rel_client_departure.state', '!=', 5);
+                    });
+                });
+
+                if ($emptyRooms->count() >= 1) {
+                    // --- Elimina emty rooms ---
+                    $emptyRooms->each(function ($room) {
+                        $room->delete();
+                    });
+                }
+
                 $roomTypes = [];
                 foreach ($departure->rooms as $room) {
                     $current = $roomTypes[$room->room_type_id] ?? 0;

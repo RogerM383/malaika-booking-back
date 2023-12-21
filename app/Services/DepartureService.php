@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use JetBrains\PhpStorm\Pure;
 
@@ -347,22 +348,46 @@ class DepartureService extends ResourceService
             }
         }
 
+
+        // --- Pilla departure ---
         $departure  = $this->getById($departure_id);
-        $emptyRooms = $departure->rooms()->doesntHave('clients')->get();
+
+        // --- Busca habitaciones que no tengan asignao un cliente asigando a esta departure ---
+        $query = Room::whereHas('departure', function ($query) use ($departure) {
+            $query->where('departures.id', $departure->id);
+        })
+        ->whereDoesntHave('clients', function ($query) use ($departure) {
+            $query->whereHas('departures', function ($query) use ($departure) {
+                $query->where('departures.id', $departure->id)
+                    ->where('rel_client_departure.state', '!=', 6)
+                    ->where('rel_client_departure.state', '!=', 5);
+            });
+        });
+
+        $emptyRooms = $query->get();
 
         if ($emptyRooms->count() >= 1) {
-            // Si hay habitaciojnes vacias las elimina
-            foreach ($emptyRooms as $r)  {
-                $departure->roomTypes()
-                    ->newPivotQuery()
-                    ->where('room_type_id', $r->room_type_id)
-                    ->where('quantity', '>=', 1)
-                    ->decrement('quantity',1);
-                $r->delete();
+
+            // --- Elimina emty rooms ---
+            $emptyRooms->each(function ($room) {
+                $room->delete();
+            });
+
+            // --- Calcula total de rooms de cada tipo ---
+            $roomTypes = [];
+            foreach ($departure->rooms as $room) {
+                $current = $roomTypes[$room->room_type_id] ?? 0;
+                $roomTypes[$room->room_type_id] = $current + 1;
             }
 
-            //$departure->rooms()->doesntHave('clients')->delete();
+            foreach ($roomTypes as $key => $quantity) {
+                DB::table('rel_departure_room_type')
+                    ->where('departure_id', $departure->id)
+                    ->where('room_type_id', $key)
+                    ->update(['quantity' => $quantity]);
+            }
 
+            // --- Recalcula numeros de cada habitacion ---
             foreach ($departure->rooms()->get() as $key => $r) {
                 $r->room_number = $key + 1;
                 $r->save();
