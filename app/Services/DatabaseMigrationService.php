@@ -924,7 +924,7 @@ class DatabaseMigrationService
         ];
 
         // Get original clients data
-        $passports = DB::connection('db2')->table('passports')->whereNull('number_passport')->get();
+        $passports = DB::connection('db2')->table('passports')->where('id', '>', 623)->whereNull('number_passport')->get();
         // Set connection to local
         DB::connection('mysql');
 
