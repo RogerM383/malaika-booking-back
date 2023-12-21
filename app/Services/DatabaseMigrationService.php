@@ -946,7 +946,7 @@ class DatabaseMigrationService
                     $newPassport->save();
                 } catch (Exception $e) {
 
-                    $oldPassport = Passport::where('number_passport', $passport->number_passport)->first();
+                    /*$oldPassport = Passport::where('number_passport', $passport->number_passport)->first();
                     $oldPassport->update(['number_passport' => $oldPassport->number_passport.'-duplicated']);
 
                     $newPassport = Passport::make([]);
@@ -960,7 +960,7 @@ class DatabaseMigrationService
                     $newPassport->created_at        = $passport->created_at;
                     $newPassport->updated_at        = $passport->updated_at;
                     $newPassport->deleted_at        = null;
-                    $newPassport->save();
+                    $newPassport->save();*/
                 }
             }
         });
