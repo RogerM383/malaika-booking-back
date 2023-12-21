@@ -930,7 +930,7 @@ class DatabaseMigrationService
 
         $passports->each(function ($passport) {
 
-            if ($passport->number_passport === '') {
+            if ($passport->number_passport !== '') {
                 try {
                     $newPassport = Passport::make([]);
                     $newPassport->id                = $passport->id;
