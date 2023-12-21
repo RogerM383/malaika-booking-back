@@ -45,7 +45,9 @@ class ClientListResource extends JsonResource
             $mon = strtotime(Carbon::now()->addMonths(6));
             $now = strtotime(Carbon::now());
 
-            $passportState = $exp > $mon ? 1 : ($exp > $now && $exp < $mon ? 3 : 2);
+            if (!empty($passport->exp)) {
+                $passportState = $exp > $mon ? 1 : ($exp > $now && $exp < $mon ? 3 : 2);
+            }
 
             //$passportState = strtotime($passport->exp) >= strtotime(Carbon::now()) ? 1 : 2;
             $passport_id = $passport->id;
