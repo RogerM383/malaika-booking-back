@@ -56,11 +56,11 @@ class PassportController extends Controller
     {
         $validatedData = Validator::make(array_merge($request->only($this->service->getFillable()), ['client_id' => $request->input('client_id')]), [
             'client_id'         => 'required|integer',
-            'number_passport'   => 'required|string',
-            'birth'             => 'string',
-            'issue'             => 'string',
-            'exp'               => 'string',
-            'nationality'       => 'string',
+            'number_passport'   => 'nullable|string',
+            'birth'             => 'nullable|string',
+            'issue'             => 'nullable|string',
+            'exp'               => 'nullable|string',
+            'nationality'       => 'nullable|string',
         ])->validate();
 
         return $this->sendResponse(
