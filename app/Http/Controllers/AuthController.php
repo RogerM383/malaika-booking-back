@@ -10,6 +10,7 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
+use function PHPUnit\Framework\logicalOr;
 
 class AuthController extends Controller
 {
@@ -104,16 +105,16 @@ class AuthController extends Controller
     {
         try {
             $data = $request->all();
-
             $validator = Validator::make($data, [
                 'name'          => 'required|string|max:255',
                 'email'         => 'required|email|max:255|unique:users',
                 'password'      => 'required|string|min:6',
                 'c_password'    => 'required|same:password',
-                'is_admin'      => 'nullable|integer|in:0,1'
+                'is_admin'      => 'nullable|boolean'
             ]);
 
             if ($validator->fails()) {
+                Log::debug(json_encode($validator->errors()));
                 return $this->sendError('Validation Error.', $validator->errors(), 409);
             }
 
@@ -123,7 +124,6 @@ class AuthController extends Controller
 
             return $this->sendResponse($success, 'User created successfully.');
         } catch (Exception $e) {
-            Log::debug(json_encode($e));
             return $this->sendError("Can't register the requested user", $e->getMessage(), 409);
         }
     }
