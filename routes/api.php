@@ -102,6 +102,7 @@ Route::prefix('db')->group(function () {
     Route::get('/import-type_room', [DBMigrationController::class, 'importTypeRooms']);
     Route::get('/trimDNIs', [DBMigrationController::class, 'trimDNIs']);
     Route::get('/import-null-passports', [DBMigrationController::class, 'importNullPassports']);
+    Route::get('/clear-duplicated-rooms', [DBMigrationController::class, 'clearDuplicatedRooms']);
 });
 
 Route::prefix('exports')->group(function () {
