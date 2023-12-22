@@ -352,7 +352,7 @@ class DepartureService extends ResourceService
         // --- Pilla departure ---
         $departure  = $this->getById($departure_id);
 
-        // --- Busca habitaciones que no tengan asignao un cliente asigando a esta departure ---
+        // --- Busca habitaciones que no tengan un cliente asigando a esta departure ---
         $query = Room::whereHas('departure', function ($query) use ($departure) {
             $query->where('departures.id', $departure->id);
         })
@@ -365,6 +365,8 @@ class DepartureService extends ResourceService
         });
 
         $emptyRooms = $query->get();
+
+        Log::debug(json_encode($emptyRooms));
 
         if ($emptyRooms->count() >= 1) {
 
@@ -438,3 +440,6 @@ class DepartureService extends ResourceService
         $query->where('state_id', $state);
     }
 }
+
+
+
