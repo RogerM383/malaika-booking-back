@@ -39,13 +39,20 @@ class ClientRoomingResource extends JsonResource
 
         // Estados de pasaporte 1 - ok, 2 - caducado, 3 - no esta
         $passport_id = null;
-        $passportState = 3;
+        $passportState = 4;
         $passport = $this->passport;
+
         if (!empty($passport)) {
-            $passportState = strtotime($passport->exp) >= strtotime(Carbon::now()) ? 1 : 2;
+            $exp = strtotime($passport->exp);
+            $mon = strtotime(Carbon::now()->addMonths(6));
+            $now = strtotime(Carbon::now());
+
+            if (!empty($passport->exp)) {
+                $passportState = $exp > $mon ? 1 : ($exp > $now && $exp < $mon ? 3 : 2);
+            }
+
+            //$passportState = strtotime($passport->exp) >= strtotime(Carbon::now()) ? 1 : 2;
             $passport_id = $passport->id;
-        } else {
-            $passportState = null;
         }
 
         if ($this->state <= 4) {
