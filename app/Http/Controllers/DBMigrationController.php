@@ -283,4 +283,32 @@ class DBMigrationController extends Controller
         $this->dbms->migrateNullPassports();
         return $this->sendResponse([],'Passport migrated successfully');
     }
+
+
+    /**
+     * @OA\Get(
+     *      path="/api/db/clear-duplicated-rooms",
+     *      tags={"Database"},
+     *      summary="Import null number pasports from DB",
+     *      security={{"bearer_token":{}}},
+     *      description="Import null number pasports from DB",
+     *      operationId="clearDuplicatedRooms",
+     *      @OA\Response(
+     *          response="200",
+     *          description="Null passports imported successfully",
+     *           @OA\JsonContent(
+     *              type="object",
+     *              @OA\Property(property="data", type="array", @OA\Items())
+     *          )
+     *      )
+     *  )
+     *
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function clearDuplicatedRooms(Request $request): JsonResponse
+    {
+        $this->dbms->clearDuplicatedRooms();
+        return $this->sendResponse([],'Passport migrated successfully');
+    }
 }

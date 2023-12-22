@@ -942,6 +942,72 @@
                 ]
             }
         },
+        "/api/db/import-null-passports": {
+            "get": {
+                "tags": [
+                    "Database"
+                ],
+                "summary": "Import null number pasports from DB",
+                "description": "Import null number pasports from DB",
+                "operationId": "importNullPassports",
+                "responses": {
+                    "200": {
+                        "description": "Null passports imported successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {}
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
+        },
+        "/api/db/clear-duplicated-rooms": {
+            "get": {
+                "tags": [
+                    "Database"
+                ],
+                "summary": "Import null number pasports from DB",
+                "description": "Import null number pasports from DB",
+                "operationId": "clearDuplicatedRooms",
+                "responses": {
+                    "200": {
+                        "description": "Null passports imported successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {}
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
+        },
         "/api/departures": {
             "get": {
                 "tags": [
