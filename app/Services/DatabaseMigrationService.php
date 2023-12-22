@@ -815,10 +815,10 @@ class DatabaseMigrationService
             foreach ($departures as $departure) {
 
 
-                DB::table('rel_client_departure')
+                /*DB::table('rel_client_departure')
                     ->where('departure_id', $departure->id)
                     ->whereNull('room_type_id')
-                    ->delete();
+                    ->delete();*/
 
 
                 // --- Busca habitaciones que no tengan un cliente asigando a esta departure ---
@@ -1060,3 +1060,4 @@ class DatabaseMigrationService
         }
     }
 }
+
