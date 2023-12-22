@@ -290,6 +290,9 @@ class DepartureService extends ResourceService
     {
         $room = null;
 
+
+        Log::debug('dep '.$departure_id.' client '.$client_id.' state '.$state.' room ID '.$room_id.' rom type '.$room_type_id.' obs '.$observations);
+
         if (!isset($room_id) && isset($room_type_id) && $state <= 4) {
             // Si state es uno de los activos y no tenemos room_id crea habitacion
             $room = $this->addRoom($departure_id, $room_type_id, $observations);
@@ -366,8 +369,6 @@ class DepartureService extends ResourceService
 
         $emptyRooms = $query->get();
 
-        Log::debug(json_encode($emptyRooms));
-
         if ($emptyRooms->count() >= 1) {
 
             // --- Elimina emty rooms ---
@@ -376,7 +377,13 @@ class DepartureService extends ResourceService
             });
 
             // --- Calcula total de rooms de cada tipo ---
-            $roomTypes = [];
+            $roomTypes = [
+                '1' => 0,
+                '2' => 0,
+                '3' => 0,
+                '4' => 0
+            ];
+
             foreach ($departure->rooms as $room) {
                 $current = $roomTypes[$room->room_type_id] ?? 0;
                 $roomTypes[$room->room_type_id] = $current + 1;

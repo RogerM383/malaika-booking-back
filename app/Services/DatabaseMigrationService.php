@@ -814,8 +814,64 @@ class DatabaseMigrationService
 
             foreach ($departures as $departure) {
 
+
+                DB::table('rel_client_departure')
+                    ->where('departure_id', $departure->id)
+                    ->whereNull('room_type_id')
+                    ->delete();
+
+
+                // --- Busca habitaciones que no tengan un cliente asigando a esta departure ---
+                $query = Room::whereHas('departure', function ($query) use ($departure) {
+                    $query->where('departures.id', $departure->id);
+                })
+                    ->whereDoesntHave('clients', function ($query) use ($departure) {
+                        $query->whereHas('departures', function ($query) use ($departure) {
+                            $query->where('departures.id', $departure->id)
+                                ->where('rel_client_departure.state', '!=', 6)
+                                ->where('rel_client_departure.state', '!=', 5);
+                        });
+                    });
+
+                $emptyRooms = $query->get();
+
+                Log::debug(json_encode($emptyRooms));
+
+                if ($emptyRooms->count() >= 1) {
+
+                    // --- Elimina emty rooms ---
+                    $emptyRooms->each(function ($room) {
+                        $room->delete();
+                    });
+                }
+                    // --- Calcula total de rooms de cada tipo ---
+                    $roomTypes = [
+                        '1' => 0,
+                        '2' => 0,
+                        '3' => 0,
+                        '4' => 0
+                    ];
+                    foreach ($departure->rooms as $room) {
+                        $current = $roomTypes[$room->room_type_id] ?? 0;
+                        $roomTypes[$room->room_type_id] = $current + 1;
+                    }
+
+                    foreach ($roomTypes as $key => $quantity) {
+                        DB::table('rel_departure_room_type')
+                            ->where('departure_id', $departure->id)
+                            ->where('room_type_id', $key)
+                            ->update(['quantity' => $quantity]);
+                    }
+
+                    // --- Recalcula numeros de cada habitacion ---
+                    foreach ($departure->rooms()->get() as $key => $r) {
+                        $r->room_number = $key + 1;
+                        $r->save();
+                    }
+
+
                 // --- Busca habitaciones que no tengan asignao un cliente asigando a esta departure ---
-                $emptyRooms = Room::whereHas('departure', function ($query) use ($departure) {
+                /*$emptyRooms = Room::whereHas('departure', function ($query) use ($departure) {
                     $query->where('departures.id', $departure->id);
                 })
                 ->whereDoesntHave('clients', function ($query) use ($departure) {
@@ -844,7 +900,7 @@ class DatabaseMigrationService
                         ->where('departure_id', $departure->id)
                         ->where('room_type_id', $key)
                         ->update(['quantity' => $quantity]);
-                }
+                }*/
             }
 
 
@@ -964,5 +1020,43 @@ class DatabaseMigrationService
                 }
             }
         });
+    }
+
+    function clearDuplicatedRooms()
+    {
+        $duplicated = DB::table('rel_client_room')
+            ->selectRaw('client_id, room_id, COUNT(*) as numero_repeticiones')
+            ->groupBy('client_id', 'room_id')
+            ->havingRaw('COUNT(*) > 1')
+            ->get();
+
+        Log::debug(json_encode($duplicated));
+        Log::debug('----------------');
+        Log::debug($duplicated->count());
+
+        foreach ($duplicated as $client) {
+            $result = DB::table('rel_client_room')
+                ->where('client_id', $client->client_id)
+                ->where('room_id', $client->room_id)
+                ->orderBy('id', 'asc')
+                ->get();
+
+            Log::debug(json_encode($result));
+            Log::debug('----------------------------');
+
+            $num = $result->count();
+
+            foreach ($result as $key => $client_room) {
+                if ($key < ($num - 1)) {
+                    Log::debug('DELETING - '.$client_room->id.' ');
+                    DB::table('rel_client_room')
+                        ->where('id', $client_room->id)
+                        ->delete();
+                } else {
+                    Log::debug('PRESERVING - '.$client_room->id.' ');
+                }
+            }
+            Log::debug('CAMBIO DE ROOMING');
+        }
     }
 }
