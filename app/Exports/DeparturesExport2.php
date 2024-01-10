@@ -402,20 +402,20 @@ class DeparturesExport2 implements WithMapping, FromCollection, WithHeadings, Wi
                     foreach ($rows as $k => $v) {
 
 
-                        if ($v[1] == 2.0) {
+                        if ($v[1] == 1.0) {
 
                             $event->sheet->fillCell(
                                 'B' . $index,
 
                                 ['fillType' => Fill::FILL_SOLID, 'color' => array('rgb' => 'e63434')]
                             );
-                        } elseif ($v[1] == 3.0) {
+                        } elseif ($v[1] == 2.0) {
                             $event->sheet->fillCell(
                                 'B' . $index,
 
                                 ['fillType' => Fill::FILL_SOLID, 'color' => array('rgb' => '2de90a')]
                             );
-                        } elseif ($v[1] == 4.0) {
+                        } elseif ($v[1] == 3.0) {
                             $event->sheet->fillCell(
                                 'B' . $index,
 

@@ -52,7 +52,7 @@ class ClientExportResource extends JsonResource
         return [
             'id'                => $this->id,
             'room_number'       => $this->when(!empty($room), fn () => $room->room_number),
-            'state'             => $this->pivot->state,
+            'state'             => $this->pivot->state - 1,
             'surname'           => $this->when(!empty($this->surname), fn () => strtoupper($this->surname)),
             'name'              => $this->when(!empty($this->name), fn () => strtoupper($this->name)),
             'room_type_id'      => $this->when(!empty($room), fn () => $room->room_type_id),
