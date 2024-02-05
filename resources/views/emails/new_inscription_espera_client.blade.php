@@ -1,11 +1,11 @@
 
 <div style="padding:40px; padding-bottom:60px; width:800px;font-size:17px;">
     <a href="">
-        <img src="https://api.malaika-clients.fruntera.dev/images/logoamics.jpg" alt="Amis del MNAC" style="width:180px; height: auto;" />
+        <img src="https://api.malaika-clients.fruntera.dev/images/logoamics.jpg" alt="Amics del MNAC" style="width:180px; height: auto;" />
     </a>&nbsp;&nbsp;&nbsp;
     &nbsp;&nbsp;&nbsp;
     <a href="http://malaikaviatges.com">
-        <img src="https://api.malaika-clients.fruntera.dev/images/logo-malaika.svg" alt="Amis del MNAC" style="width:180px; height: auto;display:block; float:right" />
+        <img src="https://api.malaika-clients.fruntera.dev/images/logo-malaika.svg" alt="Malaikaviatges" style="width:180px; height: auto;display:block; float:right" />
     </a>
 </div>
 
