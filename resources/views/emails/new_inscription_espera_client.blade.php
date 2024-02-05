@@ -5,7 +5,7 @@
     </a>&nbsp;&nbsp;&nbsp;
     &nbsp;&nbsp;&nbsp;
     <a href="http://malaikaviatges.com">
-        <img src="https://api.malaika-clients.fruntera.dev/images/logo-malaika.svg" alt="Malaikaviatges" style="width:180px; height: auto;display:block; float:right" />
+        <img src="https://api.malaika-clients.fruntera.dev/images/malaika-logo.png" alt="Malaikaviatges" style="width:180px; height: auto;display:block; float:right" />
     </a>
 </div>
 
