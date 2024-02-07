@@ -185,7 +185,7 @@ class FormController extends Controller
                 ->send(new NewInscriptionEsperaAdmin($data));*/
 
             Mail::to($validatedData['contact_email'])
-                ->bcc(['roger@fruntera.com'])
+                ->bcc(['roger@fruntera.com', 'kirian@fruntera.com'])
                 //->bcc('aayats@malaikaviatges.com')
                 ->send(new NewInscriptionEsperaClient());
 
@@ -351,7 +351,7 @@ class FormController extends Controller
         ];
 
         Mail::to($validatedData['contact_email'])
-            ->bcc(['roger@fruntera.com'])
+            ->bcc(['roger@fruntera.com', 'kirian@fruntera.com'])
             //->bcc(['aayats@malaikaviatges.com'])
             ->send(new NewInscriptionClient($data));
 
