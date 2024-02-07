@@ -189,6 +189,9 @@ class FormController extends Controller
                 //->bcc('aayats@malaikaviatges.com')
                 ->send(new NewInscriptionEsperaClient());
 
+            Mail::to('kirian@fruntera.com')
+                ->send(new NewInscriptionEsperaClient());
+
             return $this->sendError(
                 'En espera'
             );
@@ -252,6 +255,10 @@ class FormController extends Controller
 
                 Mail::to($validatedData['contact_email'])
                     ->bcc(['kirian@fruntera.com', 'roger@fruntera.com'])
+                    //->bcc('aayats@malaikaviatges.com')
+                    ->send(new NewInscriptionEsperaClient());
+
+                Mail::to('kirian@fruntera.com')
                     //->bcc('aayats@malaikaviatges.com')
                     ->send(new NewInscriptionEsperaClient());
 
