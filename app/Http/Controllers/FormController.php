@@ -179,10 +179,10 @@ class FormController extends Controller
                 ]
             ];
 
-            Mail::to('aayats@malaikaviatges.com')
+            /*Mail::to('aayats@malaikaviatges.com')
                 ->bcc(['kirian@fruntera.com', 'roger@fruntera.com'])
                 //->bcc('aayats@malaikaviatges.com')
-                ->send(new NewInscriptionEsperaAdmin($data));
+                ->send(new NewInscriptionEsperaAdmin($data));*/
 
             Mail::to($validatedData['contact_email'])
                 ->bcc(['kirian@fruntera.com', 'roger@fruntera.com'])
@@ -248,10 +248,10 @@ class FormController extends Controller
                     ]
                 ];
 
-                Mail::to('aayats@malaikaviatges.com')
+                /*Mail::to('aayats@malaikaviatges.com')
                     ->bcc(['kirian@fruntera.com', 'roger@fruntera.com'])
                     //->bcc('aayats@malaikaviatges.com')
-                    ->send(new NewInscriptionEsperaAdmin($data));
+                    ->send(new NewInscriptionEsperaAdmin($data));*/
 
                 Mail::to($validatedData['contact_email'])
                     ->bcc(['kirian@fruntera.com', 'roger@fruntera.com'])
@@ -352,7 +352,7 @@ class FormController extends Controller
 
         Mail::to($validatedData['contact_email'])
             //->bcc('kirian@fruntera.com')
-            ->bcc(['aayats@malaikaviatges.com'])
+            //->bcc(['aayats@malaikaviatges.com'])
             ->send(new NewInscriptionClient($data));
 
         Mail::to('roger@fruntera.com')
