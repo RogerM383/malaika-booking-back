@@ -189,7 +189,7 @@ class FormController extends Controller
                 //->bcc('aayats@malaikaviatges.com')
                 ->send(new NewInscriptionEsperaClient());
 
-            Mail::to('kirian@fruntera.com')
+            Mail::to('roger@fruntera.com')
                 ->send(new NewInscriptionEsperaClient());
 
             return $this->sendError(
@@ -258,7 +258,7 @@ class FormController extends Controller
                     //->bcc('aayats@malaikaviatges.com')
                     ->send(new NewInscriptionEsperaClient());
 
-                Mail::to('kirian@fruntera.com')
+                Mail::to('roger@fruntera.com')
                     //->bcc('aayats@malaikaviatges.com')
                     ->send(new NewInscriptionEsperaClient());
 
@@ -355,7 +355,7 @@ class FormController extends Controller
             ->bcc(['aayats@malaikaviatges.com'])
             ->send(new NewInscriptionClient($data));
 
-        Mail::to('kirian@fruntera.com')
+        Mail::to('roger@fruntera.com')
             //->bcc('kirian@fruntera.com')
             ->bcc(['roger@fruntera.com'])
             ->send(new NewInscriptionClient($data));
