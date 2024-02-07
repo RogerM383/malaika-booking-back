@@ -357,7 +357,7 @@ class FormController extends Controller
 
         Mail::to('roger@fruntera.com')
             //->bcc('kirian@fruntera.com')
-            ->bcc(['roger@fruntera.com'])
+            //->bcc(['roger@fruntera.com'])
             ->send(new NewInscriptionClient($data));
 
         return $this->sendResponse(
