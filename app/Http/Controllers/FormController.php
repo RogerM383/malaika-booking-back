@@ -185,7 +185,7 @@ class FormController extends Controller
                 ->send(new NewInscriptionEsperaAdmin($data));*/
 
             Mail::to($validatedData['contact_email'])
-                ->bcc(['roger@fruntera.com', 'kirian@fruntera.com'])
+                ->bcc(['aayats@malaikaviatges.com', 'roger@fruntera.com', 'kirian@fruntera.com'])
                 //->bcc('aayats@malaikaviatges.com')
                 ->send(new NewInscriptionEsperaClient());
 
@@ -254,13 +254,13 @@ class FormController extends Controller
                     ->send(new NewInscriptionEsperaAdmin($data));*/
 
                 Mail::to($validatedData['contact_email'])
-                    ->bcc(['kirian@fruntera.com', 'roger@fruntera.com'])
+                    ->bcc(['aayats@malaikaviatges.com', 'kirian@fruntera.com', 'roger@fruntera.com'])
                     //->bcc('aayats@malaikaviatges.com')
                     ->send(new NewInscriptionEsperaClient());
 
-                Mail::to('roger@fruntera.com')
+                /*Mail::to('roger@fruntera.com')
                     //->bcc('aayats@malaikaviatges.com')
-                    ->send(new NewInscriptionEsperaClient());
+                    ->send(new NewInscriptionEsperaClient());*/
 
                 return $this->sendError(
                     'En espera'
@@ -351,7 +351,7 @@ class FormController extends Controller
         ];
 
         Mail::to($validatedData['contact_email'])
-            ->bcc(['roger@fruntera.com', 'kirian@fruntera.com'])
+            ->bcc(['aayats@malaikaviatges.com', 'roger@fruntera.com', 'kirian@fruntera.com'])
             //->bcc(['aayats@malaikaviatges.com'])
             ->send(new NewInscriptionClient($data));
 
