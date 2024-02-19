@@ -403,9 +403,14 @@ class FormController extends Controller
         ])->validate();
 
         return $this->sendResponse(
-            new TripFormResource($this->tripService->getBySlug($validatedData['slug'])),
+            new TripFormResource($this->tripService->getById($validatedData['slug'])),
             'Trip data retrieved successfully'
         );
+
+        /*return $this->sendResponse(
+            new TripFormResource($this->tripService->getBySlug($validatedData['slug'])),
+            'Trip data retrieved successfully'
+        );*/
     }
 
 

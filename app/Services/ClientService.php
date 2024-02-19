@@ -227,6 +227,10 @@ class ClientService extends ResourceService
                 'updated_at' => $originalPassport->updated_at ?? $mergedPassport->updated_at ?? null,
             ];
 
+
+            // TODO: If mergedPassport es mas nuevo, modificar number passport para que no salte restricion de number
+            $mergedPassport->update(['number_passport' => $mergedPassport->number_passport ? $mergedPassport->number_passport.'-old' : null]);
+            // TODO: check if origin client has passport before passport update o peta pr ser null
             $originClient->passport->update($newPassport);
 
             if ($originClient->updated_at > $mergedClient->updated_at) {

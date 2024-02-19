@@ -177,13 +177,19 @@ class TripController extends Controller
     public function getBySlug(Request $request, $slug): JsonResponse
     {
         $validatedData = Validator::make(['slug' => $slug], [
-            'slug' => 'required|string',
+            //'slug' => 'required|string',
+            'slug' => 'required|int',
         ])->validate();
 
         return $this->sendResponse(
-            new TripFormResource($this->service->getBySlug($validatedData['slug'])),
+            new TripFormResource($this->service->getById($validatedData['slug'])),
             'Trip data retrieved successfully'
         );
+
+        /*return $this->sendResponse(
+            new TripFormResource($this->service->getBySlug($validatedData['slug'])),
+            'Trip data retrieved successfully'
+        );*/
     }
 
 
@@ -238,7 +244,7 @@ class TripController extends Controller
             'description'       => 'nullable|string',
             'commentary'        => 'nullable|string',
             'trip_state_id'     => 'integer',
-            'image'             => 'nullable|sometimes|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'image'             => 'nullable|sometimes|image|mimes:jpeg,png,jpg,gif,svg|max:10240',
             'before_open_text'  => 'nullable|string',
             'after_close_text'  => 'nullable|string',
             'open_date'         => 'nullable|string',
