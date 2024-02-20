@@ -402,8 +402,14 @@ class FormController extends Controller
             'slug' => 'required|string',
         ])->validate();
 
+        if ($validatedData['slug'] === 'viatge-a-chicago') {
+            $data = new TripFormResource($this->tripService->getBySlug($validatedData['slug']));
+        } else {
+            $data = new TripFormResource($this->tripService->getById($validatedData['slug']));
+        }
+
         return $this->sendResponse(
-            new TripFormResource($this->tripService->getById($validatedData['slug'])),
+            $data,
             'Trip data retrieved successfully'
         );
 
