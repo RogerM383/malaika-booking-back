@@ -310,15 +310,7 @@ class FormController extends Controller
 
             for ($i = 1; $i <= $roomQuantity; $i++) {
 
-                $room = $this->roomService->create([
-                    'room_type_id'  => $roomTypeId,
-                    'room_number'   => $this->roomService->getNextRoomNumber($departureId),
-                    'departure_id'  => $departureId
-                ]);
-
                 $assignedClients = $clientsCollection->splice(0, $capacity);
-
-                $room->clients()->sync($assignedClients->pluck('id'));
 
                 // Assignamos todos los clientes a la salida
                 $departure->clients()->attach(
@@ -326,6 +318,14 @@ class FormController extends Controller
                         return [$client['id'] => ['room_type_id' => $roomTypeId]];
                     })
                 );
+
+                $room = $this->roomService->create([
+                    'room_type_id'  => $roomTypeId,
+                    'room_number'   => $this->roomService->getNextRoomNumber($departureId),
+                    'departure_id'  => $departureId
+                ]);
+
+                $room->clients()->sync($assignedClients->pluck('id'));
 
                 $departure->roomTypes()->newPivotQuery()->where('room_type_id', $roomTypeId)->increment('quantity');
             }

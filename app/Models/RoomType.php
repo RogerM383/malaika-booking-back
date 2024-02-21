@@ -34,7 +34,11 @@ class RoomType extends Model
      */
     public function departures(): BelongsToMany
     {
-        return $this->belongsToMany(Departure::class, 'rel_departure_room_type')->withTimestamps();
+        return $this->belongsToMany(Departure::class, 'rel_departure_room_type', 'room_type_id', 'departure_id')
+            ->withPivot(
+            'quantity'
+            )
+            ->withTimestamps();
     }
 
     /**

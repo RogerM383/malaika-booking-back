@@ -149,7 +149,7 @@ class DepartureService extends ResourceService
         if (isset($data['form_rooms'])) {
 
             $formRooms = $data['form_rooms'];
-            $roomTypes = $this->roomTypeService->get()->pluck('capacity', 'id');
+            //$roomTypes = $this->roomTypeService->get()->pluck('capacity', 'id');
 
             // Calcula el maximo de slots
             /*$total = collect($formRooms)->map(function ($room) use ($roomTypes) {
@@ -162,9 +162,9 @@ class DepartureService extends ResourceService
 
             // TODO: mejorar todo esto
             // --- Pilla tipos de habitacion permitidas en el form -----------------------------------------------------
-            $depRoomTypes = $departure->formRoomTypes()->get();
+            //$depRoomTypes = $departure->formRoomTypes()->get();
             // --- Obtiene IDs de las relaciones (tabla intermedia) ----------------------------------------------------
-            $rels  = $depRoomTypes->pluck('id')->toArray();
+            //$rels  = $depRoomTypes->pluck('id')->toArray();
 
             $rooms = collect($formRooms)->mapWithKeys(function ($room) {
                 return [
@@ -356,16 +356,14 @@ class DepartureService extends ResourceService
         $departure  = $this->getById($departure_id);
 
         // --- Busca habitaciones que no tengan un cliente asigando a esta departure ---
-        $query = Room::whereHas('departure', function ($query) use ($departure) {
-            $query->where('departures.id', $departure->id);
-        })
-        ->whereDoesntHave('clients', function ($query) use ($departure) {
-            $query->whereHas('departures', function ($query) use ($departure) {
-                $query->where('departures.id', $departure->id)
-                    ->where('rel_client_departure.state', '!=', 6)
-                    ->where('rel_client_departure.state', '!=', 5);
+        $query = Room::where('departure_id', $departure->id)
+            ->whereDoesntHave('clients', function ($query) use ($departure) {
+                $query->whereHas('departures', function ($query) use ($departure) {
+                    $query->where('departures.id', $departure->id)
+                        ->where('rel_client_departure.state', '!=', 6)
+                        ->where('rel_client_departure.state', '!=', 5);
+                });
             });
-        });
 
         $emptyRooms = $query->get();
 
