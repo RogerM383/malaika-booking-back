@@ -43,7 +43,7 @@ class DepartureClientListResource extends JsonResource
 
         return [
             'id'                    => $this->id,
-            'title'                 => $this->trip->title,
+            'title'                 => $this->trip?->title,
             'start'                 => $this->start,
             'final'                 => $this->final,
             'pax_capacity'          => $this->pax_capacity,
