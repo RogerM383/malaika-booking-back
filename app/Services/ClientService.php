@@ -179,7 +179,7 @@ class ClientService extends ResourceService
 
     public function getClientDepartures(int $id)
     {
-        return $this->getById($id)->departures()->orderBy('departures.start', 'desc')->get();
+        return $this->getById($id)->departures()->whereHas('trip')->orderBy('departures.start', 'desc')->get();
     }
 
     /**
