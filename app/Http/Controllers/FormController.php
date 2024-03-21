@@ -403,7 +403,7 @@ class FormController extends Controller
         ])->validate();
 
         if ($validatedData['slug'] === 'viatge-a-chicago') {
-            $data = new TripFormResource($this->tripService->getBySlug($validatedData['slug']));
+            $data = new TripFormResource($this->tripService->getById(159));
         } else {
             $data = new TripFormResource($this->tripService->getById($validatedData['slug']));
         }
