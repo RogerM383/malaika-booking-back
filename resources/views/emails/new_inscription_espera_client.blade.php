@@ -15,7 +15,7 @@
 
     <p syle="font-weight:600">
         Benvolgut/s Amic/s del MNAC, <br/><br/>
-        Moltes gràcies pel seu interès en el viatge <strong>La Sicília daurada: Palerm, Monreale i Cefalù.</strong><br/>
+        Moltes gràcies pel seu interès en el viatge <strong>{{ $title }}</strong><br/>
         Malauradament, en aquests moments no queden places disponibles i, per tant, la seva petició ha estat inclosa a la llista d’espera.<br/>
         En cas que s’alliberi alguna plaça, contactaríem de nou amb vostès per tal de veure si encara estan interessats a formalitzar la reserva.
     </p>

@@ -14,14 +14,16 @@ class NewInscriptionEsperaClient extends Mailable
     use Queueable, SerializesModels;
 
     protected array $data;
+    protected string $title;
 
     /**
      * Create a new message instance.
      */
-    public function __construct()
+    public function __construct($title)
     {
-
+        $this->title = $title;
     }
+
 
     /**
      * Get the message envelope.
@@ -40,6 +42,9 @@ class NewInscriptionEsperaClient extends Mailable
     {
         return new Content(
             view: 'emails.new_inscription_espera_client',
+            with: [
+                'title' => $this->title,
+            ]
         );
     }
 
