@@ -61,6 +61,6 @@ class UserService
             $user->roles()->attach(1);
         }
 
-        return $user;
+        return $this->model->find($id);
     }
 }
