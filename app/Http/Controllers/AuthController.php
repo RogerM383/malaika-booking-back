@@ -129,6 +129,66 @@ class AuthController extends Controller
     }
 
     /**
+     *  @OA\Put(
+     *      path="/api/auth/{id}/update",
+     *      tags={"Auth"},
+     *      summary="Update user",
+     *      security={{"bearer_token":{}}},
+     *      description="Actualiza un usuario existente",
+     *      operationId="updateUser",
+     *      @OA\Parameter(
+     *          name="id",
+     *          in="path",
+     *          required=true,
+     *          @OA\Schema(
+     *              type="integer"
+     *          )
+     *      ),
+     *      @OA\Response(
+     *          response="200",
+     *          description="User updated successfully"
+     *      ),
+     *      @OA\RequestBody(
+     *          description="Update user",
+     *          required=true,
+     *          @OA\JsonContent(
+     *              required={"name", "email", "password", "c_password"},
+     *              @OA\Property(property="name", type="string", format="text", example="Mario"),
+     *              @OA\Property(property="email", type="email", format="text", example="mario@gmail.com"),
+     *              @OA\Property(property="password", type="string", format="text", example="1234567"),
+     *              @OA\Property(property="c_password", type="string", format="text", example="1234567"),
+     *              @OA\Property(property="is_admin", type="integer", example=false)
+     *          )
+     *     )
+     * )
+     */
+    public function update(Request $request, int $id): JsonResponse
+    {
+        try {
+            $data = $request->all();
+            $validator = Validator::make($data, [
+                'name'          => 'sometimes|string|max:255',
+                'email'         => 'sometimes|email|max:255|unique:users',
+                'password'      => 'sometimes|string|min:6',
+                'c_password'    => 'sometimes|same:password',
+                'is_admin'      => 'sometimes|boolean'
+            ]);
+
+            if ($validator->fails()) {
+                return $this->sendError('Validation Error.', $validator->errors(), 409);
+            }
+
+            $user = $this->userService->update($id, Arr::except($data, ['c_password']));
+
+            $success['name'] = $user->name;
+
+            return $this->sendResponse($success, 'User updated successfully.');
+        } catch (Exception $e) {
+            return $this->sendError("Can't update the requested user", $e->getMessage(), 409);
+        }
+    }
+
+    /**
      *  @OA\Post(
      *      path="/api/auth/login",
      *      tags={"Auth"},

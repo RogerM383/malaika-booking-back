@@ -35,6 +35,7 @@ Route::prefix('auth')->group(function () {
     Route::post('register', [AuthController::class, 'register']);
     Route::post('login', [AuthController::class, 'login']);
     Route::post('create', [AuthController::class, 'registerNewUser'])->middleware('auth:api');
+    Route::put('{id}/update', [AuthController::class, 'update'])->middleware('auth:api');
 });
 
 Route::prefix('client-types')->group(function () {

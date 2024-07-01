@@ -50,6 +50,17 @@ class UserService
      */
     public function update(int $id, array $data): mixed
     {
-        return $this->model->find($id)->update($data);
+        $isAdmin = Arr::pull($data, 'is_admin');
+
+        if ($data['password'] !== null)
+            $data['password'] = bcrypt($data['password']);
+
+        $user = $this->model->find($id)->update($data);
+
+        if (!empty($isAdmin)) {
+            $user->roles()->attach(1);
+        }
+
+        return $user;
     }
 }
