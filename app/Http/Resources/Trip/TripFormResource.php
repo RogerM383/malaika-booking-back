@@ -46,7 +46,7 @@ class TripFormResource extends JsonResource
             'before_open_text' => $this->before_open_text,
             'after_close_text' => $this->after_close_text,
             'open_date'     => $this->open_date,
-            'closed'        => $this->closed
+            'closed'        => $this->closed ? 1 : 0
         ];
     }
 }
