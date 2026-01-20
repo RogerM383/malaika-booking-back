@@ -71,7 +71,7 @@ class DepartureResource extends JsonResource
             'room_availability'     => $roomAvailability,
             'form_rooms'            => $formRoomTypes,
             'clients_count'         => $clients->count(),
-            'hidden'                => $this->hidden,
+            'hidden'                => (int) $this->hidden,
         ];
     }
 }
