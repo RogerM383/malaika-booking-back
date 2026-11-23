@@ -88,6 +88,7 @@ Route::prefix('departures')->group(function () {
 
 Route::prefix('forms')->group(function () {
     Route::post('/process', [FormController::class, 'process']);
+    Route::get('/current-trip', [FormController::class, 'currentTrip']);
     Route::get('/trips/{slug}', [FormController::class, 'getFormTripBySlug']);
     Route::get('/mail', [FormController::class, 'mail']);
 });

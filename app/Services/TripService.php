@@ -75,6 +75,53 @@ class TripService extends ResourceService
     }
 
     /**
+     * Viaje al que redirige la URL fija del formulario: abierto > pre-apertura > último cerrado.
+     * Debe seguir el mismo criterio que la página pública /trip/{id}.
+     *
+     * @return array{trip: Trip, status: string}|null
+     */
+    public function getCurrentFormTrip(): ?array
+    {
+        $now = now()->format('Y-m-d H:i:s');
+        $base = fn () => $this->model::query()->where('trip_state_id', 1);
+
+        $open = $base()
+            ->where('closed', 1)
+            ->whereNotNull('open_date')
+            ->where('open_date', '<=', $now)
+            ->orderByDesc('open_date')
+            ->orderByDesc('id')
+            ->first();
+        if ($open) {
+            return ['trip' => $open, 'status' => 'open'];
+        }
+
+        $upcoming = $base()
+            ->where('closed', 1)
+            ->where(fn ($q) => $q->whereNull('open_date')->orWhere('open_date', '>', $now))
+            ->orderByRaw('open_date IS NULL')
+            ->orderBy('open_date')
+            ->orderByDesc('id')
+            ->first();
+        if ($upcoming) {
+            return ['trip' => $upcoming, 'status' => 'before_open'];
+        }
+
+        $lastClosed = $base()
+            ->where('closed', 0)
+            ->whereNotNull('open_date')
+            ->where('open_date', '<=', $now)
+            ->orderByDesc('open_date')
+            ->orderByDesc('id')
+            ->first();
+        if ($lastClosed) {
+            return ['trip' => $lastClosed, 'status' => 'closed'];
+        }
+
+        return null;
+    }
+
+    /**
      * @param array $data
      * @return mixed
      */

@@ -368,6 +368,29 @@ class FormController extends Controller
 
     /**
      * @OA\Get(
+     *      path="/api/forms/current-trip",
+     *      tags={"Forms"},
+     *      summary="Viaje actual del formulario de inscripción",
+     *      description="Devuelve el viaje al que debe redirigir la URL fija del formulario (reservesmnac). data es null si no hay ninguno.",
+     *      operationId="getCurrentFormTrip",
+     *      @OA\Response(response="200", description="Current trip retrieved successfully")
+     *  )
+     */
+    public function currentTrip(): JsonResponse
+    {
+        $current = $this->tripService->getCurrentFormTrip();
+
+        $data = $current ? [
+            'id'     => $current['trip']->id,
+            'slug'   => $current['trip']->slug,
+            'status' => $current['status'],
+        ] : null;
+
+        return $this->sendResponse($data, 'Current trip retrieved successfully');
+    }
+
+    /**
+     * @OA\Get(
      *      path="/api/forms/trips/{slug}",
      *      tags={"Forms"},
      *      summary="Retorna los datos del formulario de un viaje por slug",
