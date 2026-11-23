@@ -86,7 +86,7 @@ class TripService extends ResourceService
         $base = fn () => $this->model::query()->where('trip_state_id', 1);
 
         $open = $base()
-            ->where('closed', 1)
+            ->where('closed', 0)
             ->whereNotNull('open_date')
             ->where('open_date', '<=', $now)
             ->orderByDesc('open_date')
@@ -97,7 +97,7 @@ class TripService extends ResourceService
         }
 
         $upcoming = $base()
-            ->where('closed', 1)
+            ->where('closed', 0)
             ->where(fn ($q) => $q->whereNull('open_date')->orWhere('open_date', '>', $now))
             ->orderByRaw('open_date IS NULL')
             ->orderBy('open_date')
@@ -108,7 +108,7 @@ class TripService extends ResourceService
         }
 
         $lastClosed = $base()
-            ->where('closed', 0)
+            ->where('closed', 1)
             ->whereNotNull('open_date')
             ->where('open_date', '<=', $now)
             ->orderByDesc('open_date')
@@ -139,6 +139,8 @@ class TripService extends ResourceService
      */
     public function create(array $data): mixed
     {
+        $data['closed'] = $data['closed'] ?? true;
+
         if (isset($data['title']) && !isset($data['slug'])) {
             $data['slug'] = $this->slugify($data['title']);
         }
