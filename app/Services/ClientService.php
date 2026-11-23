@@ -47,36 +47,29 @@ class ClientService extends ResourceService
      */
     public function create(array $data): mixed
     {
-        // Always restore soft-deleted records
         $data['deleted_at'] = null;
 
-        // Normalize DNI
         if (isset($data['dni'])) {
             $data['dni'] = $this->trimDNI($data['dni']);
         }
 
         if (isset($data['dni']) && !empty($data['dni'])) {
-            // Check if client exists (including soft-deleted)
             $existingClient = $this->model->withTrashed()
                 ->where('dni', $data['dni'])
                 ->first();
 
             if ($existingClient) {
-                // Preserve existing values - merge existing data over form data
+                // Si ya existe un cliente con ese DNI, prevalecen sus datos sobre los del formulario
                 $existingAttributes = $existingClient->getAttributes();
                 
-                // Remove system fields that shouldn't be merged
                 unset($existingAttributes['id'], 
                       $existingAttributes['created_at'], 
                       $existingAttributes['updated_at']);
                 
-                // Merge: existing values take priority over form data
                 $mergedData = array_merge($data, $existingAttributes);
                 
-                // Always restore soft-deleted
                 $mergedData['deleted_at'] = null;
                 
-                // Always use normalized DNI
                 $mergedData['dni'] = $data['dni'];
                 
                 $existingClient->update($mergedData);
@@ -84,7 +77,6 @@ class ClientService extends ResourceService
             }
         }
         
-        // No match found - create new client
         return $this->model->create($data);
     }
 
