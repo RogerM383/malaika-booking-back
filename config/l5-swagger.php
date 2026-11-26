@@ -46,6 +46,11 @@ return [
         ],
     ],
     'defaults' => [
+        'basic_auth' => [
+            'user' => env('L5_SWAGGER_USER'),
+            'password' => env('L5_SWAGGER_PASSWORD'),
+        ],
+
         'routes' => [
             /*
              * Route for accessing parsed swagger annotations.
@@ -61,10 +66,10 @@ return [
              * Middleware allows to prevent unexpected access to API documentation
             */
             'middleware' => [
-                'api' => [],
-                'asset' => [],
-                'docs' => [],
-                'oauth2_callback' => [],
+                'api' => [\App\Http\Middleware\AuthenticateL5Swagger::class],
+                'asset' => [\App\Http\Middleware\AuthenticateL5Swagger::class],
+                'docs' => [\App\Http\Middleware\AuthenticateL5Swagger::class],
+                'oauth2_callback' => [\App\Http\Middleware\AuthenticateL5Swagger::class],
             ],
 
             /*
