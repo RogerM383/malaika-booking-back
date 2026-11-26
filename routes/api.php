@@ -3,7 +3,6 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\ClientTypeController;
-use App\Http\Controllers\DBMigrationController;
 use App\Http\Controllers\DepartureController;
 //use App\Http\Controllers\FormController;
 use App\Http\Controllers\ExportController;
@@ -90,21 +89,6 @@ Route::prefix('forms')->group(function () {
     Route::post('/process', [FormController::class, 'process']);
     Route::get('/current-trip', [FormController::class, 'currentTrip']);
     Route::get('/trips/{slug}', [FormController::class, 'getFormTripBySlug']);
-    Route::get('/mail', [FormController::class, 'mail']);
-});
-
-Route::prefix('db')->group(function () {
-    Route::get('/', [DBMigrationController::class, 'migrate']);
-    Route::get('/2', [DBMigrationController::class, 'migrate2']);
-    Route::get('/3', [DBMigrationController::class, 'migrate3']);
-    Route::get('/4', [DBMigrationController::class, 'migrate4']);
-    Route::get('/5', [DBMigrationController::class, 'migrate5']);
-    Route::get('/6', [DBMigrationController::class, 'migrate6']);
-    Route::get('/calculate', [DBMigrationController::class, 'calc']);
-    Route::get('/import-type_room', [DBMigrationController::class, 'importTypeRooms']);
-    Route::get('/trimDNIs', [DBMigrationController::class, 'trimDNIs']);
-    Route::get('/import-null-passports', [DBMigrationController::class, 'importNullPassports']);
-    Route::get('/clear-duplicated-rooms', [DBMigrationController::class, 'clearDuplicatedRooms']);
 });
 
 Route::prefix('exports')->group(function () {

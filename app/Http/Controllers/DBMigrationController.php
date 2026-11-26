@@ -178,23 +178,6 @@ class DBMigrationController extends Controller
     //}
 
     /**
-     * @OA\Get(
-     *      path="/api/db/calculate",
-     *      tags={"Database"},
-     *      summary="Calculate rooms",
-     *      security={{"bearer_token":{}}},
-     *      description="Calculate rooms",
-     *      operationId="roomCalc",
-     *      @OA\Response(
-     *          response="200",
-     *          description="DB migrated successfully",
-     *           @OA\JsonContent(
-     *              type="object",
-     *              @OA\Property(property="data", type="array", @OA\Items())
-     *          )
-     *      )
-     *  )
-     *
      * @param Request $request
      * @return JsonResponse
      */

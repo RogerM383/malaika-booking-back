@@ -444,26 +444,6 @@ class FormController extends Controller
 
 
     /**
-     * @OA\Get(
-     *      path="/api/forms/mail",
-     *      tags={"Forms"},
-     *      summary="Retorna los datos del formulario de un viaje por slug",
-     *      security={{"bearer_token":{}}},
-     *      description="Retorna los datos del formulario de un viaje por slug",
-     *      operationId="mailer",
-     *      @OA\Response(
-     *          response="200",
-     *          description="Trip data retrived successfully",
-     *           @OA\JsonContent(
-     *              type="object",
-     *              @OA\Property(
-     *                  property="data",
-     *                  type="object",
-     *                  ref="#/components/schemas/TripFormResource"
-     *              )
-     *          )
-     *      )
-     *  )
      * @throws ValidationException|ModelNotFoundException
      */
     public function mail(Request $request): JsonResponse
