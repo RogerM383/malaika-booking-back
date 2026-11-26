@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\App;
  *      title="Malaika-booking API",
  *      description="",
  *      @OA\Contact(
- *          email="kirian@fruntera.com"
+ *          email="example@example.com"
  *      ),
  *      @OA\License(
  *          name="Apache 2.0",

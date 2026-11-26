@@ -39,9 +39,9 @@ class AuthController extends Controller
      *          @OA\JsonContent(
      *              required={"nif", "name", "username", "email", "password", "c_password"},
      *              @OA\Property(property="name", type="string", format="text", example="Selene"),
-     *              @OA\Property(property="email", type="email", format="text", example="selene@gmail.com"),
-     *              @OA\Property(property="password", type="string", format="text", example="1234567"),
-     *              @OA\Property(property="c_password", type="string", format="text", example="1234567")
+     *              @OA\Property(property="email", type="email", format="text", example="example@example.com"),
+     *              @OA\Property(property="password", type="string", format="text", example="password"),
+     *              @OA\Property(property="c_password", type="string", format="text", example="password")
      *          )
      *     )
      * )
@@ -93,9 +93,9 @@ class AuthController extends Controller
      *          @OA\JsonContent(
      *              required={"nif", "name", "username", "email", "password", "c_password"},
      *              @OA\Property(property="name", type="string", format="text", example="Selene"),
-     *              @OA\Property(property="email", type="email", format="text", example="selene@gmail.com"),
-     *              @OA\Property(property="password", type="string", format="text", example="1234567"),
-     *              @OA\Property(property="c_password", type="string", format="text", example="1234567"),
+     *              @OA\Property(property="email", type="email", format="text", example="example@example.com"),
+     *              @OA\Property(property="password", type="string", format="text", example="password"),
+     *              @OA\Property(property="c_password", type="string", format="text", example="password"),
      *              @OA\Property(property="is_admin", type="integer", example=0)
      *          )
      *     )
@@ -154,9 +154,9 @@ class AuthController extends Controller
      *          @OA\JsonContent(
      *              required={},
      *              @OA\Property(property="name", type="string", format="text", example="Mario"),
-     *              @OA\Property(property="email", type="email", format="text", example="mario@gmail.com"),
-     *              @OA\Property(property="password", type="string", format="text", example="1234567"),
-     *              @OA\Property(property="c_password", type="string", format="text", example="1234567"),
+     *              @OA\Property(property="email", type="email", format="text", example="example@example.com"),
+     *              @OA\Property(property="password", type="string", format="text", example="password"),
+     *              @OA\Property(property="c_password", type="string", format="text", example="password"),
      *              @OA\Property(property="is_admin", type="integer", example=false)
      *          )
      *     )
@@ -204,8 +204,8 @@ class AuthController extends Controller
      *          required=true,
      *          @OA\JsonContent(
      *              required={"email", "password"},
-     *              @OA\Property(property="email", type="string", format="email", example="selene@gmail.com"),
-     *              @OA\Property(property="password", type="string", format="text", example="1234567")
+     *              @OA\Property(property="email", type="string", format="email", example="example@example.com"),
+     *              @OA\Property(property="password", type="string", format="text", example="password")
      *          )
      *     )
      * )

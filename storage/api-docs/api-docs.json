@@ -4,7 +4,7 @@
         "title": "Malaika-booking API",
         "description": "",
         "contact": {
-            "email": "kirian@fruntera.com"
+            "email": "example@example.com"
         },
         "license": {
             "name": "Apache 2.0",
@@ -44,17 +44,17 @@
                                     "email": {
                                         "type": "email",
                                         "format": "text",
-                                        "example": "selene@gmail.com"
+                                        "example": "example@example.com"
                                     },
                                     "password": {
                                         "type": "string",
                                         "format": "text",
-                                        "example": "1234567"
+                                        "example": "password"
                                     },
                                     "c_password": {
                                         "type": "string",
                                         "format": "text",
-                                        "example": "1234567"
+                                        "example": "password"
                                     }
                                 },
                                 "type": "object"
@@ -100,17 +100,17 @@
                                     "email": {
                                         "type": "email",
                                         "format": "text",
-                                        "example": "selene@gmail.com"
+                                        "example": "example@example.com"
                                     },
                                     "password": {
                                         "type": "string",
                                         "format": "text",
-                                        "example": "1234567"
+                                        "example": "password"
                                     },
                                     "c_password": {
                                         "type": "string",
                                         "format": "text",
-                                        "example": "1234567"
+                                        "example": "password"
                                     },
                                     "is_admin": {
                                         "type": "integer",
@@ -125,6 +125,74 @@
                 "responses": {
                     "200": {
                         "description": "User created successfully"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
+        },
+        "/api/auth/{id}/update": {
+            "put": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Update user",
+                "description": "Actualiza un usuario existente",
+                "operationId": "updateUser",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "Update user",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [],
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "format": "text",
+                                        "example": "Mario"
+                                    },
+                                    "email": {
+                                        "type": "email",
+                                        "format": "text",
+                                        "example": "example@example.com"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "format": "text",
+                                        "example": "password"
+                                    },
+                                    "c_password": {
+                                        "type": "string",
+                                        "format": "text",
+                                        "example": "password"
+                                    },
+                                    "is_admin": {
+                                        "type": "integer",
+                                        "example": false
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "User updated successfully"
                     }
                 },
                 "security": [
@@ -156,12 +224,12 @@
                                     "email": {
                                         "type": "string",
                                         "format": "email",
-                                        "example": "selene@gmail.com"
+                                        "example": "example@example.com"
                                     },
                                     "password": {
                                         "type": "string",
                                         "format": "text",
-                                        "example": "1234567"
+                                        "example": "password"
                                     }
                                 },
                                 "type": "object"
@@ -333,7 +401,7 @@
                                     },
                                     "email": {
                                         "type": "string",
-                                        "example": "selene@gmail.com"
+                                        "example": "example@example.com"
                                     },
                                     "dni": {
                                         "type": "string",
@@ -454,7 +522,7 @@
                                     },
                                     "email": {
                                         "type": "string",
-                                        "example": "selene@gmail.com"
+                                        "example": "example@example.com"
                                     },
                                     "dni": {
                                         "type": "string",
@@ -630,369 +698,6 @@
                                             "items": {
                                                 "$ref": "#/components/schemas/ClientTypeListResource"
                                             }
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    }
-                },
-                "security": [
-                    {
-                        "bearer_token": []
-                    }
-                ]
-            }
-        },
-        "/api/db": {
-            "get": {
-                "tags": [
-                    "Database"
-                ],
-                "summary": "Migra la base de datos",
-                "description": "Migra la base de datos",
-                "operationId": "dbMigrate",
-                "responses": {
-                    "200": {
-                        "description": "DB migrated successfully",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "data": {
-                                            "type": "array",
-                                            "items": {}
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    }
-                },
-                "security": [
-                    {
-                        "bearer_token": []
-                    }
-                ]
-            }
-        },
-        "/api/db/2": {
-            "get": {
-                "tags": [
-                    "Database"
-                ],
-                "summary": "Migra la base de datos",
-                "description": "Migra la base de datos",
-                "operationId": "dbMigrate2",
-                "responses": {
-                    "200": {
-                        "description": "DB migrated successfully",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "data": {
-                                            "type": "array",
-                                            "items": {}
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    }
-                },
-                "security": [
-                    {
-                        "bearer_token": []
-                    }
-                ]
-            }
-        },
-        "/api/db/3": {
-            "get": {
-                "tags": [
-                    "Database"
-                ],
-                "summary": "Migra la base de datos",
-                "description": "Migra la base de datos",
-                "operationId": "dbMigrate3",
-                "responses": {
-                    "200": {
-                        "description": "DB migrated successfully",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "data": {
-                                            "type": "array",
-                                            "items": {}
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    }
-                },
-                "security": [
-                    {
-                        "bearer_token": []
-                    }
-                ]
-            }
-        },
-        "/api/db/4": {
-            "get": {
-                "tags": [
-                    "Database"
-                ],
-                "summary": "Migra la base de datos",
-                "description": "Migra la base de datos",
-                "operationId": "dbMigrate4",
-                "responses": {
-                    "200": {
-                        "description": "DB migrated successfully",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "data": {
-                                            "type": "array",
-                                            "items": {}
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    }
-                },
-                "security": [
-                    {
-                        "bearer_token": []
-                    }
-                ]
-            }
-        },
-        "/api/db/5": {
-            "get": {
-                "tags": [
-                    "Database"
-                ],
-                "summary": "Migra la base de datos",
-                "description": "Migra la base de datos",
-                "operationId": "dbMigrate5",
-                "responses": {
-                    "200": {
-                        "description": "DB migrated successfully",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "data": {
-                                            "type": "array",
-                                            "items": {}
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    }
-                },
-                "security": [
-                    {
-                        "bearer_token": []
-                    }
-                ]
-            }
-        },
-        "/api/db/6": {
-            "get": {
-                "tags": [
-                    "Database"
-                ],
-                "summary": "Migra la base de datos",
-                "description": "Migra la base de datos",
-                "operationId": "dbMigrate6",
-                "responses": {
-                    "200": {
-                        "description": "DB migrated successfully",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "data": {
-                                            "type": "array",
-                                            "items": {}
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    }
-                },
-                "security": [
-                    {
-                        "bearer_token": []
-                    }
-                ]
-            }
-        },
-        "/api/db/calculate": {
-            "get": {
-                "tags": [
-                    "Database"
-                ],
-                "summary": "Calculate rooms",
-                "description": "Calculate rooms",
-                "operationId": "roomCalc",
-                "responses": {
-                    "200": {
-                        "description": "DB migrated successfully",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "data": {
-                                            "type": "array",
-                                            "items": {}
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    }
-                },
-                "security": [
-                    {
-                        "bearer_token": []
-                    }
-                ]
-            }
-        },
-        "/api/db/import-type_room": {
-            "get": {
-                "tags": [
-                    "Database"
-                ],
-                "summary": "Import travelers.type_room column to clients.room_observations",
-                "description": "Import travelers.type_room column to clients.room_observations",
-                "operationId": "imnportTypeRooms",
-                "responses": {
-                    "200": {
-                        "description": "DB migrated successfully",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "data": {
-                                            "type": "array",
-                                            "items": {}
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    }
-                },
-                "security": [
-                    {
-                        "bearer_token": []
-                    }
-                ]
-            }
-        },
-        "/api/db/trimDNIs": {
-            "get": {
-                "tags": [
-                    "Database"
-                ],
-                "summary": "Clear DNI from DB",
-                "description": "Clear DNI from DB",
-                "operationId": "trimDNIs",
-                "responses": {
-                    "200": {
-                        "description": "DB DNIs trimmed successfully",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "data": {
-                                            "type": "array",
-                                            "items": {}
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    }
-                },
-                "security": [
-                    {
-                        "bearer_token": []
-                    }
-                ]
-            }
-        },
-        "/api/db/import-null-passports": {
-            "get": {
-                "tags": [
-                    "Database"
-                ],
-                "summary": "Import null number pasports from DB",
-                "description": "Import null number pasports from DB",
-                "operationId": "importNullPassports",
-                "responses": {
-                    "200": {
-                        "description": "Null passports imported successfully",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "data": {
-                                            "type": "array",
-                                            "items": {}
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    }
-                },
-                "security": [
-                    {
-                        "bearer_token": []
-                    }
-                ]
-            }
-        },
-        "/api/db/clear-duplicated-rooms": {
-            "get": {
-                "tags": [
-                    "Database"
-                ],
-                "summary": "Import null number pasports from DB",
-                "description": "Import null number pasports from DB",
-                "operationId": "clearDuplicatedRooms",
-                "responses": {
-                    "200": {
-                        "description": "Null passports imported successfully",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "data": {
-                                            "type": "array",
-                                            "items": {}
                                         }
                                     },
                                     "type": "object"
@@ -1694,7 +1399,7 @@
                                     },
                                     "contact_email": {
                                         "type": "string",
-                                        "example": "selene@gmail.com"
+                                        "example": "example@example.com"
                                     }
                                 },
                                 "type": "object"
@@ -1717,6 +1422,21 @@
                 ]
             }
         },
+        "/api/forms/current-trip": {
+            "get": {
+                "tags": [
+                    "Forms"
+                ],
+                "summary": "Viaje actual del formulario de inscripción",
+                "description": "Devuelve el viaje al que debe redirigir la URL fija del formulario (reservesmnac). data es null si no hay ninguno.",
+                "operationId": "getCurrentFormTrip",
+                "responses": {
+                    "200": {
+                        "description": "Current trip retrieved successfully"
+                    }
+                }
+            }
+        },
         "/api/forms/trips/{slug}": {
             "get": {
                 "tags": [
@@ -1736,38 +1456,6 @@
                         }
                     }
                 ],
-                "responses": {
-                    "200": {
-                        "description": "Trip data retrived successfully",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "data": {
-                                            "$ref": "#/components/schemas/TripFormResource"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    }
-                },
-                "security": [
-                    {
-                        "bearer_token": []
-                    }
-                ]
-            }
-        },
-        "/api/forms/mail": {
-            "get": {
-                "tags": [
-                    "Forms"
-                ],
-                "summary": "Retorna los datos del formulario de un viaje por slug",
-                "description": "Retorna los datos del formulario de un viaje por slug",
-                "operationId": "mailer",
                 "responses": {
                     "200": {
                         "description": "Trip data retrived successfully",
@@ -2493,7 +2181,7 @@
                     "email": {
                         "description": "Client email",
                         "type": "string",
-                        "example": "mariabirgulilla@gmail.com"
+                        "example": "example@example.com"
                     },
                     "DNI": {
                         "description": "Client DNI",
@@ -2549,7 +2237,7 @@
                     "email": {
                         "description": "Client email",
                         "type": "string",
-                        "example": "mariabirgulilla@gmail.com"
+                        "example": "example@example.com"
                     },
                     "DNI": {
                         "description": "Client DNI",
@@ -2605,7 +2293,7 @@
                     "email": {
                         "description": "Client email",
                         "type": "string",
-                        "example": "mariabirgulilla@gmail.com"
+                        "example": "example@example.com"
                     },
                     "DNI": {
                         "description": "Client DNI",
@@ -2656,7 +2344,7 @@
                     "email": {
                         "description": "Client email",
                         "type": "string",
-                        "example": "mariabirgulilla@gmail.com"
+                        "example": "example@example.com"
                     },
                     "DNI": {
                         "description": "Client DNI",
@@ -2712,7 +2400,7 @@
                     "email": {
                         "description": "Client email",
                         "type": "string",
-                        "example": "mariabirgulilla@gmail.com"
+                        "example": "example@example.com"
                     },
                     "DNI": {
                         "description": "Client DNI",

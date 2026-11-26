@@ -90,7 +90,7 @@ class FormController extends Controller
      *              @OA\Property(property="contact_name", type="string", example="Selene"),
      *              @OA\Property(property="contact_surname", type="string", example="Selenita"),
      *              @OA\Property(property="contact_phone", type="string", example="6945798"),
-     *              @OA\Property(property="contact_email", type="string", example="selene@gmail.com"),
+     *              @OA\Property(property="contact_email", type="string", example="example@example.com"),
      *          )
      *      ),
      *      @OA\Response(

@@ -16,7 +16,7 @@ use Illuminate\Support\Facades\Log;
  *      @OA\Property(property="surname", type="string", description="Client surname", example="Birgulilla"),
  *      @OA\Property(property="name", type="string", description="Client name", example="Maria"),
  *      @OA\Property(property="phone", type="string", description="Client phone", example="648595623"),
- *      @OA\Property(property="email", type="string", description="Client email", example="mariabirgulilla@gmail.com"),
+ *      @OA\Property(property="email", type="string", description="Client email", example="example@example.com"),
  *      @OA\Property(property="DNI", type="string", description="Client DNI", example="47864512"),
  *      @OA\Property(property="passport_state", type="integer", readOnly="true", example="3"),
  *      @OA\Property(property="passport_id", type="integer", readOnly="true", example="2254"),
