@@ -32,10 +32,10 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::prefix('auth')->group(function () {
-    Route::post('register', [AuthController::class, 'register']);
+    Route::post('register', [AuthController::class, 'register'])->middleware(['auth:api', 'admin']);
     Route::post('login', [AuthController::class, 'login']);
-    Route::post('create', [AuthController::class, 'registerNewUser'])->middleware('auth:api');
-    Route::put('{id}/update', [AuthController::class, 'update'])->middleware('auth:api');
+    Route::post('create', [AuthController::class, 'registerNewUser'])->middleware(['auth:api', 'admin']);
+    Route::put('{id}/update', [AuthController::class, 'update'])->middleware(['auth:api', 'admin']);
 });
 
 Route::prefix('client-types')->group(function () {
