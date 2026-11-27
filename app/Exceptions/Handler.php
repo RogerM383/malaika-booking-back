@@ -54,10 +54,6 @@ class Handler extends ExceptionHandler
         $this->stopIgnoring(AuthorizationException::class);
         $this->stopIgnoring(AuthenticationException::class);
         $this->stopIgnoring(AccessDeniedException::class);
-
-        $this->reportable(function (Throwable $e) {
-            return false;
-        });
     }
 
     /**
