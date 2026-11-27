@@ -202,6 +202,7 @@ class FormController extends Controller
                     ];
                     if (!empty($client['MNAC'])) {
                         $data['client_type_id'] = 2;
+                        $data['member_number'] = $client['MNAC'];
                     }
                     $clients[] = $this->clientService->create($data);
                 }
@@ -260,6 +261,7 @@ class FormController extends Controller
             ];
             if (!empty($client['MNAC'])) {
                 $data['client_type_id'] = 2;
+                $data['member_number'] = $client['MNAC'];
             }
             $clients[] = $this->clientService->create($data);
         }
