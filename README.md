@@ -1,66 +1,130 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# malaika-booking-back
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+API REST de la plataforma de reservas de Malaika Viatges: viajes, salidas, clientes, pasaportes, rooming, formularios públicos de inscripción, emails y exportación a Excel.
 
-## About Laravel
+- Producción: https://api.malaika-clients.com (cPanel)
+- Consumidor: [malaika-booking-front](../malaika-booking-front/README.md)
+- Documentación común del proyecto: [docs/README.md](../docs/README.md)
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## Stack
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+| Componente | Versión (composer.lock) |
+| --- | --- |
+| PHP | ≥ 8.1 ([composer.json](composer.json)) |
+| Laravel | 10.13.2 |
+| Laravel Passport | 11.8.7 (autenticación por token Bearer) |
+| maatwebsite/excel | 3.1.50 (exportación del rooming) |
+| darkaonline/l5-swagger | 8.5.1 (OpenAPI en `/api/documentation`) |
+| Base de datos | MySQL 8 o MariaDB |
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## Requisitos
 
-## Learning Laravel
+- PHP 8.1 o superior (se recomienda 8.2 o 8.3) con las extensiones `pdo_mysql`, `mbstring`, `openssl`, `tokenizer`, `bcmath` y las que pide PhpSpreadsheet: `ctype`, `dom`, `fileinfo`, `gd`, `iconv`, `libxml`, `simplexml`, `xml`, `xmlreader`, `xmlwriter`, `zip`, `zlib`
+- Composer 2
+- MySQL 8 o MariaDB
+- Un SMTP de pruebas, por ejemplo [Mailpit](https://mailpit.axllent.org/) en el puerto 1025 (es el valor por defecto de `.env.example`)
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+## Puesta en marcha desde un clon limpio
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+```bash
+composer install
+cp .env.example .env
+php artisan key:generate
+# Crear la base de datos (por defecto: laravel) y ajustar DB_* en .env
+php artisan migrate --seed      # tablas + catálogos + datos ficticios + passport:install
+php artisan storage:link        # sirve storage/app/public en /storage
+php artisan serve               # http://127.0.0.1:8000
+```
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 2000 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+`migrate --seed` ejecuta [DatabaseSeeder](database/seeders/DatabaseSeeder.php), que carga:
 
-## Laravel Sponsors
+- Los catálogos de idiomas, estados de viaje y de salida, tipos de habitación y tipos de cliente.
+- 35 viajes ficticios con salidas y clientes ficticios.
+- Al final, `passport:install`, que genera las claves `storage/oauth-*.key` y el cliente de acceso personal.
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
+### Usuario administrador de prueba
 
-### Premium Partners
+Los seeders no crean roles ni usuarios. El rol de administrador debe tener el id 1 ([EnsureUserIsAdmin](app/Http/Middleware/EnsureUserIsAdmin.php)):
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[Many](https://www.many.co.uk)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[OP.GG](https://op.gg)**
-- **[WebReinvent](https://webreinvent.com/?utm_source=laravel&utm_medium=github&utm_campaign=patreon-sponsors)**
-- **[Lendio](https://lendio.com)**
+```bash
+php artisan tinker
+```
 
-## Contributing
+```php
+DB::table('roles')->insert(['id' => 1, 'name' => 'admin', 'description' => 'Administrador', 'created_at' => now(), 'updated_at' => now()]);
+$u = App\Models\User::create(['name' => 'Admin', 'email' => 'admin@example.test', 'password' => bcrypt('cambia-esta-clave')]);
+$u->roles()->attach(1);
+```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+Prueba rápida:
 
-## Code of Conduct
+```bash
+curl http://127.0.0.1:8000/api/forms/current-trip
+curl -X POST http://127.0.0.1:8000/api/auth/login -H 'Accept: application/json' \
+     -d email=admin@example.test -d password=cambia-esta-clave
+```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+## Variables de entorno
 
-## Security Vulnerabilities
+Se indican los nombres y su finalidad, nunca los valores de producción.
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+| Variable | Finalidad | Sensible |
+| --- | --- | --- |
+| `APP_KEY` | Cifrado de Laravel | Sí |
+| `APP_ENV`, `APP_DEBUG`, `APP_URL` | Entorno. En producción: `production`, `false` y `https://api.malaika-clients.com` | No |
+| `LOG_CHANNEL`, `LOG_LEVEL` | Logs (`stack` → canal `daily`: `storage/logs/laravel-AAAA-MM-DD.log`, 14 días) | No |
+| `DB_HOST`, `DB_PORT`, `DB_DATABASE`, `DB_USERNAME`, `DB_PASSWORD` | Base de datos | `DB_PASSWORD` sí |
+| `MAIL_MAILER`, `MAIL_HOST`, `MAIL_PORT`, `MAIL_USERNAME`, `MAIL_PASSWORD`, `MAIL_ENCRYPTION`, `MAIL_FROM_ADDRESS`, `MAIL_FROM_NAME` | SMTP para los emails de inscripción. En local, Mailpit o `MAIL_MAILER=log` | `MAIL_PASSWORD` sí |
+| `QUEUE_CONNECTION` | `sync`: los emails se envían dentro de la petición | No |
+| `CORS_ALLOWED_ORIGINS` | Orígenes que pueden llamar a la API desde el navegador, separados por comas. En producción: `https://malaika-booking-front.vercel.app`. Sin definir: cualquier origen | No |
+| `L5_SWAGGER_USER`, `L5_SWAGGER_PASSWORD` | Basic auth de `/api/documentation`. Si están vacías, la documentación queda bloqueada | Sí |
+| `PASSPORT_PRIVATE_KEY`, `PASSPORT_PUBLIC_KEY` (opcionales) | Claves de Passport como variables, en lugar de `storage/oauth-*.key` | Sí |
+| `PASSPORT_PERSONAL_ACCESS_CLIENT_ID`, `PASSPORT_PERSONAL_ACCESS_CLIENT_SECRET` (opcionales) | Cliente de acceso personal de Passport | Sí |
 
-## License
+Las variables `REDIS_*`, `AWS_*`, `PUSHER_*` y `MEMCACHED_*` vienen de la plantilla de Laravel y no se usan.
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+## Estructura
+
+| Ruta | Contenido |
+| --- | --- |
+| [routes/api.php](routes/api.php) | Todas las rutas de la API (prefijo `/api`) |
+| [app/Http/Controllers](app/Http/Controllers) | Controladores, con anotaciones OpenAPI `@OA` |
+| [app/Services](app/Services) | Lógica de negocio por entidad |
+| [app/Models](app/Models) | Modelos Eloquent |
+| [app/Http/Resources](app/Http/Resources) | Serialización de las respuestas |
+| [app/Mail](app/Mail) + [resources/views/emails](resources/views/emails) | Emails de inscripción y lista de espera (en catalán) |
+| [app/Exports](app/Exports) | Excel del rooming (se usa `DeparturesExport2`) |
+| [database/migrations](database/migrations) | Esquema |
+| [storage/api-docs/api-docs.json](storage/api-docs/api-docs.json) | OpenAPI generado |
+
+Código heredado que no forma parte del funcionamiento actual: las vistas Blade de `resources/views/{auth,client,departure,modal,passport,trip}`, `DBMigrationController` y `DatabaseMigrationService`. Ver [Estado al entregar](../docs/07-estado-entrega.md).
+
+## API
+
+| Grupo | Rutas | Autenticación |
+| --- | --- | --- |
+| `auth` | `POST login`; `POST register`, `POST create`, `PUT {id}/update` | `login` es público; el resto requiere `auth:api` + `admin` |
+| `forms` | `GET current-trip`, `GET trips/{id}`, `POST process` | Público (formulario de inscripción) |
+| `room-types` | `GET /`, `GET /{id}` | Público |
+| `trips`, `departures`, `clients`, `passports`, `client-types`, `languages`, `exports` | CRUD y operaciones de rooming | `auth:api` |
+
+La referencia completa está en Swagger (`/api/documentation`). Si se modifican las anotaciones, se regenera con `php artisan l5-swagger:generate`.
+
+## Tests
+
+```bash
+php artisan test
+```
+
+Solo están los tests de ejemplo de Laravel ([tests](tests)). [phpunit.xml](phpunit.xml) usa SQLite en memoria. No hay CI.
+
+## Convenciones
+
+- Controlador → Servicio → Modelo; las respuestas se devuelven con `sendResponse` y `sendError` ([Controller.php](app/Http/Controllers/Controller.php)).
+- Validación con `Validator::make(...)->validate()` en el controlador.
+- Mensajes de commit en formato Conventional Commits.
+- Formato de código: Laravel Pint (`./vendor/bin/pint`), disponible pero no aplicado de forma sistemática.
+
+## Despliegue
+
+Manual, en cPanel. El procedimiento, el orden respecto al front, las comprobaciones y el rollback están en [Infraestructura y despliegue](../docs/05-infraestructura-despliegue.md).
